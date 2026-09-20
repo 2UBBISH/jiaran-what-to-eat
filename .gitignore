@@ -9,3 +9,4 @@ node_modules/
 # Python 缓存
 __pycache__/
 *.pyc
+.tmp-live/

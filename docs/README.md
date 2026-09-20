@@ -180,6 +180,8 @@ git push -u origin main
 - 分享：`#/r?k=v1.<seed36>.<菜系>.<辣度>.<预算>.<只看有楼层>.<餐段>`，
   对方打开后本地重算，必然同一签（不需要后端存结果）。
 - 页面上的「概率透明」面板会把本次候选池与各饭堂概率摊开显示，方便核对公平性。
+- 动效只是「揭晓方式」，不影响概率：结果先用种子算好，再播放动画；
+  并且全程尊重系统的「减少动态效果」设置（开启后直接显示结果，粒子与签号跳动自动关闭）。
 
 ## 6. 测试
 
@@ -190,7 +192,15 @@ node tools/rebuild_contributions_index.mjs --check   # 索引是否最新
 
 # DOM 集成测试（可选，需要 jsdom；.tmp-jsdom 已被 .gitignore 忽略）
 mkdir -p .tmp-jsdom && cd .tmp-jsdom && npm init -y >/dev/null && npm install --cache ./.npm-cache jsdom
-cd .. && node tools/test_site_dom.mjs  # 22 项：真跑 index.html / admin.html + 子路径部署
+cd .. && node tools/test_site_dom.mjs
+#   抽签页 13 项 + 管理台 10 项 + 抽签动效 6 项 + 子路径部署 1 项 = 30 项
+#   其中「动效」用例会打开 prefers-reduced-motion=false，验证
+#   逐行高亮 → 锁定 → 粒子 → 签号乱码落定 → 结果入场 的完整状态机
+
+# 线上 E2E：把已部署的站点整包抓下来，用同一套用例再跑一遍
+node tools/test_live_e2e.mjs
+#   会先逐字节比对线上产物与本地（不一致会提示线上是旧版本），再跑全部 DOM 用例
+#   另可指定地址：node tools/test_live_e2e.mjs https://user.github.io/repo/
 ```
 
 DOM 测试会真的把页面跑起来：点抽签 → 检查「推送菜系」页 → 打开分享深链接复现同一签
@@ -204,6 +214,7 @@ DOM 测试会真的把页面跑起来：点抽签 → 检查「推送菜系」�
 | 加/改菜品（线上即时） | 管理台上传，或直接加 `contributions/*.json` |
 | 调整抽签权重 | `DISHES` 的 `review` 标签，或 `core/menu.js` 的 `taxonomy.reviewLevels` |
 | 加菜系 / 标签 | `tools/build_menu_data.py` 的 `CUISINES` / `TAGS`（前端自动跟随 taxonomy） |
-| 改视觉 | `assets/css/tokens.css`（颜色/圆角/阴影/动效）优先，其次 components/views |
+| 改视觉 | `assets/css/tokens.css`（颜色/圆角/阴影/动效曲线）优先，其次 components/views |
+| 改抽签动效 | `assets/css/views.css` 里的 `reel*` / `burst` / `pushSweep` / `cardIn` 关键帧；粒子与签号乱码在 `ui/dom.js` 的 `burst()` / `scramble()` |
 | 换后端 | 实现 `data/contract.js` 的 6 个方法，在 `data/index.js` 注册 |
 | 改分享文案 | `core/share.js` 的 `buildShareText` |

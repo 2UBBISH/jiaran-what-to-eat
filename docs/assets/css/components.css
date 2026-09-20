@@ -71,6 +71,22 @@
 
 .btn--lg { padding: 15px 30px; font-size: 17px; border-radius: var(--r-pill); }
 
+/* 抽签中：按钮外圈扩散的呼吸光 */
+.btn.is-busy { position: relative; }
+.btn.is-busy::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  animation: btnPulse 1.15s var(--ease-in-out) infinite;
+  pointer-events: none;
+}
+@keyframes btnPulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent); }
+  70% { box-shadow: 0 0 0 14px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
 .icon-btn {
   appearance: none;
   border: 1px solid var(--line);

@@ -11,7 +11,7 @@
  * 所有写操作都先经过 core/menu.js 的同一套校验，坏数据进不了仓库。
  */
 
-import { el, clear } from './dom.js';
+import { el, clear, mount } from './dom.js';
 import {
   button, chipRow, segmented, field, input, textarea, select,
   toast, emptyState, sectionTitle, tagPill,
@@ -128,7 +128,8 @@ export function createAdminView({ root, onMenuReload }) {
       }), '端点约定见 assets/js/data/httpSource.js'),
     ]);
 
-    sourceHost.append(
+    mount(
+      sourceHost,
       sectionTitle('数据源'),
       el('div', { class: 'admin__row' }, [
         el('div', { class: 'admin__row-main' }, [modeSelect]),

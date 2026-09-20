@@ -19,6 +19,23 @@ await tick(90);
 
 suite.section('抽签页（index.html）');
 
+/** 找出行内文本节点里字面量为 null/undefined 的脏数据（append(null) 的经典事故） */
+function nullTextNodes(root) {
+  const found = [];
+  const walk = (node) => {
+    node.childNodes.forEach((child) => {
+      if (child.nodeType === 3) {
+        const text = child.textContent.trim();
+        if (text === 'null' || text === 'undefined' || text === 'NaN') found.push(text);
+      } else {
+        walk(child);
+      }
+    });
+  };
+  walk(root);
+  return found;
+}
+
 await suite.test('应用启动后渲染抽签舞台', () => {
   assert.ok(q(window, '.view--draw'), '缺少抽签视图');
   assert.equal(qa(window, '.reel').length, 3, '应有 3 个滚动位：饭堂/楼层/推送菜系');
@@ -56,6 +73,13 @@ await suite.test('推送菜系下列出菜品，且都属于抽中的饭堂+楼�
   if (floorName !== '未标注') {
     assert.ok(metas.some((text) => text.includes(floorName)), `菜品楼层与 ${floorName} 不符`);
   }
+});
+
+await suite.test('结果区没有渲染出 null / undefined 文本（回归）', () => {
+  const junk = nullTextNodes(q(window, '.result'));
+  assert.equal(junk.length, 0, `结果区出现了脏文本节点：${junk.join(', ')}`);
+  const pageJunk = nullTextNodes(window.document.body);
+  assert.equal(pageJunk.length, 0, `页面出现了脏文本节点：${pageJunk.join(', ')}`);
 });
 
 await suite.test('概率透明面板概率归一', () => {

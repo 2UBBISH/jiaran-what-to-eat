@@ -8,11 +8,15 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-export const DOCS = join(ROOT, 'docs');
+// 允许把用例指向另一份站点目录（线上 E2E 会把部署产物下载到 .tmp-live/docs）
+export const DOCS = process.env.TSC_DOCS_ROOT
+  ? resolve(process.env.TSC_DOCS_ROOT)
+  : join(ROOT, 'docs');
+export const BASE_PATH = process.env.TSC_BASE_PATH || '/jiaran-what-to-eat/';
 const JSDOM_API = join(ROOT, '.tmp-jsdom/node_modules/jsdom/lib/api.js');
 
 export async function loadJsdom() {
@@ -38,7 +42,7 @@ export function installFetchShim() {
 }
 
 /** 建一个带浏览器全局变量的 jsdom 环境 */
-export async function createEnvironment(JSDOM, htmlFile, hash = '#/draw') {
+export async function createEnvironment(JSDOM, htmlFile, hash = '#/draw', { motion = false } = {}) {
   const dom = new JSDOM(readFileSync(join(DOCS, htmlFile), 'utf8'), {
     url: `http://localhost/${hash}`,
     pretendToBeVisual: true,
@@ -46,9 +50,10 @@ export async function createEnvironment(JSDOM, htmlFile, hash = '#/draw') {
   });
   const { window } = dom;
 
-  // 动画瞬间完成，测试才快而稳
+  // 默认按「减少动态效果」跑：动画瞬时完成，测试才快而稳。
+  // motion: true 时开启真实动效，用来验证抽签的动画状态机。
   window.matchMedia = (query) => ({
-    matches: /reduce/.test(query),
+    matches: motion ? false : /reduce/.test(query),
     media: query,
     addEventListener() {}, removeEventListener() {},
     addListener() {}, removeListener() {},

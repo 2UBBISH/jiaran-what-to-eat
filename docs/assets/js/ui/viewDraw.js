@@ -6,7 +6,7 @@
  * （本机历史/收藏走 userData，属于用户自己的数据）。
  */
 
-import { el, clear, createRoller, randomOf } from './dom.js';
+import { el, clear, mount, burst, scramble, createRoller, randomOf } from './dom.js';
 import { APP_NAME, APP_TAGLINE, APP_SUB, SHARE_TITLE } from '../brand.js';
 import {
   button, chipRow, segmented, toggleRow, dishCard, ticketChip,
@@ -53,6 +53,24 @@ export function createDrawView({ getMenu, onNeedMenu }) {
   const drawButton = button('开始抽签', { size: 'lg', onClick: () => runDraw() });
   const filterButton = button('筛选', { variant: 'ghost', onClick: () => openFilters() });
 
+  const setDrawLabel = (text) => { drawButton.firstElementChild.textContent = text; };
+
+  const rowCanteen = el('div', { class: 'reel' }, [
+    el('span', { class: 'reel__label', text: '饭堂' }), reelCanteen,
+  ]);
+  const rowFloor = el('div', { class: 'reel' }, [
+    el('span', { class: 'reel__label', text: '楼层' }), reelFloor,
+  ]);
+  const rowCuisine = el('div', { class: 'reel reel--accent' }, [
+    el('span', { class: 'reel__label', text: '推送菜系' }), reelCuisine,
+  ]);
+
+  const stage = el('section', { class: 'stage card card--glass' }, [
+    el('div', { class: 'reels' }, [rowCanteen, rowFloor, rowCuisine]),
+    el('div', { class: 'stage__actions' }, [drawButton, filterButton]),
+    stageMeta,
+  ]);
+
   const root = el('div', { class: 'view view--draw' }, [
     el('header', { class: 'hero' }, [
       el('div', { class: 'hero__eyebrow', text: APP_TAGLINE }),
@@ -60,17 +78,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
       el('p', { class: 'hero__sub', text: APP_SUB }),
     ]),
     shareBanner,
-    el('section', { class: 'stage card card--glass' }, [
-      el('div', { class: 'reels' }, [
-        el('div', { class: 'reel' }, [el('span', { class: 'reel__label', text: '饭堂' }), reelCanteen]),
-        el('div', { class: 'reel' }, [el('span', { class: 'reel__label', text: '楼层' }), reelFloor]),
-        el('div', { class: 'reel reel--accent' }, [
-          el('span', { class: 'reel__label', text: '推送菜系' }), reelCuisine,
-        ]),
-      ]),
-      el('div', { class: 'stage__actions' }, [drawButton, filterButton]),
-      stageMeta,
-    ]),
+    stage,
     resultHost,
     historyHost,
   ]);
@@ -124,7 +132,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     );
   }
 
-  function renderResult(next, { shared = false } = {}) {
+  function renderResult(next, { shared = false, animate = false } = {}) {
     result = next;
     clear(resultHost);
     resultHost.hidden = false;
@@ -148,7 +156,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
       ]),
     ]);
 
-    const pushCard = el('article', { class: 'push card' }, [
+    const pushCard = el('article', { class: `push card${animate ? ' is-revealed' : ''}` }, [
       el('div', { class: 'push__glow' }),
       el('div', { class: 'push__emoji', text: cuisine?.emoji || '🍽' }),
       el('div', { class: 'push__label', text: '本次推送菜系' }),
@@ -174,15 +182,19 @@ export function createDrawView({ getMenu, onNeedMenu }) {
       ]),
     ]);
 
-    const dishList = el('div', { class: 'dish-list' }, dishes.map((dish) => dishCard(dish, {
-      canteen,
-      favorite: favorites.includes(dish.id),
-      onFavorite: (item) => {
-        toggleFavorite(item.id);
-        renderResult(next, { shared });
-        toast(favorites.includes(item.id) ? '已取消收藏' : '已收藏', { tone: 'ok' });
-      },
-    })));
+    const dishList = el('div', { class: `dish-list dish-list--push${animate ? '' : ' no-anim'}` }, dishes.map((dish, index) => {
+      const card = dishCard(dish, {
+        canteen,
+        favorite: favorites.includes(dish.id),
+        onFavorite: (item) => {
+          toggleFavorite(item.id);
+          renderResult(next, { shared });
+          toast(favorites.includes(item.id) ? '已取消收藏' : '已收藏', { tone: 'ok' });
+        },
+      });
+      card.style.setProperty('--i', String(index));
+      return card;
+    }));
 
     const actions = el('div', { class: 'result__actions' }, [
       button('换个菜系', { variant: 'soft', onClick: () => runRedrawCuisine() }),
@@ -227,7 +239,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
       ])
       : null;
 
-    resultHost.append(head, pushCard, targets, warnings, dishList, actions, transparency, othersBlock);
+    mount(resultHost, head, pushCard, targets, warnings, dishList, actions, transparency, othersBlock);
     if (shared) highlightShared();
   }
 
@@ -273,23 +285,51 @@ export function createDrawView({ getMenu, onNeedMenu }) {
       return;
     }
 
-    rollers.canteen.start(() => randomOf(canteenNames));
-    rollers.floor.start(() => randomOf(floorNames));
-    rollers.cuisine.start(() => randomOf(cuisineNames));
+    // 三行一起转，然后自上而下依次锁定：每锁定一行就有一次高亮 + 粒子
+    const steps = [
+      {
+        row: rowCanteen, roller: rollers.canteen, delay: 640,
+        pool: canteenNames, final: next.canteen.name,
+      },
+      {
+        row: rowFloor, roller: rollers.floor, delay: 260,
+        pool: floorNames, final: next.floor ? next.floorLabel : '楼层未标注',
+      },
+      {
+        row: rowCuisine, roller: rollers.cuisine, delay: 260,
+        pool: cuisineNames,
+        final: next.cuisine ? `${next.cuisine.emoji || ''}${next.cuisine.name}` : '暂无菜系',
+      },
+    ];
+    stage.classList.add('is-drawing');
+    drawButton.classList.add('is-busy');
+    setDrawLabel('抽签中');
+    steps.forEach(({ row, roller, pool }) => {
+      row.classList.remove('is-locked');
+      row.classList.add('is-active');
+      roller.start(() => randomOf(pool));
+    });
 
-    await rollers.canteen.stop(next.canteen.name, { delay: 620 });
-    await rollers.floor.stop(next.floor ? next.floorLabel : '楼层未标注', { delay: 240 });
-    await rollers.cuisine.stop(
-      next.cuisine ? `${next.cuisine.emoji || ''}${next.cuisine.name}` : '暂无菜系',
-      { delay: 240 },
-    );
+    for (const step of steps) {
+      await step.roller.stop(step.final, { delay: step.delay });
+      step.row.classList.remove('is-active');
+      step.row.classList.add('is-locked');
+      burst(step.row);
+    }
 
-    renderResult(next);
+    renderResult(next, { animate: true });
+
+    // 结果已经出现，立刻恢复可交互；签号乱码是揭晓后的点缀，不拖住状态机
+    stage.classList.remove('is-drawing');
+    drawButton.classList.remove('is-busy');
+    setDrawLabel('开始抽签');
+    busy = false;
+    drawButton.disabled = false;
+
     recordDraw(next);
     renderHistory();
     refreshStage();
-    busy = false;
-    drawButton.disabled = false;
+    await scramble(resultHost.querySelector('.ticket__value'), next.ticket);
   }
 
   async function runRedrawCuisine() {
@@ -298,9 +338,14 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     busy = true;
     const next = redrawCuisine(menu, result, buildOptions());
     if (next.ok && next.cuisine) {
+      rowCuisine.classList.remove('is-locked');
+      rowCuisine.classList.add('is-active');
       await rollers.cuisine.stop(`${next.cuisine.emoji || ''}${next.cuisine.name}`, { delay: 0 });
+      rowCuisine.classList.remove('is-active');
+      rowCuisine.classList.add('is-locked');
+      burst(rowCuisine);
     }
-    renderResult(next);
+    renderResult(next, { animate: true });
     recordDraw(next);
     renderHistory();
     refreshStage();

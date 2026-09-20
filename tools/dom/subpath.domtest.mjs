@@ -6,7 +6,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { createSuite, loadJsdom, DOCS, ROOT } from './harness.mjs';
+import { createSuite, loadJsdom, DOCS, ROOT, BASE_PATH } from './harness.mjs';
 
 const JSDOM = await loadJsdom();
 if (!JSDOM) {
@@ -14,7 +14,7 @@ if (!JSDOM) {
   process.exit(0);
 }
 
-const SUB = '/jiaran-what-to-eat/';
+const SUB = BASE_PATH;
 const BASE = `https://2ubbish.github.io${SUB}`;
 const suite = createSuite();
 

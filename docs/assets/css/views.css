@@ -35,19 +35,59 @@
   border-radius: var(--r-xl);
   padding: clamp(18px, 4vw, 28px);
   box-shadow: var(--shadow-2);
+  transition: box-shadow var(--d-3) var(--ease-out);
+}
+.stage.is-drawing {
+  box-shadow: var(--shadow-2), 0 0 0 1.5px var(--accent-soft), 0 0 44px -10px var(--accent);
 }
 
 .reels { display: flex; flex-direction: column; }
 
 .reel {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--s-4);
-  padding: 16px 2px;
+  padding: 16px 12px;
+  margin: 0 -12px;
+  border-radius: var(--r-sm);
   border-bottom: 1px solid var(--line);
+  transition: background var(--d-2) var(--ease-out), box-shadow var(--d-2) var(--ease-out);
 }
 .reel:last-child { border-bottom: 0; }
+
+/* 正在转动的那一行：淡蓝底 + 左侧强调条 */
+.reel.is-active {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* 已锁定的那一行：短促的高亮闪一下 */
+.reel.is-locked { animation: reelFlash var(--d-3) var(--ease-out) both; }
+@keyframes reelFlash {
+  0% { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+  100% { background: transparent; }
+}
+
+/* 锁定瞬间的粒子迸发 */
+.burst { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.burst i {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 6px; height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: sparkOut 560ms var(--ease-out) both;
+  animation-delay: var(--delay, 0ms);
+}
+.burst i:nth-child(even) { background: color-mix(in srgb, var(--accent) 45%, #bf5af2); }
+@keyframes sparkOut {
+  0% { transform: translate(0, 0) scale(0.5); opacity: 0.95; }
+  100% { transform: translate(var(--dx, 20px), var(--dy, -20px)) scale(0.1); opacity: 0; }
+}
 
 .reel__label {
   font-size: 13px;
@@ -74,7 +114,16 @@
   color: transparent;
 }
 
-.reel__value.is-rolling { filter: blur(3px); opacity: 0.5; }
+.reel__value.is-rolling {
+  filter: blur(2.4px);
+  opacity: 0.62;
+  animation: reelSpin 260ms linear infinite;
+}
+@keyframes reelSpin {
+  0% { transform: translateY(-4px); }
+  50% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
 
 .reel__value.is-locked { animation: reelLock var(--d-3) var(--ease-spring) both; }
 @keyframes reelLock {
@@ -131,6 +180,26 @@
   to { opacity: 1; transform: none; }
 }
 
+/* 揭晓时一道斜向扫光掠过卡片 */
+.push.is-revealed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 32%, rgba(255, 255, 255, 0.6) 48%, transparent 64%);
+  transform: translateX(-130%);
+  animation: pushSweep 900ms var(--ease-out) 140ms 1 both;
+  pointer-events: none;
+}
+@media (prefers-color-scheme: dark) {
+  .push.is-revealed::after {
+    background: linear-gradient(105deg, transparent 32%, rgba(255, 255, 255, 0.14) 48%, transparent 64%);
+  }
+}
+@keyframes pushSweep {
+  to { transform: translateX(130%); }
+}
+
 .push__glow {
   position: absolute;
   inset: -40% -20% auto;
@@ -151,6 +220,14 @@
   background: linear-gradient(180deg, var(--surface-solid), var(--surface-2));
   border: 1px solid var(--line);
   box-shadow: var(--shadow-2), var(--inner-highlight);
+}
+
+/* 菜系图标随揭晓轻轻弹一下 */
+.push.is-revealed .push__emoji { animation: emojiPop 620ms var(--ease-spring) 80ms both; }
+@keyframes emojiPop {
+  0% { transform: scale(0.86) rotate(-4deg); }
+  60% { transform: scale(1.05) rotate(2deg); }
+  100% { transform: scale(1) rotate(0); }
 }
 
 .push__label {
@@ -227,6 +304,17 @@
 /* 菜品卡 ----------------------------------------------------------------- */
 
 .dish-list { display: flex; flex-direction: column; gap: var(--s-3); margin-top: var(--s-4); }
+
+/* 抽签结果逐张滑入；重渲染（如切换收藏）时不重放动画 */
+.dish-list .dish-card {
+  animation: cardIn 520ms var(--ease-spring) both;
+  animation-delay: calc(var(--i, 0) * 46ms);
+}
+.dish-list.no-anim .dish-card { animation: none; }
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
 .dish-list--compact .dish-card__review { display: none; }
 
 .dish-card {

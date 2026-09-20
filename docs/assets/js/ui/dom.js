@@ -31,6 +31,19 @@ export function clear(node) {
   return node;
 }
 
+/**
+ * 挂载子节点并自动过滤 null / false / undefined。
+ * 原生 append(null) 会插入文本节点 "null"（页面上真的漏出过一次），
+ * 所以多子节点挂载一律走这个函数。
+ */
+export function mount(parent, ...children) {
+  children.flat(Infinity).forEach((child) => {
+    if (child == null || child === false || child === true) return;
+    parent.append(child instanceof Node ? child : document.createTextNode(String(child)));
+  });
+  return parent;
+}
+
 export function on(node, event, selector, handler) {
   node.addEventListener(event, (e) => {
     const target = e.target.closest(selector);
@@ -105,4 +118,49 @@ export async function countUp(node, to, { duration = 600, suffix = '' } = {}) {
     await sleep(duration / steps);
   }
   node.textContent = `${to}${suffix}`;
+}
+
+/** 抽签锁定时的粒子迸发（尊重 prefers-reduced-motion） */
+export function burst(host, { count = 7, duration = 620 } = {}) {
+  if (!host || prefersReducedMotion()) return null;
+  const layer = el('span', { class: 'burst', 'aria-hidden': 'true' });
+  for (let i = 0; i < count; i += 1) {
+    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.7;
+    const distance = 20 + Math.random() * 28;
+    layer.append(el('i', {
+      style: `--dx:${(Math.cos(angle) * distance).toFixed(1)}px;`
+        + `--dy:${(Math.sin(angle) * distance).toFixed(1)}px;`
+        + `--delay:${Math.round(Math.random() * 90)}ms`,
+    }));
+  }
+  host.append(layer);
+  setTimeout(() => layer.remove(), duration + 240);
+  return layer;
+}
+
+/** 签号刮奖式跳动：先乱码，再从左到右逐位落定 */
+export async function scramble(node, finalText, { duration = 460, charset = '0123456789ABCDEFGHJKLMNPQRSTUVWXYZ' } = {}) {
+  if (!node) return;
+  if (prefersReducedMotion()) {
+    node.textContent = finalText;
+    return;
+  }
+  const target = String(finalText);
+  const started = Date.now();
+  await new Promise((resolve) => {
+    const frame = () => {
+      const t = Math.min(1, (Date.now() - started) / duration);
+      const settled = Math.floor(t * target.length);
+      node.textContent = target
+        .split('')
+        .map((ch, index) => (index < settled ? ch : charset[Math.floor(Math.random() * charset.length)]))
+        .join('');
+      if (t < 1) raf(frame);
+      else {
+        node.textContent = target;
+        resolve();
+      }
+    };
+    raf(frame);
+  });
 }

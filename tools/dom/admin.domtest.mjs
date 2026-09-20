@@ -40,12 +40,31 @@ const sourceSelect = () => q(window, '.admin__section select');
 
 suite.section('内容管理台（admin.html）');
 
+function nullTextNodes(root) {
+  const found = [];
+  const walk = (node) => {
+    node.childNodes.forEach((child) => {
+      if (child.nodeType === 3) {
+        const text = child.textContent.trim();
+        if (text === 'null' || text === 'undefined') found.push(text);
+      } else walk(child);
+    });
+  };
+  walk(root);
+  return found;
+}
+
 await suite.test('渲染数据源、上传表单与契约说明', () => {
   assert.ok(q(window, '.view--admin'), '缺少管理台视图');
   assert.ok(qa(window, '.admin__section').length >= 4, '管理台分区缺失');
   assert.ok(q(window, '.health'), '缺少连接状态');
   assert.ok(qa(window, '.form-body .field').length > 3, '表单字段缺失');
   assert.ok(qa(window, '.contract li').length >= 5, '契约说明缺失');
+});
+
+await suite.test('管理台没有渲染出 null 文本（回归）', () => {
+  const junk = nullTextNodes(q(window, '#admin'));
+  assert.equal(junk.length, 0, `出现了脏文本节点：${junk.join(', ')}`);
 });
 
 await suite.test('数据源下拉包含四种模式', () => {
