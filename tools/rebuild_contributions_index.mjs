@@ -17,7 +17,7 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { buildMenu } from '../docs/assets/js/core/menu.js';
+import { buildMenu, inspectContribution } from '../docs/assets/js/core/menu.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DATA_DIR = join(ROOT, 'docs/assets/data');
@@ -48,21 +48,21 @@ async function main() {
     }
   }
 
-  // 用前端同一套逻辑校验（canteen 类的贡献会先合并，供后续 dish 引用）
-  const menu = buildMenu(base, records.map((item) => item.record));
-  const rejectedById = new Map(menu.rejected.map((item) => [item.id, item.errors]));
+  // 先用「饭堂」类内容建一次菜单，再逐条摘要（这样裸接口格式也能解析出饭堂/窗口）
+  const declared = records.filter((item) => item.record?.kind === 'canteen').map((item) => item.record);
+  const menu = buildMenu(base, declared);
 
   const files = records.map(({ name, record }) => {
-    const errors = rejectedById.get(record?.id) || [];
+    const info = inspectContribution(record, menu);
     return {
       file: name,
-      id: record?.id ?? null,
-      kind: record?.kind ?? null,
-      author: record?.author || '匿名同学',
-      createdAt: record?.createdAt || null,
-      title: record?.payload?.name || record?.payload?.text || record?.id || name,
-      valid: errors.length === 0,
-      ...(errors.length ? { errors } : {}),
+      id: info.id,
+      kind: info.kind,
+      author: info.author,
+      createdAt: info.createdAt,
+      title: info.title,
+      valid: info.ok,
+      ...(info.ok ? {} : { errors: info.errors }),
     };
   }).concat(broken.map((item) => ({
     file: item.file, id: null, kind: null, author: null, createdAt: null,

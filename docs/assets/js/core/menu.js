@@ -306,6 +306,37 @@ function prepareContribution(item, menu) {
 }
 
 /**
+ * 给工具链用的单条内容摘要（支持内部记录格式与裸接口格式）。
+ * 索引脚本用它生成可读的 title/kind，而不是把文件名当标题。
+ * @returns {{ok:boolean, id:string|null, kind:string|null, title:string, author:string, createdAt:string|null, errors:string[]}}
+ */
+export function inspectContribution(item, menu) {
+  const prepared = prepareContribution(item, menu);
+  if (!prepared.ok) {
+    return {
+      ok: false, id: prepared.id ?? null, kind: null, title: prepared.id ?? '(未知)',
+      author: null, createdAt: null, errors: prepared.errors,
+    };
+  }
+  const validation = validateContribution(prepared.record, menu);
+  const record = prepared.record;
+  const payload = record.payload || {};
+  const title = payload.name
+    || payload.text
+    || (payload.canteenId ? `${payload.canteenId} ${payload.stallName || ''}`.trim() : null)
+    || record.id;
+  return {
+    ok: validation.ok,
+    id: record.id ?? null,
+    kind: record.kind ?? null,
+    title,
+    author: record.author || '匿名同学',
+    createdAt: record.createdAt || null,
+    errors: validation.errors,
+  };
+}
+
+/**
  * 把「窗口」变成一等实体：
  *   - 从已有菜品的 stallName 自动派生（截图数据里就有窗口名）
  *   - 线上新增的 stall 贡献可以补图片/说明/类型（自选 | 固定 | 窗口）

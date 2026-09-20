@@ -42,7 +42,7 @@ export function createBrowseView({ getMenu }) {
 
   function renderModeRow() {
     clear(modeRow);
-    [['canteen', '按饭堂'], ['cuisine', '按菜系']].forEach(([value, label]) => {
+    [['canteen', '按饭堂'], ['cuisine', '按菜系'], ['today', '上传的菜']].forEach(([value, label]) => {
       modeRow.append(el('button', {
         class: `segmented__item${mode === value ? ' is-active' : ''}`,
         type: 'button',
@@ -111,6 +111,42 @@ export function createBrowseView({ getMenu }) {
           el('p', { class: 'cuisine-card__keywords', text: (cuisine.keywords || []).join(' · ') }),
           el('p', { class: 'cuisine-card__meta', text: `${dishes.length} 道 · ${cuisine.canteenIds?.length || 0} 个饭堂` }),
         ]),
+      ]));
+    });
+    return host;
+  }
+
+  /** 「上传的菜」：按日期倒序列出所有按天上传的菜（今天的在最上面），永远找得到 */
+  function renderTodayList(menu) {
+    const dailies = filterDishes(menu, {
+      onlyDaily: true,
+      includePastDaily: true,
+      includeStallRecommendations: true,
+      keyword,
+    });
+    if (!dailies.length) {
+      return emptyState('还没有上传过自选菜', '打开「自选菜快传」拍几张照片就有了', el('a', {
+        class: 'link', href: 'upload.html', text: '去上传 →',
+      }));
+    }
+    const dates = [...new Set(dailies.map((dish) => dish.date))].sort().reverse();
+    const canteenMap = new Map(menu.canteens.map((canteen) => [canteen.id, canteen]));
+    const favorites = loadFavorites();
+    const host = el('div', {});
+    dates.forEach((date) => {
+      const items = dailies.filter((dish) => dish.date === date);
+      host.append(el('div', { class: 'floor-block' }, [
+        el('div', { class: 'floor-block__head' }, [
+          el('h2', { text: dateLabel(date, menu.today) }),
+          el('span', { class: 'pill', text: `${items.length} 道` }),
+          el('span', { class: 'pill', text: date }),
+        ]),
+        todayBoard(items, {
+          canteen: null,
+          favorites,
+          onFavorite: (item) => { toggleFavorite(item.id); render(); },
+        }),
+        el('p', { class: 'up__hint', text: '点开卡片上的饭堂名可以看这个饭堂的全部菜单' }),
       ]));
     });
     return host;
@@ -210,13 +246,20 @@ export function createBrowseView({ getMenu }) {
       return;
     }
     listHost.append(detailBreadcrumb());
-    listHost.append(mode === 'canteen' ? renderCanteenList(menu) : renderCuisineList(menu));
+    if (mode === 'today') listHost.append(renderTodayList(menu));
+    else listHost.append(mode === 'canteen' ? renderCanteenList(menu) : renderCuisineList(menu));
   }
 
   function detailBreadcrumb() {
     const menu = getMenu();
     return el('div', { class: 'browse__summary' }, [
-      el('span', { text: mode === 'canteen' ? `${menu.canteens.length} 个饭堂` : `${menu.cuisines.filter((c) => c.dishCount).length} 个菜系` }),
+      el('span', {
+        text: mode === 'canteen'
+          ? `${menu.canteens.length} 个饭堂`
+          : (mode === 'cuisine'
+            ? `${menu.cuisines.filter((c) => c.dishCount).length} 个菜系`
+            : `${menu.dishes.filter((d) => d.date).length} 道上传的菜`),
+      }),
       el('span', { class: 'dot' }),
       el('span', { text: `${menu.dishes.length} 道菜` }),
       menu.meta?.stats?.communityDishCount

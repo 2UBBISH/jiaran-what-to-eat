@@ -26,6 +26,7 @@ const suites = [
   'tools/dom/admin.domtest.mjs',
   'tools/dom/motion.domtest.mjs',
   'tools/dom/upload.domtest.mjs',
+  'tools/dom/today.domtest.mjs',
   'tools/dom/subpath.domtest.mjs',
 ];
 let failed = 0;

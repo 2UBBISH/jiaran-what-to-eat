@@ -647,23 +647,33 @@
   margin-top: var(--s-3);
 }
 
+/* 图片为主：上面大图，下面文字；上传的菜一眼就能看到 */
 .today-card {
   display: flex;
-  gap: var(--s-3);
+  flex-direction: column;
+  overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
-  padding: 10px;
   box-shadow: var(--shadow-1);
+  transition: transform var(--d-2) var(--ease-spring), box-shadow var(--d-2) var(--ease-out);
 }
+.today-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
 .today-card__media {
-  flex: 0 0 76px; width: 76px; height: 76px;
-  border-radius: var(--r-sm); overflow: hidden; background: var(--surface-2);
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--surface-2);
   display: grid; place-items: center;
+  overflow: hidden;
 }
 .today-card__media img { width: 100%; height: 100%; object-fit: cover; }
-.today-card__media--empty { font-size: 26px; }
-.today-card__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.today-card__media--empty { font-size: 34px; }
+.today-card__body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.today-card__footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-3); margin-top: 4px; flex-wrap: wrap;
+}
+.today-card__where { font-size: 12px; color: var(--text-3); }
 .today-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .today-card__name { font-size: 15px; letter-spacing: -0.01em; }
 .today-card__meta { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -672,3 +682,6 @@
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 12px; color: var(--warn);
 }
+
+
+.btn--tiny { padding: 6px 12px; font-size: 12.5px; }

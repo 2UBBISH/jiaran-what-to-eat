@@ -47,9 +47,11 @@ jobs:
       - name: 前端 core 测试
         run: node tools/test_site_core.mjs
 
-      # 4) 确保贡献索引与目录一致（上传者只写自己的文件，索引由脚本维护）
-      - name: 检查贡献索引
-        run: node tools/rebuild_contributions_index.mjs --check
+      # 4) 刷新贡献索引到产物里。
+      #    上传者只写「自己那一个文件」（避免并发写冲突），索引由 CI 维护；
+      #    这里必须「重建」而不是「检查是否最新」，否则每次上传都会让部署失败。
+      - name: 刷新贡献索引
+        run: node tools/rebuild_contributions_index.mjs
 
       - uses: actions/configure-pages@v5
 

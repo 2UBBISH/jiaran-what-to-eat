@@ -50,6 +50,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
   const reelCuisine = el('span', { class: 'reel__value', text: '待推送' });
   const stageMeta = el('div', { class: 'stage__meta' });
   const resultHost = el('section', { class: 'result', hidden: true });
+  const todayHost = el('section', { class: 'today-section' });
   const historyHost = el('section', { class: 'history' });
   const shareBanner = el('div', { class: 'banner', hidden: true });
 
@@ -83,6 +84,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     shareBanner,
     stage,
     resultHost,
+    todayHost,
     historyHost,
   ]);
 
@@ -132,8 +134,71 @@ export function createDrawView({ getMenu, onNeedMenu }) {
       el('span', { class: 'stage__sep', text: '·' }),
       el('span', { class: 'stage__filters', text: activeFilterSummary() }),
       todayCount
-        ? el('a', { class: 'stage__today', href: 'upload.html', text: `· 今日自选 ${todayCount} 道` })
+        ? el('button', {
+          class: 'stage__today',
+          type: 'button',
+          text: `· 今日自选 ${todayCount} 道`,
+          onclick: () => todayHost.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+        })
         : null,
+    );
+  }
+
+  /**
+   * 「今日自选」专区：不管抽没抽、抽到哪个饭堂，今天上传的自选菜都在这里，
+   * 图片是主角。点卡片可以直接抽那个饭堂+楼层。
+   */
+  function renderToday() {
+    clear(todayHost);
+    const menu = getMenu();
+    if (!menu) return;
+    const dailies = menu.dishes.filter((dish) => dish.date === menu.today && dish.type !== 'stall_recommendation');
+    if (!dailies.length) {
+      todayHost.hidden = true;
+      return;
+    }
+    todayHost.hidden = false;
+    const byCanteen = new Map(menu.canteens.map((canteen) => [canteen.id, canteen]));
+    const groups = new Map();
+    dailies.forEach((dish) => {
+      const key = `${dish.canteenId}|${dish.floor || ''}|${dish.stallName || ''}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(dish);
+    });
+
+    const cards = [...groups.values()].map((dishes) => {
+      const first = dishes[0];
+      const canteen = byCanteen.get(first.canteenId);
+      const card = todayBoard(dishes, { canteen }).firstElementChild;
+      const footer = el('div', { class: 'today-card__footer' }, [
+        el('button', {
+          class: 'btn btn--soft btn--tiny',
+          type: 'button',
+          text: '抽这一层',
+          onclick: (event) => {
+            event.stopPropagation();
+            runDraw({ canteenId: first.canteenId, floor: first.floor ?? null, lockFloor: true });
+          },
+        }),
+        el('span', {
+          class: 'today-card__where',
+          text: [
+            canteen?.name || first.canteenId,
+            first.floor ? ({ '1F': '一层', '2F': '二层', '3F': '三层' }[first.floor] || first.floor) : '未标注楼层',
+          ].join(' · '),
+        }),
+      ]);
+      card.querySelector('.today-card__body')?.append(footer);
+      return card;
+    });
+
+    mount(
+      todayHost,
+      sectionTitle(
+        `今日自选 · ${dailies.length} 道`,
+        el('a', { class: 'link', href: 'upload.html', text: '去上传 →' }),
+      ),
+      el('div', { class: 'today-board' }, cards),
     );
   }
 
@@ -309,7 +374,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     };
   }
 
-  async function runDraw() {
+  async function runDraw(override = {}) {
     const menu = getMenu();
     if (!menu) { onNeedMenu?.(); return; }
     if (busy) return;
@@ -323,7 +388,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     const floorNames = ['一层', '二层', '三层', '楼层未标注'];
     const cuisineNames = menu.cuisines.map((c) => `${c.emoji || ''}${c.name}`);
 
-    const next = draw(menu, buildOptions());
+    const next = draw(menu, { ...buildOptions(), ...override });
     if (!next.ok) {
       renderResult(next);
       busy = false;
@@ -374,6 +439,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
 
     recordDraw(next);
     renderHistory();
+    renderToday();
     refreshStage();
     await scramble(resultHost.querySelector('.ticket__value'), next.ticket);
   }
@@ -514,6 +580,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     root,
     onMenuReady() {
       refreshStage();
+      renderToday();
       renderHistory();
       if (!applySharedOptions()) return;
     },
