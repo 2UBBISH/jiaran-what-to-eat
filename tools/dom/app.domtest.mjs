@@ -1,8 +1,7 @@
 /** 抽签页 DOM 测试（在独立进程里跑 index.html） */
 import {
-  assert, createEnvironment, createSuite, loadJsdom, q, qa, tick, DOCS, ROOT,
+  assert, createEnvironment, createSuite, loadJsdom, loadMenuFromDisk, q, qa, tick, DOCS,
 } from './harness.mjs';
-import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -43,8 +42,9 @@ await suite.test('应用启动后渲染抽签舞台', () => {
   assert.ok(q(window, '.stage__meta'), '缺少候选统计');
 });
 
-await suite.test('读取到真实菜单数据（候选池=可抽菜品，排除差评/已停业/窗口级推荐）', () => {
-  const menu = JSON.parse(readFileSync(join(DOCS, 'assets/data/menu.json'), 'utf8'));
+await suite.test('读取到真实菜单数据（候选池=可抽菜品，排除差评/已停业/窗口级推荐）', async () => {
+  // 期望值按「实际加载到的数据」算：本地跑是 68 道，跑线上产物时还含线上上传的菜
+  const menu = await loadMenuFromDisk();
   const drawable = menu.dishes.filter((dish) => dish.type !== 'stall_recommendation' && !dish.excludedByDefault);
   const canteenIds = new Set(drawable.map((dish) => dish.canteenId));
   const summary = q(window, '.stage__pool').textContent;
@@ -130,9 +130,8 @@ await suite.test('第三级联动：换个菜系保持饭堂与楼层', async ()
 await suite.test('分享深链接能复现同一签', async () => {
   const core = await import(pathToFileURL(join(DOCS, 'assets/js/core/lottery.js')).href);
   const share = await import(pathToFileURL(join(DOCS, 'assets/js/core/share.js')).href);
-  const { buildMenu } = await import(pathToFileURL(join(DOCS, 'assets/js/core/menu.js')).href);
-  const base = JSON.parse(readFileSync(join(DOCS, 'assets/data/menu.json'), 'utf8'));
-  const expected = core.draw(buildMenu(base, []), { seed: 424242, avoidRecent: false });
+  // 用与实际页面同一份菜单（含线上上传的内容）来算期望值
+  const expected = core.draw(await loadMenuFromDisk(), { seed: 424242, avoidRecent: false });
 
   window.location.hash = `#/r?k=${encodeURIComponent(share.encodeShare(expected))}`;
   window.dispatchEvent(new window.HashChangeEvent('hashchange'));

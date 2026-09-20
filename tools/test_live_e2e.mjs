@@ -65,7 +65,31 @@ async function main() {
   const target = join(TMP, 'docs');
   mkdirSync(target, { recursive: true });
 
-  const files = walkFiles(DOCS).filter((name) => name !== '.nojekyll');
+  // 线上真实上传的内容（本地 docs/ 里没有）：按线上索引把贡献文件与图片也抓下来，
+  // 这样「部署产物副本」与线上完全一致，DOM 用例才跑的是真实数据。
+  const liveIndex = await fetchWithRetry(`${BASE}assets/data/contributions/index.json?t=${Date.now()}`)
+    .then((response) => (response.ok ? response.json() : { files: [] }))
+    .catch(() => ({ files: [] }));
+  const contributionFiles = (liveIndex.files || [])
+    .filter((item) => item.valid !== false)
+    .map((item) => `assets/data/contributions/${item.file}`);
+
+  const imageFiles = [];
+  const contributionRecords = [];
+  for (const path of contributionFiles) {
+    const response = await fetchWithRetry(BASE + path).catch(() => null);
+    if (!response || !response.ok) continue;
+    const record = await response.json().catch(() => null);
+    if (!record) continue;
+    contributionRecords.push(record);
+    const image = record.payload?.image || record.image;
+    if (typeof image === 'string' && image.startsWith('assets/')) imageFiles.push(image);
+  }
+
+  const localFiles = walkFiles(DOCS).filter((name) => name !== '.nojekyll');
+  const remoteOnly = [...new Set([...contributionFiles, ...imageFiles])]
+    .filter((name) => !localFiles.includes(name));
+  const files = [...localFiles, ...remoteOnly];
   const concurrency = 8;
   const results = [];
   for (let i = 0; i < files.length; i += concurrency) {
@@ -89,16 +113,46 @@ async function main() {
   const missing = results.filter((r) => !r.ok);
   const differs = results.filter((r) => r.ok && !r.same);
   console.log(`抓取 ${results.length} 个文件：成功 ${results.length - missing.length}，失败 ${missing.length}`);
+  console.log(`其中线上上传的内容：${contributionFiles.length} 条记录 + ${imageFiles.length} 张图片`
+    + (remoteOnly.length ? `（本地没有、仅线上有：${remoteOnly.length} 个）` : ''));
   if (missing.length) {
     missing.slice(0, 8).forEach((r) => console.log(`  ✗ ${r.name}: HTTP ${r.status}`));
   }
-  if (differs.length) {
+  const onlyIndex = differs.length > 0
+    && differs.every((r) => r.name === 'assets/data/contributions/index.json');
+  if (onlyIndex) {
+    console.log('ℹ️  本地 contributions/index.json 落后于线上（该文件由 CI 维护，属正常）');
+  } else if (differs.length) {
     console.log(`⚠️  与本地不一致 ${differs.length} 个（线上可能是旧版本，或本地有未推送的改动）：`);
     differs.slice(0, 8).forEach((r) => console.log(`  · ${r.name}`));
-  } else if (!missing.length) {
-    console.log('✓ 线上产物与本地逐字节一致');
+  }
+  if (!missing.length && !differs.length) {
+    console.log('✓ 线上产物与本地逐字节一致（含线上上传的内容）');
   }
   console.log('');
+
+  // 1.5) 线上内容体检：能合并成菜、图片真的可取
+  if (contributionFiles.length) {
+    const { buildMenu } = await import(new URL(`file://${join(target, 'assets/js/core/menu.js')}`).href);
+    const base = JSON.parse(readFileSync(join(target, 'assets/data/menu.json'), 'utf8'));
+    const menu = buildMenu(base, contributionRecords);
+    const imagesOk = [];
+    for (const image of new Set(imageFiles)) {
+      const response = await fetchWithRetry(BASE + image).catch(() => null);
+      imagesOk.push({ image, status: response?.status ?? 0, type: response?.headers.get('content-type') || '' });
+    }
+    const badImages = imagesOk.filter((item) => item.status !== 200 || !item.type.startsWith('image/'));
+    console.log(`线上上传内容体检：合并出 ${menu.meta.stats.communityDishCount} 道菜，`
+      + `窗口 ${menu.meta.stats.stallCount} 个，图片 ${imagesOk.length} 张`);
+    if (menu.rejected.length) {
+      console.log(`  ⚠️ 有 ${menu.rejected.length} 条被校验拒绝：${JSON.stringify(menu.rejected).slice(0, 160)}`);
+    }
+    if (badImages.length) {
+      badImages.forEach((item) => console.log(`  ✗ 图片取不到：${item.image}（HTTP ${item.status} ${item.type}）`));
+      process.exit(1);
+    }
+    console.log('  ✓ 每条内容都能合并进菜单，引用的图片全部可取');
+  }
 
   // 2) 用抓下来的真实产物跑 DOM 用例
   const suites = [

@@ -92,6 +92,25 @@ export async function createEnvironment(JSDOM, htmlFile, hash = '#/draw', { moti
   return { dom, window };
 }
 
+/**
+ * 从 DOCS 目录里读出一份完整的菜单（基础数据 + 贡献内容），
+ * 这样断言用的期望值在「本地运行」和「线上产物运行」下都对得上。
+ */
+export async function loadMenuFromDisk() {
+  const { buildMenu } = await import(pathToFileURL(join(DOCS, 'assets/js/core/menu.js')).href);
+  const base = JSON.parse(readFileSync(join(DOCS, 'assets/data/menu.json'), 'utf8'));
+  const indexPath = join(DOCS, 'assets/data/contributions/index.json');
+  const index = existsSync(indexPath)
+    ? JSON.parse(readFileSync(indexPath, 'utf8'))
+    : { files: [] };
+  const contributions = [];
+  for (const item of index.files || []) {
+    const file = join(DOCS, 'assets/data/contributions', item.file);
+    if (existsSync(file)) contributions.push(JSON.parse(readFileSync(file, 'utf8')));
+  }
+  return buildMenu(base, contributions);
+}
+
 export const q = (window, selector) => window.document.querySelector(selector);
 export const qa = (window, selector) => [...window.document.querySelectorAll(selector)];
 export const tick = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
