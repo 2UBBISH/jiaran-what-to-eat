@@ -1,0 +1,3633 @@
+[
+  {
+    "id": "he_yuan-01",
+    "type": "dish",
+    "name": "肉夹馍",
+    "variants": [],
+    "canteenId": "he_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "卖面的档口？（忘记名字了）",
+    "cuisines": [
+      "northwest",
+      "snacks"
+    ],
+    "primaryCuisine": "northwest",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "breakfast",
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "大概6r?",
+      "min": 6,
+      "max": 6,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": true,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "约 6 元，油旋馍酥脆，获陕西同学认可。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "肉夹馍",
+      "卖面的档口？（忘记名字了）"
+    ],
+    "source": {
+      "image": "微信图片_20260920160541_14_10.jpg",
+      "post": "A13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "he_yuan-02",
+    "type": "dish",
+    "name": "牛肉面 / 鸡丝面 / 自选",
+    "variants": [
+      "牛肉面",
+      "鸡丝面",
+      "自选"
+    ],
+    "canteenId": "he_yuan",
+    "floor": "2F",
+    "floorId": "he_yuan-2f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "noodles",
+      "halal"
+    ],
+    "primaryCuisine": "noodles",
+    "tags": [
+      "教师餐厅"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥20-30",
+      "min": 20,
+      "max": 30,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "20-30 元，牛肉面、鸡丝面和自选都出彩，有鲜榨果汁；属教师餐厅，略贵。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "牛肉面 / 鸡丝面 / 自选",
+      "牛肉面",
+      "鸡丝面",
+      "自选"
+    ],
+    "source": {
+      "image": "微信图片_20260920160541_14_10.jpg",
+      "post": "A13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "he_yuan-03",
+    "type": "dish",
+    "name": "咖喱炒饭",
+    "variants": [],
+    "canteenId": "he_yuan",
+    "floor": "2F",
+    "floorId": "he_yuan-2f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "rice",
+      "japanese"
+    ],
+    "primaryCuisine": "rice",
+    "tags": [
+      "清淡"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": null,
+    "price": {
+      "text": null,
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": null,
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "不油，好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "咖喱炒饭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160541_14_10.jpg",
+      "post": "A13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "he_yuan-04",
+    "type": "dish",
+    "name": "拌面 / 鸡丝面",
+    "variants": [
+      "拌面",
+      "鸡丝面"
+    ],
+    "canteenId": "he_yuan",
+    "floor": "2F",
+    "floorId": "he_yuan-2f",
+    "floorSource": "section",
+    "stallName": "面",
+    "cuisines": [
+      "noodles"
+    ],
+    "primaryCuisine": "noodles",
+    "tags": [
+      "校内公认好吃",
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥10",
+      "min": 10,
+      "max": 10,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "10 元，被认为是校内最好吃的面之一。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "拌面 / 鸡丝面",
+      "拌面",
+      "鸡丝面",
+      "面"
+    ],
+    "source": {
+      "image": "微信图片_20260920160541_14_10.jpg",
+      "post": "A13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "he_yuan-05",
+    "type": "dish",
+    "name": "糖醋鱼脊",
+    "variants": [],
+    "canteenId": "he_yuan",
+    "floor": "2F",
+    "floorId": "he_yuan-2f",
+    "floorSource": "section",
+    "stallName": "8元自选",
+    "cuisines": [
+      "homestyle"
+    ],
+    "primaryCuisine": "homestyle",
+    "tags": [
+      "性价比高",
+      "甜口"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥8",
+      "min": 8,
+      "max": 8,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "8 元自选，糖醋类里最好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "糖醋鱼脊",
+      "8元自选"
+    ],
+    "source": {
+      "image": "微信图片_20260920160541_14_10.jpg",
+      "post": "A13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "he_yuan-06",
+    "type": "dish",
+    "name": "茶菇肉丝面",
+    "variants": [],
+    "canteenId": "he_yuan",
+    "floor": "2F",
+    "floorId": "he_yuan-2f",
+    "floorSource": "section",
+    "stallName": "面食窗口（二楼）",
+    "cuisines": [
+      "noodles",
+      "light"
+    ],
+    "primaryCuisine": "noodles",
+    "tags": [
+      "清淡",
+      "汤品"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "十来块，忘了",
+      "min": 10,
+      "max": 10,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": true,
+      "openEnded": false,
+      "note": "十来块"
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "十来块，清淡、菌香浓，汤好喝。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "茶菇肉丝面",
+      "面食窗口（二楼）"
+    ],
+    "source": {
+      "image": "微信图片_20260920160541_14_10.jpg",
+      "post": "A13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "zi_jing_yuan-01",
+    "type": "dish",
+    "name": "薯格/薯角",
+    "variants": [],
+    "canteenId": "zi_jing_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "清青披萨",
+    "cuisines": [
+      "western",
+      "grill"
+    ],
+    "primaryCuisine": "western",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner",
+      "night"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": "¥12",
+      "min": 12,
+      "max": 12,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "土豆香足，12 元。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "薯格/薯角",
+      "清青披萨"
+    ],
+    "source": {
+      "image": "微信图片_20260920160600_34_10.jpg",
+      "post": "B13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "zi_jing_yuan-02",
+    "type": "dish",
+    "name": "烤翅",
+    "variants": [],
+    "canteenId": "zi_jing_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "清青披萨",
+    "cuisines": [
+      "grill",
+      "western"
+    ],
+    "primaryCuisine": "grill",
+    "tags": [
+      "性价比高",
+      "现做"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner",
+      "night"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥5",
+      "min": 5,
+      "max": 5,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "5 元一对现烤，性价比高；对涨价菜品评价不佳。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "烤翅",
+      "清青披萨"
+    ],
+    "source": {
+      "image": "微信图片_20260920160600_34_10.jpg",
+      "post": "B13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "zi_jing_yuan-03",
+    "type": "dish",
+    "name": "奶油蘑菇汤",
+    "variants": [],
+    "canteenId": "zi_jing_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "清青披萨",
+    "cuisines": [
+      "western",
+      "light"
+    ],
+    "primaryCuisine": "western",
+    "tags": [
+      "汤品"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": "¥6",
+      "min": 6,
+      "max": 6,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "mixed",
+    "reviewLabel": "两极",
+    "reviewText": "有人觉得便宜好喝，有人觉得味道怪。",
+    "drawWeight": 1.5,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "奶油蘑菇汤",
+      "清青披萨"
+    ],
+    "source": {
+      "image": "微信图片_20260920160600_34_10.jpg",
+      "post": "B13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "zi_jing_yuan-04",
+    "type": "dish",
+    "name": "西班牙土豆汤",
+    "variants": [],
+    "canteenId": "zi_jing_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "清青披萨",
+    "cuisines": [
+      "western",
+      "light"
+    ],
+    "primaryCuisine": "western",
+    "tags": [
+      "汤品"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": "¥16",
+      "min": 16,
+      "max": 16,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "16 元，好喝。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "西班牙土豆汤",
+      "清青披萨"
+    ],
+    "source": {
+      "image": "微信图片_20260920160600_34_10.jpg",
+      "post": "B13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "zi_jing_yuan-05",
+    "type": "dish",
+    "name": "意大利梅肉",
+    "variants": [],
+    "canteenId": "zi_jing_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "清青披萨",
+    "cuisines": [
+      "western"
+    ],
+    "primaryCuisine": "western",
+    "tags": [
+      "偏贵"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥38?",
+      "min": 38,
+      "max": 38,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": true,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "premium",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "味道出众，38 元左右偏贵。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "意大利梅肉",
+      "清青披萨"
+    ],
+    "source": {
+      "image": "微信图片_20260920160600_34_10.jpg",
+      "post": "B13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "zi_jing_yuan-06",
+    "type": "dish",
+    "name": "烧鸭饭",
+    "variants": [],
+    "canteenId": "zi_jing_yuan",
+    "floor": "1F",
+    "floorId": "zi_jing_yuan-1f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "cantonese",
+      "rice"
+    ],
+    "primaryCuisine": "cantonese",
+    "tags": [
+      "性价比高",
+      "出品不稳定",
+      "偏咸"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥15",
+      "min": 15,
+      "max": 15,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "配梅子酱很出彩，性价比高；但出品不稳定，偏咸、偶尔带腥，价格也有同学提出异议。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "烧鸭饭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160600_34_10.jpg",
+      "post": "B13",
+      "page": "2/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-01",
+    "type": "dish",
+    "name": "无骨鸡腿",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "最最最左边的炸鸡窗口",
+    "cuisines": [
+      "grill"
+    ],
+    "primaryCuisine": "grill",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥7",
+      "min": 7,
+      "max": 7,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "7 元，比其他食堂炸鸡更嫩滑；同窗口鸡柳也不错，带骨的不推荐。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "无骨鸡腿",
+      "最最最左边的炸鸡窗口"
+    ],
+    "source": {
+      "image": "微信图片_20260920160540_13_10.jpg",
+      "post": "A13",
+      "page": "3/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-02",
+    "type": "dish",
+    "name": "蒜香鸡块 / 黄金龙骨",
+    "variants": [
+      "蒜香鸡块",
+      "黄金龙骨"
+    ],
+    "canteenId": "guan_chou_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "grill",
+      "homestyle"
+    ],
+    "primaryCuisine": "grill",
+    "tags": [
+      "香口"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥10块左右",
+      "min": 10,
+      "max": 10,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "10 元左右，很香。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "蒜香鸡块 / 黄金龙骨",
+      "蒜香鸡块",
+      "黄金龙骨"
+    ],
+    "source": {
+      "image": "微信图片_20260920160540_13_10.jpg",
+      "post": "A13",
+      "page": "3/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-03",
+    "type": "dish",
+    "name": "香菇肉包 / 冬菜肉包",
+    "variants": [
+      "香菇肉包",
+      "冬菜肉包"
+    ],
+    "canteenId": "guan_chou_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "清青永和大饼卷翻天窗口旁边",
+    "cuisines": [
+      "breakfast",
+      "snacks"
+    ],
+    "primaryCuisine": "breakfast",
+    "tags": [
+      "性价比高",
+      "早餐"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "breakfast"
+    ],
+    "vegetarian": null,
+    "price": {
+      "text": "¥3或2.5一个",
+      "min": 2.5,
+      "max": 3,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": "一个"
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "2.5-3 元一个，个头大，馅调得好。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "香菇肉包 / 冬菜肉包",
+      "香菇肉包",
+      "冬菜肉包",
+      "清青永和大饼卷翻天窗口旁边"
+    ],
+    "source": {
+      "image": "微信图片_20260920160540_13_10.jpg",
+      "post": "A13",
+      "page": "3/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-04",
+    "type": "dish",
+    "name": "藤椒焖面",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "sichuan",
+      "noodles"
+    ],
+    "primaryCuisine": "sichuan",
+    "tags": [
+      "重口",
+      "偏油"
+    ],
+    "spicyLevel": 2,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥16?",
+      "min": 16,
+      "max": 16,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": true,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "16 元左右，很香但容易腻、营养不够均衡，口味淡者慎点。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "藤椒焖面"
+    ],
+    "source": {
+      "image": "微信图片_20260920160540_13_10.jpg",
+      "post": "A13",
+      "page": "3/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-05",
+    "type": "dish",
+    "name": "肉松蛋黄青团",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": "2F",
+    "floorId": "guan_chou_yuan-2f",
+    "floorSource": "section",
+    "stallName": "自选",
+    "cuisines": [
+      "jiangzhe",
+      "snacks"
+    ],
+    "primaryCuisine": "jiangzhe",
+    "tags": [
+      "网红"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥5.8r",
+      "min": 5.8,
+      "max": 5.8,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "5.8 元，价格小贵但好吃到嫌自己胃小。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "肉松蛋黄青团",
+      "自选"
+    ],
+    "source": {
+      "image": "微信图片_20260920160540_13_10.jpg",
+      "post": "A13",
+      "page": "3/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-06",
+    "type": "dish",
+    "name": "鸡汁豆腐",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": "2F",
+    "floorId": "guan_chou_yuan-2f",
+    "floorSource": "section",
+    "stallName": "某个拐角",
+    "cuisines": [
+      "homestyle",
+      "light"
+    ],
+    "primaryCuisine": "homestyle",
+    "tags": [
+      "清淡",
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥4.5",
+      "min": 4.5,
+      "max": 4.5,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "4.5 元，豆腐泡水煮后淋麻酱，清淡好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "鸡汁豆腐",
+      "某个拐角"
+    ],
+    "source": {
+      "image": "微信图片_20260920160540_13_10.jpg",
+      "post": "A13",
+      "page": "3/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-07",
+    "type": "dish",
+    "name": "肉松青团",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": "2F",
+    "floorId": "guan_chou_yuan-2f",
+    "floorSource": "section",
+    "stallName": "主食区",
+    "cuisines": [
+      "jiangzhe",
+      "snacks"
+    ],
+    "primaryCuisine": "jiangzhe",
+    "tags": [
+      "网红"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥5.8",
+      "min": 5.8,
+      "max": 5.8,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "5.8 元，皮薄馅足、艾草香明显，肉松浸了蛋黄油。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "肉松青团",
+      "主食区"
+    ],
+    "source": {
+      "image": "微信图片_20260920160540_13_10.jpg",
+      "post": "A13",
+      "page": "3/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-08",
+    "type": "dish",
+    "name": "三杯鸡",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "入口处",
+    "cuisines": [
+      "taiwanese",
+      "homestyle"
+    ],
+    "primaryCuisine": "taiwanese",
+    "tags": [
+      "校内公认好吃",
+      "性价比高"
+    ],
+    "spicyLevel": 1,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥6左右",
+      "min": 6,
+      "max": 6,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "6 元左右，被称清华最好吃的鸡肉。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "三杯鸡",
+      "入口处"
+    ],
+    "source": {
+      "image": "微信图片_20260920160539_12_10.jpg",
+      "post": "A13",
+      "page": "4/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-09",
+    "type": "dish",
+    "name": "粘豆包",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "northeast",
+      "snacks",
+      "breakfast"
+    ],
+    "primaryCuisine": "northeast",
+    "tags": [
+      "甜口",
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "breakfast",
+      "dessert"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": "¥3.5",
+      "min": 3.5,
+      "max": 3.5,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "3.5 元，甜而不腻。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "粘豆包"
+    ],
+    "source": {
+      "image": "微信图片_20260920160539_12_10.jpg",
+      "post": "A13",
+      "page": "4/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-10",
+    "type": "dish",
+    "name": "美味杏鲍菇",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "homestyle",
+      "light"
+    ],
+    "primaryCuisine": "homestyle",
+    "tags": [
+      "清淡"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": null,
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": null,
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "油润好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "美味杏鲍菇"
+    ],
+    "source": {
+      "image": "微信图片_20260920160539_12_10.jpg",
+      "post": "A13",
+      "page": "4/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-11",
+    "type": "dish",
+    "name": "北京烤鸭",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": "3F",
+    "floorId": "guan_chou_yuan-3f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "beijing"
+    ],
+    "primaryCuisine": "beijing",
+    "tags": [
+      "校内公认好吃",
+      "必点"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥45/半只",
+      "min": 45,
+      "max": 45,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": "半只"
+    },
+    "priceTier": "premium",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "45 元半只，不输校外，校内公认最好吃；甲所、玉树一楼也有。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "北京烤鸭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160539_12_10.jpg",
+      "post": "A13",
+      "page": "4/13"
+    }
+  },
+  {
+    "id": "guan_chou_yuan-12",
+    "type": "stall_recommendation",
+    "name": "（窗口整体推荐）",
+    "variants": [],
+    "canteenId": "guan_chou_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "窗口整体推荐",
+    "cuisines": [],
+    "primaryCuisine": null,
+    "tags": [
+      "自选"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": null,
+    "price": {
+      "text": "¥11—20+",
+      "min": 11,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": true,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "11-20 元以上，拌酱出彩。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "（窗口整体推荐）",
+      "窗口整体推荐"
+    ],
+    "source": {
+      "image": "微信图片_20260920160539_12_10.jpg",
+      "post": "A13",
+      "page": "4/13"
+    }
+  },
+  {
+    "id": "ding_xiang_yuan-01",
+    "type": "dish",
+    "name": "紫薯山药",
+    "variants": [],
+    "canteenId": "ding_xiang_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "light",
+      "homestyle"
+    ],
+    "primaryCuisine": "light",
+    "tags": [],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": null,
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": null,
+    "reviewLevel": "low_info",
+    "reviewLabel": "信息较少",
+    "reviewText": "只留了菜名，没有评价。",
+    "drawWeight": 1.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "紫薯山药"
+    ],
+    "source": {
+      "image": "微信图片_20260920160537_11_10.jpg",
+      "post": "A13",
+      "page": "5/13"
+    }
+  },
+  {
+    "id": "ding_xiang_yuan-02",
+    "type": "dish",
+    "name": "蜜汁肥牛拌饭 / 黑椒鸡肉",
+    "variants": [
+      "蜜汁肥牛拌饭",
+      "黑椒鸡肉"
+    ],
+    "canteenId": "ding_xiang_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "烤肉拌饭",
+    "cuisines": [
+      "rice",
+      "korean"
+    ],
+    "primaryCuisine": "rice",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 1,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥9.5(黑椒鸡肉)/12",
+      "min": 9.5,
+      "max": 12,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "9.5-12 元，好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "蜜汁肥牛拌饭 / 黑椒鸡肉",
+      "蜜汁肥牛拌饭",
+      "黑椒鸡肉",
+      "烤肉拌饭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160537_11_10.jpg",
+      "post": "A13",
+      "page": "5/13"
+    }
+  },
+  {
+    "id": "ding_xiang_yuan-03",
+    "type": "dish",
+    "name": "肠粉",
+    "variants": [],
+    "canteenId": "ding_xiang_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "广东窗口",
+    "cuisines": [
+      "cantonese",
+      "snacks",
+      "breakfast"
+    ],
+    "primaryCuisine": "cantonese",
+    "tags": [
+      "性价比高",
+      "早餐"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "breakfast",
+      "lunch"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥6-10r",
+      "min": 6,
+      "max": 10,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "6-10 元，虽不算完全正宗，但已是附近最好吃的肠粉；同窗口凤爪和排骨煲仔饭也被点名推荐。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "肠粉",
+      "广东窗口"
+    ],
+    "source": {
+      "image": "微信图片_20260920160537_11_10.jpg",
+      "post": "A13",
+      "page": "5/13"
+    }
+  },
+  {
+    "id": "ding_xiang_yuan-04",
+    "type": "dish",
+    "name": "糖醋排骨 / 红烧排骨",
+    "variants": [
+      "糖醋排骨",
+      "红烧排骨"
+    ],
+    "canteenId": "ding_xiang_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "名厨窗口",
+    "cuisines": [
+      "homestyle"
+    ],
+    "primaryCuisine": "homestyle",
+    "tags": [
+      "量大",
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥6?",
+      "min": 6,
+      "max": 6,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": true,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "6 元左右，分量足；两个窗口分别是红烧和糖醋，都好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "糖醋排骨 / 红烧排骨",
+      "糖醋排骨",
+      "红烧排骨",
+      "名厨窗口"
+    ],
+    "source": {
+      "image": "微信图片_20260920160537_11_10.jpg",
+      "post": "A13",
+      "page": "5/13"
+    }
+  },
+  {
+    "id": "zhi_lan_yuan-01",
+    "type": "dish",
+    "name": "豆腐虾滑",
+    "variants": [],
+    "canteenId": "zhi_lan_yuan",
+    "floor": "1F",
+    "floorId": "zhi_lan_yuan-1f",
+    "floorSource": "section",
+    "stallName": "一楼左数第二个口",
+    "cuisines": [
+      "homestyle",
+      "light"
+    ],
+    "primaryCuisine": "homestyle",
+    "tags": [
+      "可点半份"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥15左右",
+      "min": 15,
+      "max": 15,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "15 元左右，可点半份；虾滑大块，豆腐嫩而不碎。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "豆腐虾滑",
+      "一楼左数第二个口"
+    ],
+    "source": {
+      "image": "微信图片_20260920160536_10_10.jpg",
+      "post": "A13",
+      "page": "6/13"
+    }
+  },
+  {
+    "id": "xi_chun_yuan-01",
+    "type": "dish",
+    "name": "龙井虾仁",
+    "variants": [],
+    "canteenId": "xi_chun_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "jiangzhe"
+    ],
+    "primaryCuisine": "jiangzhe",
+    "tags": [
+      "偏贵"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥108",
+      "min": 108,
+      "max": 108,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "restaurant",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "好吃，但价格比校外杭帮菜馆还贵，108 元。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "龙井虾仁"
+    ],
+    "source": {
+      "image": "微信图片_20260920160535_9_10.jpg",
+      "post": "A13",
+      "page": "7/13"
+    }
+  },
+  {
+    "id": "xi_chun_yuan-02",
+    "type": "dish",
+    "name": "樟茶鸭、锅贴",
+    "variants": [
+      "樟茶鸭",
+      "锅贴"
+    ],
+    "canteenId": "xi_chun_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "sichuan",
+      "snacks"
+    ],
+    "primaryCuisine": "sichuan",
+    "tags": [],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥50左右",
+      "min": 50,
+      "max": 50,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "premium",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "50 元左右，杭帮口味。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "樟茶鸭、锅贴",
+      "樟茶鸭",
+      "锅贴"
+    ],
+    "source": {
+      "image": "微信图片_20260920160535_9_10.jpg",
+      "post": "A13",
+      "page": "7/13"
+    }
+  },
+  {
+    "id": "xi_chun_yuan-03",
+    "type": "dish",
+    "name": "响油鳝糊、蟹黄豆腐",
+    "variants": [
+      "响油鳝糊",
+      "蟹黄豆腐"
+    ],
+    "canteenId": "xi_chun_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "jiangzhe"
+    ],
+    "primaryCuisine": "jiangzhe",
+    "tags": [
+      "偏贵",
+      "清淡"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥128",
+      "min": 128,
+      "max": 128,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "restaurant",
+    "reviewLevel": "mixed",
+    "reviewLabel": "两极",
+    "reviewText": "菜品精致但口味偏淡，价格 128 元档。",
+    "drawWeight": 1.5,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "响油鳝糊、蟹黄豆腐",
+      "响油鳝糊",
+      "蟹黄豆腐"
+    ],
+    "source": {
+      "image": "微信图片_20260920160535_9_10.jpg",
+      "post": "A13",
+      "page": "7/13"
+    }
+  },
+  {
+    "id": "du_feng_shu_yuan-01",
+    "type": "dish",
+    "name": "西班牙海鲜汤",
+    "variants": [],
+    "canteenId": "du_feng_shu_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "western"
+    ],
+    "primaryCuisine": "western",
+    "tags": [
+      "已停业"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": null,
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": null,
+    "reviewLevel": "discontinued",
+    "reviewLabel": "已停业",
+    "reviewText": "跟帖表示独峰书院已经没了。",
+    "drawWeight": 0.0,
+    "excludedByDefault": true,
+    "searchKeys": [
+      "西班牙海鲜汤"
+    ],
+    "source": {
+      "image": "微信图片_20260920160534_8_10.jpg",
+      "post": "A13",
+      "page": "8/13"
+    }
+  },
+  {
+    "id": "qing_qing_coffee-01",
+    "type": "dish",
+    "name": "汉堡",
+    "variants": [],
+    "canteenId": "qing_qing_coffee",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "主食",
+    "cuisines": [
+      "burger",
+      "western"
+    ],
+    "primaryCuisine": "burger",
+    "tags": [
+      "偏贵"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥45左右",
+      "min": 45,
+      "max": 45,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "premium",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "45 元左右，牛肉厚且多汁，薯条脆，接近专门汉堡店水准。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "汉堡",
+      "主食"
+    ],
+    "source": {
+      "image": "微信图片_20260920160533_7_10.jpg",
+      "post": "A13",
+      "page": "9/13"
+    }
+  },
+  {
+    "id": "qing_qing_coffee-02",
+    "type": "dish",
+    "name": "沙拉（各款）",
+    "variants": [],
+    "canteenId": "qing_qing_coffee",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "好像就一个",
+    "cuisines": [
+      "light",
+      "western"
+    ],
+    "primaryCuisine": "light",
+    "tags": [
+      "轻食"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": null,
+    "price": {
+      "text": "¥30-50",
+      "min": 30,
+      "max": 50,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "premium",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "30-50 元，好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "沙拉（各款）",
+      "好像就一个"
+    ],
+    "source": {
+      "image": "微信图片_20260920160533_7_10.jpg",
+      "post": "A13",
+      "page": "9/13"
+    }
+  },
+  {
+    "id": "qing_qing_coffee-03",
+    "type": "dish",
+    "name": "泰式香茅烤鸡沙拉碗",
+    "variants": [],
+    "canteenId": "qing_qing_coffee",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "thai",
+      "light"
+    ],
+    "primaryCuisine": "thai",
+    "tags": [
+      "轻食"
+    ],
+    "spicyLevel": 1,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥38还是36",
+      "min": 36,
+      "max": 38,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": true,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "premium",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "36-38 元，鸡肉香料味足、酱汁偏中式，配菜丰富。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "泰式香茅烤鸡沙拉碗"
+    ],
+    "source": {
+      "image": "微信图片_20260920160533_7_10.jpg",
+      "post": "A13",
+      "page": "9/13"
+    }
+  },
+  {
+    "id": "qing_qing_coffee-04",
+    "type": "dish",
+    "name": "华夫饼",
+    "variants": [],
+    "canteenId": "qing_qing_coffee",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "dessert",
+      "western"
+    ],
+    "primaryCuisine": "dessert",
+    "tags": [
+      "甜口"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "dessert"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": "忘了好像不是很贵",
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": true,
+      "openEnded": false,
+      "note": "价格未记录"
+    },
+    "priceTier": null,
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "价格不贵，在店内算独立的亮点。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "华夫饼"
+    ],
+    "source": {
+      "image": "微信图片_20260920160533_7_10.jpg",
+      "post": "A13",
+      "page": "9/13"
+    }
+  },
+  {
+    "id": "qing_qing_niu_la-01",
+    "type": "dish",
+    "name": "炒面片",
+    "variants": [],
+    "canteenId": "qing_qing_niu_la",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "左数第二个",
+    "cuisines": [
+      "halal",
+      "northwest",
+      "noodles"
+    ],
+    "primaryCuisine": "halal",
+    "tags": [
+      "分量偏少"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥20",
+      "min": 20,
+      "max": 20,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "20 元，比附近外卖好吃；但分量偏少，性价比一般。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "炒面片",
+      "左数第二个"
+    ],
+    "source": {
+      "image": "微信图片_20260920160532_6_10.jpg",
+      "post": "A13",
+      "page": "10/13"
+    }
+  },
+  {
+    "id": "qing_qing_kuai_can-01",
+    "type": "dish",
+    "name": "芭菲",
+    "variants": [],
+    "canteenId": "qing_qing_kuai_can",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "甜点类",
+    "cuisines": [
+      "dessert"
+    ],
+    "primaryCuisine": "dessert",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "dessert"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": "¥12r",
+      "min": 12,
+      "max": 12,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "12 元，果味浓、没有香精感，性价比好；跟帖在问哪个窗口有。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "芭菲",
+      "甜点类"
+    ],
+    "source": {
+      "image": "微信图片_20260920160531_5_10.jpg",
+      "post": "A13",
+      "page": "11/13"
+    }
+  },
+  {
+    "id": "c_lou-01",
+    "type": "dish",
+    "name": "煎饼/烤冷面",
+    "variants": [
+      "煎饼",
+      "烤冷面"
+    ],
+    "canteenId": "c_lou",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "小食屋",
+    "cuisines": [
+      "northeast",
+      "snacks",
+      "breakfast"
+    ],
+    "primaryCuisine": "northeast",
+    "tags": [
+      "现做"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "breakfast",
+      "lunch",
+      "night"
+    ],
+    "vegetarian": null,
+    "price": {
+      "text": "17-23左右（看加几样东西）",
+      "min": 17,
+      "max": 23,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": false,
+      "openEnded": false,
+      "note": "看加几样东西"
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "17-23 元，基础款配生菜、黑椒肠或鸡排再加芝士最推荐。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "煎饼/烤冷面",
+      "煎饼",
+      "烤冷面",
+      "小食屋"
+    ],
+    "source": {
+      "image": "微信图片_20260920160530_4_10.jpg",
+      "post": "A13",
+      "page": "12/13"
+    }
+  },
+  {
+    "id": "c_lou-02",
+    "type": "dish",
+    "name": "香芋脆皮小圣代（奶布丁版）",
+    "variants": [
+      "香芋脆皮小圣代（奶布丁版）"
+    ],
+    "canteenId": "c_lou",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "蜜雪冰城",
+    "cuisines": [
+      "dessert"
+    ],
+    "primaryCuisine": "dessert",
+    "tags": [
+      "性价比高",
+      "可能已撤出"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "dessert"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": "¥5r",
+      "min": 5,
+      "max": 5,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "5 元，香芋冰淇淋配巧克力脆皮；C楼与观畴的奶布丁口感不同，都好吃。跟帖提到 C楼的蜜雪冰城已撤出。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "香芋脆皮小圣代（奶布丁版）",
+      "香芋脆皮小圣代（奶布丁版）",
+      "蜜雪冰城"
+    ],
+    "source": {
+      "image": "微信图片_20260920160530_4_10.jpg",
+      "post": "A13",
+      "page": "12/13"
+    }
+  },
+  {
+    "id": "convenience_711-01",
+    "type": "dish",
+    "name": "巧克力冰淇淋",
+    "variants": [],
+    "canteenId": "convenience_711",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "澜园出来顺便买",
+    "cuisines": [
+      "dessert"
+    ],
+    "primaryCuisine": "dessert",
+    "tags": [],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "dessert"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": null,
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": null,
+    "reviewLevel": "low_info",
+    "reviewLabel": "信息较少",
+    "reviewText": "澜园出来顺路可买，没有评价。",
+    "drawWeight": 1.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "巧克力冰淇淋",
+      "澜园出来顺便买"
+    ],
+    "source": {
+      "image": "微信图片_20260920160529_3_10.jpg",
+      "post": "A13",
+      "page": "13/13"
+    }
+  },
+  {
+    "id": "qing_fen_yuan-01",
+    "type": "dish",
+    "name": "白菜豆腐粉丝汤",
+    "variants": [],
+    "canteenId": "qing_fen_yuan",
+    "floor": "2F",
+    "floorId": "qing_fen_yuan-2f",
+    "floorSource": "section",
+    "stallName": "瓦罐汤",
+    "cuisines": [
+      "homestyle",
+      "light"
+    ],
+    "primaryCuisine": "homestyle",
+    "tags": [
+      "清淡",
+      "性价比高",
+      "汤品"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": "¥3元",
+      "min": 3,
+      "max": 3,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "3 元，看着清淡但味道出乎意料地好。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "白菜豆腐粉丝汤",
+      "瓦罐汤"
+    ],
+    "source": {
+      "image": "微信图片_20260920160546_20_10.jpg",
+      "post": "C9",
+      "page": "4/9"
+    }
+  },
+  {
+    "id": "qing_fen_yuan-02",
+    "type": "dish",
+    "name": "葱爆羊肉",
+    "variants": [],
+    "canteenId": "qing_fen_yuan",
+    "floor": "2F",
+    "floorId": "qing_fen_yuan-2f",
+    "floorSource": "section",
+    "stallName": "从右往左第二个窗口",
+    "cuisines": [
+      "homestyle",
+      "beijing"
+    ],
+    "primaryCuisine": "homestyle",
+    "tags": [
+      "可点半份"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥6（半份）",
+      "min": 6,
+      "max": 6,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": "半份"
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "low_info",
+    "reviewLabel": "信息较少",
+    "reviewText": "可点半份约 6 元，没有评价。",
+    "drawWeight": 1.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "葱爆羊肉",
+      "从右往左第二个窗口"
+    ],
+    "source": {
+      "image": "微信图片_20260920160546_20_10.jpg",
+      "post": "C9",
+      "page": "4/9"
+    }
+  },
+  {
+    "id": "ting_tao_yuan-01",
+    "type": "dish",
+    "name": "龙抄手",
+    "variants": [],
+    "canteenId": "ting_tao_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "川味小吃",
+    "cuisines": [
+      "sichuan",
+      "snacks"
+    ],
+    "primaryCuisine": "sichuan",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 1,
+    "mealSlots": [
+      "breakfast",
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥8r",
+      "min": 8,
+      "max": 8,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "鲜美肉多，不爱吃肉的人也会喜欢，8 元。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "龙抄手",
+      "川味小吃"
+    ],
+    "source": {
+      "image": "微信图片_20260920160546_19_10.jpg",
+      "post": "C9",
+      "page": "5/9"
+    }
+  },
+  {
+    "id": "ting_tao_yuan-02",
+    "type": "dish",
+    "name": "香辣牛肉粉",
+    "variants": [],
+    "canteenId": "ting_tao_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "桂林米粉",
+    "cuisines": [
+      "sichuan",
+      "noodles"
+    ],
+    "primaryCuisine": "sichuan",
+    "tags": [
+      "重口"
+    ],
+    "spicyLevel": 3,
+    "mealSlots": [
+      "breakfast",
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥9",
+      "min": 9,
+      "max": 9,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "粉细，可请师傅煮软一点，自行加辣加醋更香。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "香辣牛肉粉",
+      "桂林米粉"
+    ],
+    "source": {
+      "image": "微信图片_20260920160546_19_10.jpg",
+      "post": "C9",
+      "page": "5/9"
+    }
+  },
+  {
+    "id": "ting_tao_yuan-03",
+    "type": "dish",
+    "name": "红枣豆浆",
+    "variants": [],
+    "canteenId": "ting_tao_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "现磨豆浆",
+    "cuisines": [
+      "drinks",
+      "breakfast"
+    ],
+    "primaryCuisine": "drinks",
+    "tags": [
+      "性价比高",
+      "早餐",
+      "现磨"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "breakfast",
+      "drink"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": "¥3r",
+      "min": 3,
+      "max": 3,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "现磨浓稠、甜度刚好，底部有红枣碎，3 元。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "红枣豆浆",
+      "现磨豆浆"
+    ],
+    "source": {
+      "image": "微信图片_20260920160546_19_10.jpg",
+      "post": "C9",
+      "page": "5/9"
+    }
+  },
+  {
+    "id": "ting_tao_yuan-04",
+    "type": "dish",
+    "name": "肥牛粉",
+    "variants": [],
+    "canteenId": "ting_tao_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "桂林风味",
+    "cuisines": [
+      "noodles"
+    ],
+    "primaryCuisine": "noodles",
+    "tags": [],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥15r",
+      "min": 15,
+      "max": 15,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "15 元，香。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "肥牛粉",
+      "桂林风味"
+    ],
+    "source": {
+      "image": "微信图片_20260920160546_19_10.jpg",
+      "post": "C9",
+      "page": "5/9"
+    }
+  },
+  {
+    "id": "ting_tao_yuan-05",
+    "type": "dish",
+    "name": "沙茶面",
+    "variants": [],
+    "canteenId": "ting_tao_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "川香小吃",
+    "cuisines": [
+      "noodles",
+      "minnan"
+    ],
+    "primaryCuisine": "noodles",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 1,
+    "mealSlots": [
+      "breakfast",
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "小碗8 大碗10",
+      "min": 8,
+      "max": 10,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": "小碗 / 大碗"
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "用料丰富，沙茶酱与面很搭；小碗 8 元、大碗 10 元。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "沙茶面",
+      "川香小吃"
+    ],
+    "source": {
+      "image": "微信图片_20260920160546_19_10.jpg",
+      "post": "C9",
+      "page": "5/9"
+    }
+  },
+  {
+    "id": "ting_tao_yuan-06",
+    "type": "dish",
+    "name": "饺子",
+    "variants": [],
+    "canteenId": "ting_tao_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "snacks",
+      "homestyle"
+    ],
+    "primaryCuisine": "snacks",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": null,
+    "price": {
+      "text": null,
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": null,
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "便宜好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "饺子"
+    ],
+    "source": {
+      "image": "微信图片_20260920160546_19_10.jpg",
+      "post": "C9",
+      "page": "5/9"
+    }
+  },
+  {
+    "id": "yu_shu_yuan-01",
+    "type": "dish",
+    "name": "紫荆花开（饮料）",
+    "variants": [],
+    "canteenId": "yu_shu_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "drinks"
+    ],
+    "primaryCuisine": "drinks",
+    "tags": [
+      "清华特色",
+      "适合请客"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "drink"
+    ],
+    "vegetarian": true,
+    "price": {
+      "text": null,
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": null,
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "清华特色现调饮品（酸奶+紫荆花汁），好看好喝，适合被人请客时点。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "紫荆花开（饮料）"
+    ],
+    "source": {
+      "image": "微信图片_20260920160545_18_10.jpg",
+      "post": "C9",
+      "page": "6/9"
+    }
+  },
+  {
+    "id": "yu_shu_yuan-02",
+    "type": "dish",
+    "name": "辣白菜五花肉石锅拌饭",
+    "variants": [],
+    "canteenId": "yu_shu_yuan",
+    "floor": "2F",
+    "floorId": "yu_shu_yuan-2f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "korean",
+      "rice"
+    ],
+    "primaryCuisine": "korean",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 1,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥16",
+      "min": 16,
+      "max": 16,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "16 元，好吃又实惠。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "辣白菜五花肉石锅拌饭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160545_18_10.jpg",
+      "post": "C9",
+      "page": "6/9"
+    }
+  },
+  {
+    "id": "yu_shu_yuan-03",
+    "type": "dish",
+    "name": "辣白菜肥牛饭",
+    "variants": [],
+    "canteenId": "yu_shu_yuan",
+    "floor": "2F",
+    "floorId": "yu_shu_yuan-2f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "korean",
+      "rice"
+    ],
+    "primaryCuisine": "korean",
+    "tags": [],
+    "spicyLevel": 1,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥25r",
+      "min": 25,
+      "max": 25,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "premium",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "25 元，评价正面。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "辣白菜肥牛饭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160545_18_10.jpg",
+      "post": "C9",
+      "page": "6/9"
+    }
+  },
+  {
+    "id": "yu_shu_yuan-04",
+    "type": "dish",
+    "name": "照烧鸡饭",
+    "variants": [],
+    "canteenId": "yu_shu_yuan",
+    "floor": "2F",
+    "floorId": "yu_shu_yuan-2f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "japanese",
+      "rice"
+    ],
+    "primaryCuisine": "japanese",
+    "tags": [
+      "必点"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥20",
+      "min": 20,
+      "max": 20,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "来玉树必点，20 元。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "照烧鸡饭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160545_18_10.jpg",
+      "post": "C9",
+      "page": "6/9"
+    }
+  },
+  {
+    "id": "yu_shu_yuan-05",
+    "type": "dish",
+    "name": "铁板菌菇鸡柳饭",
+    "variants": [],
+    "canteenId": "yu_shu_yuan",
+    "floor": "2F",
+    "floorId": "yu_shu_yuan-2f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "grill",
+      "rice"
+    ],
+    "primaryCuisine": "grill",
+    "tags": [
+      "清淡"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥18",
+      "min": 18,
+      "max": 18,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "18 元，味不重但好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "铁板菌菇鸡柳饭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160545_18_10.jpg",
+      "post": "C9",
+      "page": "6/9"
+    }
+  },
+  {
+    "id": "yu_shu_yuan-06",
+    "type": "dish",
+    "name": "铁板芝士鸡配米饭",
+    "variants": [],
+    "canteenId": "yu_shu_yuan",
+    "floor": "2F",
+    "floorId": "yu_shu_yuan-2f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "korean",
+      "grill",
+      "rice"
+    ],
+    "primaryCuisine": "korean",
+    "tags": [],
+    "spicyLevel": 1,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥22",
+      "min": 22,
+      "max": 22,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "premium",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "22 元，韩式甜辣（几乎不辣），近似奥尔良烤鸡味。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "铁板芝士鸡配米饭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160545_18_10.jpg",
+      "post": "C9",
+      "page": "6/9"
+    }
+  },
+  {
+    "id": "yu_shu_yuan-07",
+    "type": "dish",
+    "name": "铁板菌香鸡柳饭",
+    "variants": [],
+    "canteenId": "yu_shu_yuan",
+    "floor": "2F",
+    "floorId": "yu_shu_yuan-2f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "grill",
+      "rice"
+    ],
+    "primaryCuisine": "grill",
+    "tags": [],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥18",
+      "min": 18,
+      "max": 18,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "18 元，评价很高。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "铁板菌香鸡柳饭"
+    ],
+    "source": {
+      "image": "微信图片_20260920160545_18_10.jpg",
+      "post": "C9",
+      "page": "6/9"
+    }
+  },
+  {
+    "id": "yu_shu_yuan-08",
+    "type": "dish",
+    "name": "石锅照烧五花肉",
+    "variants": [],
+    "canteenId": "yu_shu_yuan",
+    "floor": "2F",
+    "floorId": "yu_shu_yuan-2f",
+    "floorSource": "section",
+    "stallName": null,
+    "cuisines": [
+      "japanese",
+      "grill"
+    ],
+    "primaryCuisine": "japanese",
+    "tags": [
+      "量大",
+      "甜口"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥18",
+      "min": 18,
+      "max": 18,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "18 元，量大肉多、荤素搭配合理，偏甜带洋葱。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "石锅照烧五花肉"
+    ],
+    "source": {
+      "image": "微信图片_20260920160545_18_10.jpg",
+      "post": "C9",
+      "page": "6/9"
+    }
+  },
+  {
+    "id": "yu_yuan-01",
+    "type": "dish",
+    "name": "瓦罐汤（竹荪排骨 / 萝卜排骨）",
+    "variants": [
+      "竹荪排骨",
+      "萝卜排骨"
+    ],
+    "canteenId": "yu_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "铁板旁边的瓦罐汤",
+    "cuisines": [
+      "homestyle",
+      "light"
+    ],
+    "primaryCuisine": "homestyle",
+    "tags": [
+      "汤品",
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥10元以下",
+      "min": null,
+      "max": 10,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "瓦罐汤各款都不错，10 元以下。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "瓦罐汤（竹荪排骨 / 萝卜排骨）",
+      "竹荪排骨",
+      "萝卜排骨",
+      "铁板旁边的瓦罐汤"
+    ],
+    "source": {
+      "image": "微信图片_20260920160544_17_10.jpg",
+      "post": "C9",
+      "page": "7/9"
+    }
+  },
+  {
+    "id": "yu_yuan-02",
+    "type": "dish",
+    "name": "铁板",
+    "variants": [],
+    "canteenId": "yu_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "grill"
+    ],
+    "primaryCuisine": "grill",
+    "tags": [
+      "必点",
+      "性价比高"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": null,
+    "price": {
+      "text": "¥16-18",
+      "min": 16,
+      "max": 18,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "铁板 16-18 元，被称为寓园最能打的窗口；同食堂香锅、肉夹馍也获陕西同学认可。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "铁板"
+    ],
+    "source": {
+      "image": "微信图片_20260920160544_17_10.jpg",
+      "post": "C9",
+      "page": "7/9"
+    }
+  },
+  {
+    "id": "yu_yuan-03",
+    "type": "dish",
+    "name": "肉夹馍",
+    "variants": [],
+    "canteenId": "yu_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "陕西风味",
+    "cuisines": [
+      "northwest",
+      "snacks"
+    ],
+    "primaryCuisine": "northwest",
+    "tags": [
+      "量大"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "breakfast",
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥7",
+      "min": 7,
+      "max": 7,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "7 元，肉多味好、一个女生能吃饱；馍一般。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "肉夹馍",
+      "陕西风味"
+    ],
+    "source": {
+      "image": "微信图片_20260920160544_17_10.jpg",
+      "post": "C9",
+      "page": "7/9"
+    }
+  },
+  {
+    "id": "yu_yuan-04",
+    "type": "dish",
+    "name": "麻辣香锅",
+    "variants": [],
+    "canteenId": "yu_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "hotpot",
+      "sichuan"
+    ],
+    "primaryCuisine": "hotpot",
+    "tags": [],
+    "spicyLevel": 3,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": null,
+    "price": {
+      "text": "按重量收费，一顿大约20",
+      "min": 20,
+      "max": 20,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": false,
+      "openEnded": false,
+      "note": "按重量收费"
+    },
+    "priceTier": "normal",
+    "reviewLevel": "worth_trying",
+    "reviewLabel": "值得一试",
+    "reviewText": "按重量计费，一顿约 20 元。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "麻辣香锅"
+    ],
+    "source": {
+      "image": "微信图片_20260920160544_17_10.jpg",
+      "post": "C9",
+      "page": "7/9"
+    }
+  },
+  {
+    "id": "yu_yuan-05",
+    "type": "dish",
+    "name": "麻辣香锅（中辣）",
+    "variants": [],
+    "canteenId": "yu_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "香锅",
+    "cuisines": [
+      "hotpot",
+      "sichuan"
+    ],
+    "primaryCuisine": "hotpot",
+    "tags": [
+      "校内公认好吃",
+      "必点"
+    ],
+    "spicyLevel": 2,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥20r",
+      "min": 20,
+      "max": 20,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "鸡胗出色、味道正，被称校内最好吃的香锅，20 元。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "麻辣香锅（中辣）",
+      "香锅"
+    ],
+    "source": {
+      "image": "微信图片_20260920160544_17_10.jpg",
+      "post": "C9",
+      "page": "7/9"
+    }
+  },
+  {
+    "id": "lan_yuan-01",
+    "type": "dish",
+    "name": "精品冒菜",
+    "variants": [],
+    "canteenId": "lan_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": null,
+    "cuisines": [
+      "hotpot",
+      "sichuan"
+    ],
+    "primaryCuisine": "hotpot",
+    "tags": [
+      "必点"
+    ],
+    "spicyLevel": 2,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥20-50r",
+      "min": 20,
+      "max": 50,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "20-50 元，建议选辣，可不要调料；牛心、黄喉值得点。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "精品冒菜"
+    ],
+    "source": {
+      "image": "微信图片_20260920160543_16_10.jpg",
+      "post": "C9",
+      "page": "8/9"
+    }
+  },
+  {
+    "id": "lan_yuan-02",
+    "type": "dish",
+    "name": "椒麻鸡",
+    "variants": [],
+    "canteenId": "lan_yuan",
+    "floor": "1F",
+    "floorId": "lan_yuan-1f",
+    "floorSource": "window",
+    "stallName": "一楼米饭自选",
+    "cuisines": [
+      "sichuan"
+    ],
+    "primaryCuisine": "sichuan",
+    "tags": [
+      "必点",
+      "性价比高"
+    ],
+    "spicyLevel": 2,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥10r",
+      "min": 10,
+      "max": 10,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "10 元，来澜园必点系列。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "椒麻鸡",
+      "一楼米饭自选"
+    ],
+    "source": {
+      "image": "微信图片_20260920160543_16_10.jpg",
+      "post": "C9",
+      "page": "8/9"
+    }
+  },
+  {
+    "id": "lan_yuan-03",
+    "type": "dish",
+    "name": "三合一",
+    "variants": [],
+    "canteenId": "lan_yuan",
+    "floor": "2F",
+    "floorId": "lan_yuan-2f",
+    "floorSource": "section",
+    "stallName": "二楼面类",
+    "cuisines": [
+      "noodles",
+      "northwest"
+    ],
+    "primaryCuisine": "noodles",
+    "tags": [
+      "校内公认好吃",
+      "偏咸"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥11",
+      "min": 11,
+      "max": 11,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "11 元，澜园面食公认最好吃（尤其各种炒拉条）；也有人觉得偏咸。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "三合一",
+      "二楼面类"
+    ],
+    "source": {
+      "image": "微信图片_20260920160543_16_10.jpg",
+      "post": "C9",
+      "page": "8/9"
+    }
+  },
+  {
+    "id": "lan_yuan-04",
+    "type": "dish",
+    "name": "羊肉锅（不辣）",
+    "variants": [],
+    "canteenId": "lan_yuan",
+    "floor": "3F",
+    "floorId": "lan_yuan-3f",
+    "floorSource": "section",
+    "stallName": "锅仔",
+    "cuisines": [
+      "hotpot"
+    ],
+    "primaryCuisine": "hotpot",
+    "tags": [],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥18",
+      "min": 18,
+      "max": 18,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "18 元，巨好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "羊肉锅（不辣）",
+      "锅仔"
+    ],
+    "source": {
+      "image": "微信图片_20260920160543_16_10.jpg",
+      "post": "C9",
+      "page": "8/9"
+    }
+  },
+  {
+    "id": "lan_yuan-05",
+    "type": "stall_recommendation",
+    "name": "（窗口整体推荐）",
+    "variants": [],
+    "canteenId": "lan_yuan",
+    "floor": "3F",
+    "floorId": "lan_yuan-3f",
+    "floorSource": "section",
+    "stallName": "广东窗口",
+    "cuisines": [
+      "cantonese"
+    ],
+    "primaryCuisine": "cantonese",
+    "tags": [
+      "必点"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": null,
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": null,
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "广东窗口可闭眼点，白切鸡、叉烧、烧鸭、脆皮五花都好吃，随意双拼。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "（窗口整体推荐）",
+      "广东窗口"
+    ],
+    "source": {
+      "image": "微信图片_20260920160543_16_10.jpg",
+      "post": "C9",
+      "page": "8/9"
+    }
+  },
+  {
+    "id": "lan_yuan-06",
+    "type": "dish",
+    "name": "锅仔（牛肉 / 羊肉 / 鸡翅）",
+    "variants": [
+      "牛肉锅仔",
+      "羊肉锅仔",
+      "鸡翅锅仔"
+    ],
+    "canteenId": "lan_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "进门后麻辣烫旁边",
+    "cuisines": [
+      "hotpot"
+    ],
+    "primaryCuisine": "hotpot",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 1,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥18-25貌似",
+      "min": 18,
+      "max": 25,
+      "currency": "CNY",
+      "approx": true,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "normal",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "18-25 元抵得上校外火锅，辣与不辣都香，加方便面更佳。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "锅仔（牛肉 / 羊肉 / 鸡翅）",
+      "牛肉锅仔",
+      "羊肉锅仔",
+      "鸡翅锅仔",
+      "进门后麻辣烫旁边"
+    ],
+    "source": {
+      "image": "微信图片_20260920160542_15_10.jpg",
+      "post": "C9",
+      "page": "9/9"
+    }
+  },
+  {
+    "id": "lan_yuan-07",
+    "type": "dish",
+    "name": "羊肉烩面",
+    "variants": [],
+    "canteenId": "lan_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "左数第二个，陕西窗口",
+    "cuisines": [
+      "northwest",
+      "noodles",
+      "halal"
+    ],
+    "primaryCuisine": "northwest",
+    "tags": [
+      "不推荐"
+    ],
+    "spicyLevel": 0,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": null,
+      "min": null,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": null,
+    "reviewLevel": "negative",
+    "reviewLabel": "差评",
+    "reviewText": "跟帖直言不好吃。",
+    "drawWeight": 0.0,
+    "excludedByDefault": true,
+    "searchKeys": [
+      "羊肉烩面",
+      "左数第二个，陕西窗口"
+    ],
+    "source": {
+      "image": "微信图片_20260920160542_15_10.jpg",
+      "post": "C9",
+      "page": "9/9"
+    }
+  },
+  {
+    "id": "lan_yuan-08",
+    "type": "dish",
+    "name": "油泼面",
+    "variants": [],
+    "canteenId": "lan_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "面？",
+    "cuisines": [
+      "northwest",
+      "noodles"
+    ],
+    "primaryCuisine": "northwest",
+    "tags": [
+      "性价比高"
+    ],
+    "spicyLevel": 2,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": false,
+    "price": {
+      "text": "¥8块",
+      "min": 8,
+      "max": 8,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": false,
+      "note": null
+    },
+    "priceTier": "cheap",
+    "reviewLevel": "positive",
+    "reviewLabel": "好评",
+    "reviewText": "8 元，做法与常见版本略有不同但好吃。",
+    "drawWeight": 3.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "油泼面",
+      "面？"
+    ],
+    "source": {
+      "image": "微信图片_20260920160542_15_10.jpg",
+      "post": "C9",
+      "page": "9/9"
+    }
+  },
+  {
+    "id": "lan_yuan-09",
+    "type": "dish",
+    "name": "麻辣拌（自选，建议少盐）",
+    "variants": [],
+    "canteenId": "lan_yuan",
+    "floor": null,
+    "floorId": null,
+    "floorSource": null,
+    "stallName": "进门右手第一家麻辣拌，一定要麻辣拌，因为其他还没尝试",
+    "cuisines": [
+      "northeast",
+      "hotpot"
+    ],
+    "primaryCuisine": "northeast",
+    "tags": [
+      "校内公认好吃",
+      "自选"
+    ],
+    "spicyLevel": 3,
+    "mealSlots": [
+      "lunch",
+      "dinner"
+    ],
+    "vegetarian": null,
+    "price": {
+      "text": "¥20+，因为是自选",
+      "min": 20,
+      "max": null,
+      "currency": "CNY",
+      "approx": false,
+      "uncertain": false,
+      "openEnded": true,
+      "note": "因为是自选"
+    },
+    "priceTier": "normal",
+    "reviewLevel": "strongly_recommended",
+    "reviewLabel": "强烈推荐",
+    "reviewText": "20 元起自选，被称校内各食堂麻辣拌第一；建议少盐、选酸甜少辣。",
+    "drawWeight": 5.0,
+    "excludedByDefault": false,
+    "searchKeys": [
+      "麻辣拌（自选，建议少盐）",
+      "进门右手第一家麻辣拌，一定要麻辣拌，因为其他还没尝试"
+    ],
+    "source": {
+      "image": "微信图片_20260920160542_15_10.jpg",
+      "post": "C9",
+      "page": "9/9"
+    }
+  }
+]

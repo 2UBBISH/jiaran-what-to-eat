@@ -1,0 +1,614 @@
+[
+  {
+    "id": "sichuan",
+    "name": "川菜（麻辣）",
+    "group": "中餐",
+    "emoji": "🌶️",
+    "keywords": [
+      "麻辣",
+      "椒麻",
+      "水煮",
+      "藤椒",
+      "香辣"
+    ],
+    "dishCount": 8,
+    "dishIds": [
+      "guan_chou_yuan-04",
+      "xi_chun_yuan-02",
+      "ting_tao_yuan-01",
+      "ting_tao_yuan-02",
+      "yu_yuan-04",
+      "yu_yuan-05",
+      "lan_yuan-01",
+      "lan_yuan-02"
+    ],
+    "canteenIds": [
+      "guan_chou_yuan",
+      "lan_yuan",
+      "ting_tao_yuan",
+      "xi_chun_yuan",
+      "yu_yuan"
+    ]
+  },
+  {
+    "id": "cantonese",
+    "name": "粤菜（广式）",
+    "group": "中餐",
+    "emoji": "🦆",
+    "keywords": [
+      "烧腊",
+      "白切鸡",
+      "叉烧",
+      "肠粉",
+      "煲仔饭"
+    ],
+    "dishCount": 3,
+    "dishIds": [
+      "zi_jing_yuan-06",
+      "ding_xiang_yuan-03",
+      "lan_yuan-05"
+    ],
+    "canteenIds": [
+      "ding_xiang_yuan",
+      "lan_yuan",
+      "zi_jing_yuan"
+    ]
+  },
+  {
+    "id": "jiangzhe",
+    "name": "江浙菜（杭帮·淮扬）",
+    "group": "中餐",
+    "emoji": "🍤",
+    "keywords": [
+      "龙井虾仁",
+      "响油鳝糊",
+      "蟹黄豆腐",
+      "青团"
+    ],
+    "dishCount": 4,
+    "dishIds": [
+      "guan_chou_yuan-05",
+      "guan_chou_yuan-07",
+      "xi_chun_yuan-01",
+      "xi_chun_yuan-03"
+    ],
+    "canteenIds": [
+      "guan_chou_yuan",
+      "xi_chun_yuan"
+    ]
+  },
+  {
+    "id": "beijing",
+    "name": "京菜（烤鸭·葱爆）",
+    "group": "中餐",
+    "emoji": "🦆",
+    "keywords": [
+      "北京烤鸭",
+      "葱爆羊肉"
+    ],
+    "dishCount": 2,
+    "dishIds": [
+      "guan_chou_yuan-11",
+      "qing_fen_yuan-02"
+    ],
+    "canteenIds": [
+      "guan_chou_yuan",
+      "qing_fen_yuan"
+    ]
+  },
+  {
+    "id": "northeast",
+    "name": "东北菜（麻辣拌·烤冷面）",
+    "group": "中餐",
+    "emoji": "🥟",
+    "keywords": [
+      "麻辣拌",
+      "烤冷面",
+      "粘豆包",
+      "饺子"
+    ],
+    "dishCount": 3,
+    "dishIds": [
+      "guan_chou_yuan-09",
+      "c_lou-01",
+      "lan_yuan-09"
+    ],
+    "canteenIds": [
+      "c_lou",
+      "guan_chou_yuan",
+      "lan_yuan"
+    ]
+  },
+  {
+    "id": "homestyle",
+    "name": "家常菜（红烧·糖醋·炖汤）",
+    "group": "中餐",
+    "emoji": "🍲",
+    "keywords": [
+      "红烧",
+      "糖醋",
+      "瓦罐汤",
+      "家常小炒"
+    ],
+    "dishCount": 12,
+    "dishIds": [
+      "he_yuan-05",
+      "guan_chou_yuan-02",
+      "guan_chou_yuan-06",
+      "guan_chou_yuan-08",
+      "guan_chou_yuan-10",
+      "ding_xiang_yuan-01",
+      "ding_xiang_yuan-04",
+      "zhi_lan_yuan-01",
+      "qing_fen_yuan-01",
+      "qing_fen_yuan-02",
+      "ting_tao_yuan-06",
+      "yu_yuan-01"
+    ],
+    "canteenIds": [
+      "ding_xiang_yuan",
+      "guan_chou_yuan",
+      "he_yuan",
+      "qing_fen_yuan",
+      "ting_tao_yuan",
+      "yu_yuan",
+      "zhi_lan_yuan"
+    ]
+  },
+  {
+    "id": "northwest",
+    "name": "西北面食（陕甘）",
+    "group": "主食",
+    "emoji": "🍜",
+    "keywords": [
+      "肉夹馍",
+      "油泼面",
+      "烩面",
+      "炒面片",
+      "拉条"
+    ],
+    "dishCount": 6,
+    "dishIds": [
+      "he_yuan-01",
+      "qing_qing_niu_la-01",
+      "yu_yuan-03",
+      "lan_yuan-03",
+      "lan_yuan-07",
+      "lan_yuan-08"
+    ],
+    "canteenIds": [
+      "he_yuan",
+      "lan_yuan",
+      "qing_qing_niu_la",
+      "yu_yuan"
+    ]
+  },
+  {
+    "id": "halal",
+    "name": "清真·牛肉面",
+    "group": "主食",
+    "emoji": "🐮",
+    "keywords": [
+      "牛肉拉面",
+      "炒面片",
+      "烩面"
+    ],
+    "dishCount": 3,
+    "dishIds": [
+      "he_yuan-02",
+      "qing_qing_niu_la-01",
+      "lan_yuan-07"
+    ],
+    "canteenIds": [
+      "he_yuan",
+      "lan_yuan",
+      "qing_qing_niu_la"
+    ]
+  },
+  {
+    "id": "noodles",
+    "name": "面食·粉面",
+    "group": "主食",
+    "emoji": "🍜",
+    "keywords": [
+      "拉面",
+      "拌面",
+      "米线",
+      "米粉",
+      "面片",
+      "汤面"
+    ],
+    "dishCount": 11,
+    "dishIds": [
+      "he_yuan-02",
+      "he_yuan-04",
+      "he_yuan-06",
+      "guan_chou_yuan-04",
+      "qing_qing_niu_la-01",
+      "ting_tao_yuan-02",
+      "ting_tao_yuan-04",
+      "ting_tao_yuan-05",
+      "lan_yuan-03",
+      "lan_yuan-07",
+      "lan_yuan-08"
+    ],
+    "canteenIds": [
+      "guan_chou_yuan",
+      "he_yuan",
+      "lan_yuan",
+      "qing_qing_niu_la",
+      "ting_tao_yuan"
+    ]
+  },
+  {
+    "id": "rice",
+    "name": "米饭·盖饭·拌饭",
+    "group": "主食",
+    "emoji": "🍚",
+    "keywords": [
+      "炒饭",
+      "盖饭",
+      "拌饭",
+      "石锅饭"
+    ],
+    "dishCount": 9,
+    "dishIds": [
+      "he_yuan-03",
+      "zi_jing_yuan-06",
+      "ding_xiang_yuan-02",
+      "yu_shu_yuan-02",
+      "yu_shu_yuan-03",
+      "yu_shu_yuan-04",
+      "yu_shu_yuan-05",
+      "yu_shu_yuan-06",
+      "yu_shu_yuan-07"
+    ],
+    "canteenIds": [
+      "ding_xiang_yuan",
+      "he_yuan",
+      "yu_shu_yuan",
+      "zi_jing_yuan"
+    ]
+  },
+  {
+    "id": "hotpot",
+    "name": "香锅·锅仔·冒菜",
+    "group": "中餐",
+    "emoji": "🥘",
+    "keywords": [
+      "麻辣香锅",
+      "锅仔",
+      "冒菜",
+      "麻辣烫"
+    ],
+    "dishCount": 6,
+    "dishIds": [
+      "yu_yuan-04",
+      "yu_yuan-05",
+      "lan_yuan-01",
+      "lan_yuan-04",
+      "lan_yuan-06",
+      "lan_yuan-09"
+    ],
+    "canteenIds": [
+      "lan_yuan",
+      "yu_yuan"
+    ]
+  },
+  {
+    "id": "korean",
+    "name": "韩式",
+    "group": "异国",
+    "emoji": "🇰🇷",
+    "keywords": [
+      "石锅拌饭",
+      "辣白菜",
+      "芝士铁板鸡"
+    ],
+    "dishCount": 4,
+    "dishIds": [
+      "ding_xiang_yuan-02",
+      "yu_shu_yuan-02",
+      "yu_shu_yuan-03",
+      "yu_shu_yuan-06"
+    ],
+    "canteenIds": [
+      "ding_xiang_yuan",
+      "yu_shu_yuan"
+    ]
+  },
+  {
+    "id": "japanese",
+    "name": "日式（照烧·咖喱）",
+    "group": "异国",
+    "emoji": "🍛",
+    "keywords": [
+      "照烧",
+      "咖喱",
+      "日式简餐"
+    ],
+    "dishCount": 3,
+    "dishIds": [
+      "he_yuan-03",
+      "yu_shu_yuan-04",
+      "yu_shu_yuan-08"
+    ],
+    "canteenIds": [
+      "he_yuan",
+      "yu_shu_yuan"
+    ]
+  },
+  {
+    "id": "taiwanese",
+    "name": "台式",
+    "group": "中餐",
+    "emoji": "🍗",
+    "keywords": [
+      "三杯鸡",
+      "台式小吃"
+    ],
+    "dishCount": 1,
+    "dishIds": [
+      "guan_chou_yuan-08"
+    ],
+    "canteenIds": [
+      "guan_chou_yuan"
+    ]
+  },
+  {
+    "id": "minnan",
+    "name": "闽台菜（沙茶）",
+    "group": "中餐",
+    "emoji": "🥜",
+    "keywords": [
+      "沙茶面",
+      "福建风味"
+    ],
+    "dishCount": 1,
+    "dishIds": [
+      "ting_tao_yuan-05"
+    ],
+    "canteenIds": [
+      "ting_tao_yuan"
+    ]
+  },
+  {
+    "id": "thai",
+    "name": "泰式·东南亚",
+    "group": "异国",
+    "emoji": "🍋",
+    "keywords": [
+      "香茅",
+      "冬阴功",
+      "泰式沙拉"
+    ],
+    "dishCount": 1,
+    "dishIds": [
+      "qing_qing_coffee-03"
+    ],
+    "canteenIds": [
+      "qing_qing_coffee"
+    ]
+  },
+  {
+    "id": "western",
+    "name": "西式简餐（披萨·意面·汤）",
+    "group": "西式",
+    "emoji": "🍕",
+    "keywords": [
+      "披萨",
+      "意面",
+      "奶油汤",
+      "西式小食"
+    ],
+    "dishCount": 9,
+    "dishIds": [
+      "zi_jing_yuan-01",
+      "zi_jing_yuan-02",
+      "zi_jing_yuan-03",
+      "zi_jing_yuan-04",
+      "zi_jing_yuan-05",
+      "du_feng_shu_yuan-01",
+      "qing_qing_coffee-01",
+      "qing_qing_coffee-02",
+      "qing_qing_coffee-04"
+    ],
+    "canteenIds": [
+      "du_feng_shu_yuan",
+      "qing_qing_coffee",
+      "zi_jing_yuan"
+    ]
+  },
+  {
+    "id": "burger",
+    "name": "汉堡·西式快餐",
+    "group": "西式",
+    "emoji": "🍔",
+    "keywords": [
+      "汉堡",
+      "薯条",
+      "炸物套餐"
+    ],
+    "dishCount": 1,
+    "dishIds": [
+      "qing_qing_coffee-01"
+    ],
+    "canteenIds": [
+      "qing_qing_coffee"
+    ]
+  },
+  {
+    "id": "grill",
+    "name": "铁板·烧烤·炸物",
+    "group": "小吃",
+    "emoji": "🍢",
+    "keywords": [
+      "铁板饭",
+      "炸鸡",
+      "烤翅",
+      "烧烤"
+    ],
+    "dishCount": 9,
+    "dishIds": [
+      "zi_jing_yuan-01",
+      "zi_jing_yuan-02",
+      "guan_chou_yuan-01",
+      "guan_chou_yuan-02",
+      "yu_shu_yuan-05",
+      "yu_shu_yuan-06",
+      "yu_shu_yuan-07",
+      "yu_shu_yuan-08",
+      "yu_yuan-02"
+    ],
+    "canteenIds": [
+      "guan_chou_yuan",
+      "yu_shu_yuan",
+      "yu_yuan",
+      "zi_jing_yuan"
+    ]
+  },
+  {
+    "id": "light",
+    "name": "清淡·轻食·沙拉",
+    "group": "健康",
+    "emoji": "🥗",
+    "keywords": [
+      "清淡",
+      "轻食",
+      "沙拉",
+      "清汤"
+    ],
+    "dishCount": 11,
+    "dishIds": [
+      "he_yuan-06",
+      "zi_jing_yuan-03",
+      "zi_jing_yuan-04",
+      "guan_chou_yuan-06",
+      "guan_chou_yuan-10",
+      "ding_xiang_yuan-01",
+      "zhi_lan_yuan-01",
+      "qing_qing_coffee-02",
+      "qing_qing_coffee-03",
+      "qing_fen_yuan-01",
+      "yu_yuan-01"
+    ],
+    "canteenIds": [
+      "ding_xiang_yuan",
+      "guan_chou_yuan",
+      "he_yuan",
+      "qing_fen_yuan",
+      "qing_qing_coffee",
+      "yu_yuan",
+      "zhi_lan_yuan",
+      "zi_jing_yuan"
+    ]
+  },
+  {
+    "id": "breakfast",
+    "name": "早餐·包子·糕点",
+    "group": "小吃",
+    "emoji": "🥟",
+    "keywords": [
+      "包子",
+      "豆浆",
+      "煎饼",
+      "肠粉"
+    ],
+    "dishCount": 5,
+    "dishIds": [
+      "guan_chou_yuan-03",
+      "guan_chou_yuan-09",
+      "ding_xiang_yuan-03",
+      "c_lou-01",
+      "ting_tao_yuan-03"
+    ],
+    "canteenIds": [
+      "c_lou",
+      "ding_xiang_yuan",
+      "guan_chou_yuan",
+      "ting_tao_yuan"
+    ]
+  },
+  {
+    "id": "snacks",
+    "name": "小吃·点心",
+    "group": "小吃",
+    "emoji": "🥠",
+    "keywords": [
+      "肉夹馍",
+      "锅贴",
+      "抄手",
+      "青团",
+      "饺子"
+    ],
+    "dishCount": 11,
+    "dishIds": [
+      "he_yuan-01",
+      "guan_chou_yuan-03",
+      "guan_chou_yuan-05",
+      "guan_chou_yuan-07",
+      "guan_chou_yuan-09",
+      "ding_xiang_yuan-03",
+      "xi_chun_yuan-02",
+      "c_lou-01",
+      "ting_tao_yuan-01",
+      "ting_tao_yuan-06",
+      "yu_yuan-03"
+    ],
+    "canteenIds": [
+      "c_lou",
+      "ding_xiang_yuan",
+      "guan_chou_yuan",
+      "he_yuan",
+      "ting_tao_yuan",
+      "xi_chun_yuan",
+      "yu_yuan"
+    ]
+  },
+  {
+    "id": "dessert",
+    "name": "甜品·冰淇淋",
+    "group": "甜品饮品",
+    "emoji": "🍦",
+    "keywords": [
+      "冰淇淋",
+      "芭菲",
+      "圣代",
+      "青团甜点"
+    ],
+    "dishCount": 4,
+    "dishIds": [
+      "qing_qing_coffee-04",
+      "qing_qing_kuai_can-01",
+      "c_lou-02",
+      "convenience_711-01"
+    ],
+    "canteenIds": [
+      "c_lou",
+      "convenience_711",
+      "qing_qing_coffee",
+      "qing_qing_kuai_can"
+    ]
+  },
+  {
+    "id": "drinks",
+    "name": "饮品·豆浆·咖啡",
+    "group": "甜品饮品",
+    "emoji": "🥤",
+    "keywords": [
+      "豆浆",
+      "现调饮品",
+      "咖啡",
+      "果汁"
+    ],
+    "dishCount": 2,
+    "dishIds": [
+      "ting_tao_yuan-03",
+      "yu_shu_yuan-01"
+    ],
+    "canteenIds": [
+      "ting_tao_yuan",
+      "yu_shu_yuan"
+    ]
+  }
+]

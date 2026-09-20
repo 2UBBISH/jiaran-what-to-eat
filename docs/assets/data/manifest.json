@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-09-20",
+  "stats": {
+    "canteenCount": 17,
+    "canteenWithFloorCount": 7,
+    "floorCount": 10,
+    "dishCount": 72,
+    "dishRecordCount": 72,
+    "recommendableDishCount": 70,
+    "stallRecommendationCount": 2,
+    "cuisineCount": 24,
+    "usedCuisineCount": 24,
+    "sourceImageCount": 19,
+    "pricedDishCount": 62,
+    "unknownPriceDishCount": 10,
+    "noReviewCount": 3
+  },
+  "files": {
+    "menu": "assets/data/menu.json",
+    "canteens": "assets/data/canteens.json",
+    "cuisines": "assets/data/cuisines.json",
+    "contributions": "assets/data/contributions/index.json"
+  }
+}

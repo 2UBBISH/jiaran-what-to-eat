@@ -1,0 +1,104 @@
+/* ===========================================================================
+   设计令牌（Apple 风）：颜色 / 圆角 / 阴影 / 动效曲线 / 字体
+   只在这里定义“长什么样”，其它 CSS 只消费变量，方便统一换肤与暗色适配。
+   =========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  /* 字体：优先系统 SF Pro / 苹方，保证 macOS / iOS 上的原生质感 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+
+  /* 颜色 */
+  --bg: #f5f5f7;
+  --bg-2: #ececf0;
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-solid: #ffffff;
+  --surface-2: rgba(255, 255, 255, 0.6);
+  --text: #1d1d1f;
+  --text-2: #52525b;
+  --text-3: #86868b;
+  --line: rgba(0, 0, 0, 0.08);
+  --line-2: rgba(0, 0, 0, 0.14);
+  --accent: #0071e3;
+  --accent-2: #0a84ff;
+  --accent-soft: rgba(0, 113, 227, 0.12);
+  --success: #1d9d54;
+  --warn: #b25000;
+  --danger: #d70015;
+  --spicy: #ff453a;
+  --community: #7d4cdb;
+
+  /* 氛围光（很淡的渐变，Apple 官网那种“莫兰迪光晕”） */
+  --ambient-1: rgba(10, 132, 255, 0.16);
+  --ambient-2: rgba(191, 90, 242, 0.13);
+  --ambient-3: rgba(255, 149, 0, 0.10);
+
+  /* 圆角 */
+  --r-xs: 10px;
+  --r-sm: 14px;
+  --r-md: 20px;
+  --r-lg: 28px;
+  --r-xl: 34px;
+  --r-pill: 999px;
+
+  /* 阴影：多层次、极低透明度 */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.05);
+  --shadow-2: 0 2px 8px rgba(0, 0, 0, 0.06), 0 18px 44px rgba(0, 0, 0, 0.10);
+  --shadow-3: 0 30px 80px rgba(0, 0, 0, 0.16);
+  --inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+  /* 玻璃拟态 */
+  --glass-blur: saturate(180%) blur(20px);
+  --glass-blur-strong: saturate(200%) blur(28px);
+
+  /* 间距 */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+
+  /* 动效：Apple 常用弹簧曲线 */
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --d-1: 0.16s;
+  --d-2: 0.3s;
+  --d-3: 0.55s;
+
+  --maxw: 780px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --bg-2: #0b0b0c;
+    --surface: rgba(28, 28, 30, 0.78);
+    --surface-solid: #1c1c1e;
+    --surface-2: rgba(44, 44, 46, 0.55);
+    --text: #f5f5f7;
+    --text-2: #c7c7cc;
+    --text-3: #98989d;
+    --line: rgba(255, 255, 255, 0.12);
+    --line-2: rgba(255, 255, 255, 0.2);
+    --accent: #0a84ff;
+    --accent-2: #409cff;
+    --accent-soft: rgba(10, 132, 255, 0.22);
+    --success: #30d158;
+    --warn: #ff9f0a;
+    --danger: #ff453a;
+    --ambient-1: rgba(10, 132, 255, 0.22);
+    --ambient-2: rgba(191, 90, 242, 0.18);
+    --ambient-3: rgba(255, 149, 0, 0.12);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 8px 22px rgba(0, 0, 0, 0.45);
+    --shadow-2: 0 2px 10px rgba(0, 0, 0, 0.55), 0 22px 50px rgba(0, 0, 0, 0.5);
+    --shadow-3: 0 34px 90px rgba(0, 0, 0, 0.6);
+    --inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+}

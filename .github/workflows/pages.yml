@@ -1,0 +1,69 @@
+name: Deploy GitHub Pages
+
+# 只在 docs/ 或数据源发生变化时部署；也可以在 Actions 页面手动触发
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'source_pic/**'
+      - 'tools/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 构建与校验
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 1) 用唯一数据源重新生成静态数据（source_pic + tools -> docs/assets/data）
+      - name: 生成网站数据
+        run: python3 tools/build_menu_data.py
+
+      # 2) 数据完整性（引用、索引、来源图片）
+      - name: 校验数据
+        run: python3 tools/validate_menu_data.py
+
+      # 3) 前端 core 逻辑测试（抽签可复现、公平性、贡献内容校验…）
+      - name: 前端 core 测试
+        run: node tools/test_site_core.mjs
+
+      # 4) 确保贡献索引与目录一致（上传者只写自己的文件，索引由脚本维护）
+      - name: 检查贡献索引
+        run: node tools/rebuild_contributions_index.mjs --check
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    name: 部署
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

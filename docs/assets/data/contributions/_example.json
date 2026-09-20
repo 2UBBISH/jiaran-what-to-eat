@@ -1,0 +1,24 @@
+{
+  "_comment": "这是贡献内容的格式示例。文件名以 _ 开头，构建脚本与前端都会跳过它。",
+  "id": "20260920-example",
+  "kind": "dish",
+  "createdAt": "2026-09-20T12:00:00.000Z",
+  "author": "匿名同学",
+  "payload": {
+    "canteenId": "lan_yuan",
+    "floor": "3F",
+    "stallName": "锅仔",
+    "name": "示例·羊肉锅",
+    "priceText": "¥18",
+    "cuisines": [
+      "hotpot"
+    ],
+    "spicyLevel": 0,
+    "tags": [
+      "必吃"
+    ],
+    "reviewLabel": "好评",
+    "reviewText": "把你在食堂的真实体验写在这里。",
+    "image": "assets/uploads/example.jpg"
+  }
+}

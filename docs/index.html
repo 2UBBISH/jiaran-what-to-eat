@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>嘉然今天吃什么 · 清华食堂抽签</title>
+<meta name="description" content="抽一个饭堂 + 楼层，再推一个菜系给你：清华食堂吃饭指南的本地抽签应用，结果可复现、可分享。">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="嘉然今天吃什么 · 清华食堂抽签">
+<meta property="og:description" content="抽饭堂 + 楼层，推送一个菜系。纯静态、本地运行，签号可复现可分享。">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍚</text></svg>">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/views.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="topbar__logo" aria-hidden="true">🍚</span>
+      <span>嘉然今天吃什么</span>
+    </div>
+    <nav class="topbar__links">
+      <a class="topbar__link" href="#/draw">抽签</a>
+      <a class="topbar__link" href="#/browse">逛一逛</a>
+      <a class="topbar__link" href="admin.html">内容管理</a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <div id="status"></div>
+    <div id="app"></div>
+  </main>
+
+  <nav id="tabbar" class="tabbar" aria-label="主导航"></nav>
+
+  <p class="site-foot" id="footer-note">数据源加载中…</p>
+
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

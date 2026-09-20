@@ -1,0 +1,592 @@
+[
+  {
+    "id": "he_yuan",
+    "name": "荷园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "教师餐厅"
+    ],
+    "note": "二层为教师餐厅，价格略高，有鲜榨果汁。",
+    "floors": [
+      {
+        "id": "he_yuan-2f",
+        "canteenId": "he_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [
+          "8元自选",
+          "面",
+          "面食窗口（二楼）"
+        ],
+        "dishCount": 5,
+        "drawableDishCount": 5,
+        "drawWeight": 15.0
+      }
+    ],
+    "unassignedFloorDishCount": 1,
+    "dishCount": 6,
+    "drawableDishCount": 6,
+    "drawWeight": 18.0,
+    "stallNames": [
+      "8元自选",
+      "卖面的档口？（忘记名字了）",
+      "面",
+      "面食窗口（二楼）"
+    ],
+    "cuisines": [
+      "halal",
+      "homestyle",
+      "japanese",
+      "light",
+      "noodles",
+      "northwest",
+      "rice",
+      "snacks"
+    ]
+  },
+  {
+    "id": "zi_jing_yuan",
+    "name": "紫荆园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "清青披萨",
+      "烧腊饭"
+    ],
+    "note": "页面上出现“紫荆园 · 1F”分区与清青披萨窗口。",
+    "floors": [
+      {
+        "id": "zi_jing_yuan-1f",
+        "canteenId": "zi_jing_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 1,
+        "drawableDishCount": 1,
+        "drawWeight": 3.0
+      }
+    ],
+    "unassignedFloorDishCount": 5,
+    "dishCount": 6,
+    "drawableDishCount": 6,
+    "drawWeight": 16.5,
+    "stallNames": [
+      "清青披萨"
+    ],
+    "cuisines": [
+      "cantonese",
+      "grill",
+      "light",
+      "rice",
+      "western"
+    ]
+  },
+  {
+    "id": "guan_chou_yuan",
+    "name": "观畴园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "炸鸡窗口",
+      "青团",
+      "北京烤鸭"
+    ],
+    "note": "分 1F（未标注）/2F（自选、主食区）/3F（北京烤鸭）多个楼层。",
+    "floors": [
+      {
+        "id": "guan_chou_yuan-2f",
+        "canteenId": "guan_chou_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [
+          "主食区",
+          "某个拐角",
+          "自选"
+        ],
+        "dishCount": 3,
+        "drawableDishCount": 3,
+        "drawWeight": 9.0
+      },
+      {
+        "id": "guan_chou_yuan-3f",
+        "canteenId": "guan_chou_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 1,
+        "drawableDishCount": 1,
+        "drawWeight": 3.0
+      }
+    ],
+    "unassignedFloorDishCount": 8,
+    "dishCount": 12,
+    "drawableDishCount": 11,
+    "drawWeight": 33.0,
+    "stallNames": [
+      "主食区",
+      "入口处",
+      "最最最左边的炸鸡窗口",
+      "某个拐角",
+      "清青永和大饼卷翻天窗口旁边",
+      "窗口整体推荐",
+      "自选"
+    ],
+    "cuisines": [
+      "beijing",
+      "breakfast",
+      "grill",
+      "homestyle",
+      "jiangzhe",
+      "light",
+      "noodles",
+      "northeast",
+      "sichuan",
+      "snacks",
+      "taiwanese"
+    ]
+  },
+  {
+    "id": "ding_xiang_yuan",
+    "name": "丁香园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "广东窗口",
+      "名厨窗口",
+      "烤肉拌饭"
+    ],
+    "note": "广东窗口的肠粉、凤爪、排骨煲仔饭被点名推荐。",
+    "floors": [],
+    "unassignedFloorDishCount": 4,
+    "dishCount": 4,
+    "drawableDishCount": 4,
+    "drawWeight": 10.0,
+    "stallNames": [
+      "名厨窗口",
+      "广东窗口",
+      "烤肉拌饭"
+    ],
+    "cuisines": [
+      "breakfast",
+      "cantonese",
+      "homestyle",
+      "korean",
+      "light",
+      "rice",
+      "snacks"
+    ]
+  },
+  {
+    "id": "zhi_lan_yuan",
+    "name": "芝兰园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "1F"
+    ],
+    "note": "记录来自“芝兰园 1F”。",
+    "floors": [
+      {
+        "id": "zhi_lan_yuan-1f",
+        "canteenId": "zhi_lan_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [
+          "一楼左数第二个口"
+        ],
+        "dishCount": 1,
+        "drawableDishCount": 1,
+        "drawWeight": 3.0
+      }
+    ],
+    "unassignedFloorDishCount": 0,
+    "dishCount": 1,
+    "drawableDishCount": 1,
+    "drawWeight": 3.0,
+    "stallNames": [
+      "一楼左数第二个口"
+    ],
+    "cuisines": [
+      "homestyle",
+      "light"
+    ]
+  },
+  {
+    "id": "xi_chun_yuan",
+    "name": "熙春园",
+    "category": "餐厅",
+    "status": "open",
+    "tags": [
+      "杭帮菜",
+      "淮扬菜"
+    ],
+    "note": "杭帮/淮扬口味，价格偏高，属餐厅档。",
+    "floors": [],
+    "unassignedFloorDishCount": 3,
+    "dishCount": 3,
+    "drawableDishCount": 3,
+    "drawWeight": 7.5,
+    "stallNames": [],
+    "cuisines": [
+      "jiangzhe",
+      "sichuan",
+      "snacks"
+    ]
+  },
+  {
+    "id": "du_feng_shu_yuan",
+    "name": "独峰书院",
+    "category": "餐厅",
+    "status": "discontinued",
+    "tags": [
+      "已停业"
+    ],
+    "note": "跟帖表示独峰书院已经没了，仅保留记录。",
+    "floors": [],
+    "unassignedFloorDishCount": 1,
+    "dishCount": 1,
+    "drawableDishCount": 0,
+    "drawWeight": 0,
+    "stallNames": [],
+    "cuisines": [
+      "western"
+    ]
+  },
+  {
+    "id": "qing_qing_coffee",
+    "name": "清青咖啡",
+    "category": "咖啡简餐",
+    "status": "open",
+    "tags": [
+      "西式简餐",
+      "汉堡",
+      "沙拉"
+    ],
+    "note": "校名写作“清青”，注意不要误写成“清清”。",
+    "floors": [],
+    "unassignedFloorDishCount": 4,
+    "dishCount": 4,
+    "drawableDishCount": 4,
+    "drawWeight": 12.0,
+    "stallNames": [
+      "主食",
+      "好像就一个"
+    ],
+    "cuisines": [
+      "burger",
+      "dessert",
+      "light",
+      "thai",
+      "western"
+    ]
+  },
+  {
+    "id": "qing_qing_niu_la",
+    "name": "清青牛拉",
+    "category": "快餐",
+    "status": "open",
+    "tags": [
+      "牛肉拉面"
+    ],
+    "note": "校名写作“清青”。",
+    "floors": [],
+    "unassignedFloorDishCount": 1,
+    "dishCount": 1,
+    "drawableDishCount": 1,
+    "drawWeight": 3.0,
+    "stallNames": [
+      "左数第二个"
+    ],
+    "cuisines": [
+      "halal",
+      "noodles",
+      "northwest"
+    ]
+  },
+  {
+    "id": "qing_qing_kuai_can",
+    "name": "清青快餐",
+    "category": "快餐",
+    "status": "open",
+    "tags": [
+      "甜点"
+    ],
+    "note": "校名写作“清青”。",
+    "floors": [],
+    "unassignedFloorDishCount": 1,
+    "dishCount": 1,
+    "drawableDishCount": 1,
+    "drawWeight": 3.0,
+    "stallNames": [
+      "甜点类"
+    ],
+    "cuisines": [
+      "dessert"
+    ]
+  },
+  {
+    "id": "c_lou",
+    "name": "C楼",
+    "category": "小食·饮品",
+    "status": "open",
+    "tags": [
+      "小食屋",
+      "蜜雪冰城"
+    ],
+    "note": "跟帖提到 C 楼的蜜雪冰城已撤出，相关点位信息可能过时。",
+    "floors": [],
+    "unassignedFloorDishCount": 2,
+    "dishCount": 2,
+    "drawableDishCount": 2,
+    "drawWeight": 6.0,
+    "stallNames": [
+      "小食屋",
+      "蜜雪冰城"
+    ],
+    "cuisines": [
+      "breakfast",
+      "dessert",
+      "northeast",
+      "snacks"
+    ]
+  },
+  {
+    "id": "convenience_711",
+    "name": "711",
+    "category": "便利店",
+    "status": "open",
+    "tags": [
+      "便利店",
+      "冰淇淋"
+    ],
+    "note": "位于澜园出口顺路位置。",
+    "floors": [],
+    "unassignedFloorDishCount": 1,
+    "dishCount": 1,
+    "drawableDishCount": 1,
+    "drawWeight": 1.0,
+    "stallNames": [
+      "澜园出来顺便买"
+    ],
+    "cuisines": [
+      "dessert"
+    ]
+  },
+  {
+    "id": "qing_fen_yuan",
+    "name": "清芬园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "2F",
+      "瓦罐汤"
+    ],
+    "note": "记录来自“清芬园 2F”。",
+    "floors": [
+      {
+        "id": "qing_fen_yuan-2f",
+        "canteenId": "qing_fen_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [
+          "从右往左第二个窗口",
+          "瓦罐汤"
+        ],
+        "dishCount": 2,
+        "drawableDishCount": 2,
+        "drawWeight": 4.0
+      }
+    ],
+    "unassignedFloorDishCount": 0,
+    "dishCount": 2,
+    "drawableDishCount": 2,
+    "drawWeight": 4.0,
+    "stallNames": [
+      "从右往左第二个窗口",
+      "瓦罐汤"
+    ],
+    "cuisines": [
+      "beijing",
+      "homestyle",
+      "light"
+    ]
+  },
+  {
+    "id": "ting_tao_yuan",
+    "name": "听涛园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "川味小吃",
+      "桂林米粉",
+      "川香小吃"
+    ],
+    "note": "含川味小吃、桂林米粉/风味、现磨豆浆、川香小吃等窗口。",
+    "floors": [],
+    "unassignedFloorDishCount": 6,
+    "dishCount": 6,
+    "drawableDishCount": 6,
+    "drawWeight": 18.0,
+    "stallNames": [
+      "川味小吃",
+      "川香小吃",
+      "桂林米粉",
+      "桂林风味",
+      "现磨豆浆"
+    ],
+    "cuisines": [
+      "breakfast",
+      "drinks",
+      "homestyle",
+      "minnan",
+      "noodles",
+      "sichuan",
+      "snacks"
+    ]
+  },
+  {
+    "id": "yu_shu_yuan",
+    "name": "玉树园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "2F",
+      "铁板",
+      "石锅",
+      "韩式"
+    ],
+    "note": "二层以铁板/石锅饭为特色。",
+    "floors": [
+      {
+        "id": "yu_shu_yuan-2f",
+        "canteenId": "yu_shu_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 7,
+        "drawableDishCount": 7,
+        "drawWeight": 21.0
+      }
+    ],
+    "unassignedFloorDishCount": 1,
+    "dishCount": 8,
+    "drawableDishCount": 8,
+    "drawWeight": 24.0,
+    "stallNames": [],
+    "cuisines": [
+      "drinks",
+      "grill",
+      "japanese",
+      "korean",
+      "rice"
+    ]
+  },
+  {
+    "id": "yu_yuan",
+    "name": "寓园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "陕西风味",
+      "香锅",
+      "铁板",
+      "瓦罐汤"
+    ],
+    "note": "铁板被称“寓园最能打的窗口”，香锅被称校内最好吃。",
+    "floors": [],
+    "unassignedFloorDishCount": 5,
+    "dishCount": 5,
+    "drawableDishCount": 5,
+    "drawWeight": 15.0,
+    "stallNames": [
+      "铁板旁边的瓦罐汤",
+      "陕西风味",
+      "香锅"
+    ],
+    "cuisines": [
+      "grill",
+      "homestyle",
+      "hotpot",
+      "light",
+      "northwest",
+      "sichuan",
+      "snacks"
+    ]
+  },
+  {
+    "id": "lan_yuan",
+    "name": "澜园",
+    "category": "食堂",
+    "status": "open",
+    "tags": [
+      "麻辣拌第一",
+      "广东窗口",
+      "锅仔",
+      "麻辣烫"
+    ],
+    "note": "分 1F/2F/3F；麻辣拌被称校内各食堂第一，3F 广东窗口可闭眼点。",
+    "floors": [
+      {
+        "id": "lan_yuan-1f",
+        "canteenId": "lan_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [
+          "一楼米饭自选"
+        ],
+        "dishCount": 1,
+        "drawableDishCount": 1,
+        "drawWeight": 3.0
+      },
+      {
+        "id": "lan_yuan-2f",
+        "canteenId": "lan_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [
+          "二楼面类"
+        ],
+        "dishCount": 1,
+        "drawableDishCount": 1,
+        "drawWeight": 3.0
+      },
+      {
+        "id": "lan_yuan-3f",
+        "canteenId": "lan_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [
+          "广东窗口",
+          "锅仔"
+        ],
+        "dishCount": 2,
+        "drawableDishCount": 1,
+        "drawWeight": 3.0
+      }
+    ],
+    "unassignedFloorDishCount": 5,
+    "dishCount": 9,
+    "drawableDishCount": 7,
+    "drawWeight": 23.0,
+    "stallNames": [
+      "一楼米饭自选",
+      "二楼面类",
+      "左数第二个，陕西窗口",
+      "广东窗口",
+      "进门右手第一家麻辣拌，一定要麻辣拌，因为其他还没尝试",
+      "进门后麻辣烫旁边",
+      "锅仔",
+      "面？"
+    ],
+    "cuisines": [
+      "cantonese",
+      "halal",
+      "hotpot",
+      "noodles",
+      "northeast",
+      "northwest",
+      "sichuan"
+    ]
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "name": "tsinghua-canteen-web",
+  "private": true,
+  "type": "module",
+  "description": "今天吃什么：GitHub Pages 静态前端（抽签 + 推送菜系 + 在线上传内容）。type=module 让 Node 测试可以直接 import 这里的 ESM 源码。"
+}

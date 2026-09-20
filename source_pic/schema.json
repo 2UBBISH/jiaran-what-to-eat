@@ -1,0 +1,437 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/tsinghua-canteen/menu_data.schema.json",
+  "title": "清华食堂吃饭指南 结构化数据",
+  "type": "object",
+  "required": [
+    "meta",
+    "taxonomy",
+    "canteens",
+    "cuisines",
+    "dishes",
+    "indexes",
+    "draw"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": [
+        "title",
+        "version",
+        "origin",
+        "stats"
+      ]
+    },
+    "taxonomy": {
+      "type": "object",
+      "required": [
+        "cuisines",
+        "tags",
+        "reviewLevels",
+        "mealSlots",
+        "priceTiers"
+      ]
+    },
+    "canteens": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "floors",
+          "dishCount"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "discontinued"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "floors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "floor",
+                "dishCount"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "canteenId": {
+                  "type": "string"
+                },
+                "floor": {
+                  "enum": [
+                    "1F",
+                    "2F",
+                    "3F"
+                  ]
+                },
+                "label": {
+                  "type": "string"
+                },
+                "dishCount": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "stallNames": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "dishCount": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "cuisines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "dishCount",
+          "dishIds"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "sichuan",
+              "cantonese",
+              "jiangzhe",
+              "beijing",
+              "northeast",
+              "homestyle",
+              "northwest",
+              "halal",
+              "noodles",
+              "rice",
+              "hotpot",
+              "korean",
+              "japanese",
+              "taiwanese",
+              "minnan",
+              "thai",
+              "western",
+              "burger",
+              "grill",
+              "light",
+              "breakfast",
+              "snacks",
+              "dessert",
+              "drinks"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string"
+          },
+          "emoji": {
+            "type": "string"
+          },
+          "dishCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "dishIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "dishes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "canteenId",
+          "cuisines",
+          "price",
+          "reviewLevel",
+          "drawWeight",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+-[0-9]{2}$"
+          },
+          "type": {
+            "enum": [
+              "dish",
+              "stall_recommendation"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "canteenId": {
+            "type": "string"
+          },
+          "floor": {
+            "oneOf": [
+              {
+                "enum": [
+                  "1F",
+                  "2F",
+                  "3F"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "floorId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "floorSource": {
+            "oneOf": [
+              {
+                "enum": [
+                  "section",
+                  "window"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stallName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cuisines": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "sichuan",
+                "cantonese",
+                "jiangzhe",
+                "beijing",
+                "northeast",
+                "homestyle",
+                "northwest",
+                "halal",
+                "noodles",
+                "rice",
+                "hotpot",
+                "korean",
+                "japanese",
+                "taiwanese",
+                "minnan",
+                "thai",
+                "western",
+                "burger",
+                "grill",
+                "light",
+                "breakfast",
+                "snacks",
+                "dessert",
+                "drinks"
+              ]
+            }
+          },
+          "primaryCuisine": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "spicyLevel": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "mealSlots": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "breakfast",
+                "lunch",
+                "dinner",
+                "night",
+                "drink",
+                "dessert"
+              ]
+            }
+          },
+          "vegetarian": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "price": {
+            "type": "object",
+            "required": [
+              "text",
+              "currency"
+            ],
+            "properties": {
+              "text": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "min": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "max": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "currency": {
+                "const": "CNY"
+              },
+              "approx": {
+                "type": "boolean"
+              },
+              "uncertain": {
+                "type": "boolean"
+              },
+              "openEnded": {
+                "type": "boolean"
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "priceTier": {
+            "oneOf": [
+              {
+                "enum": [
+                  "cheap",
+                  "normal",
+                  "premium",
+                  "restaurant"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewLevel": {
+            "enum": [
+              "strongly_recommended",
+              "positive",
+              "worth_trying",
+              "mixed",
+              "low_info",
+              "negative",
+              "discontinued"
+            ]
+          },
+          "drawWeight": {
+            "type": "number",
+            "minimum": 0
+          },
+          "excludedByDefault": {
+            "type": "boolean"
+          },
+          "searchKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source": {
+            "type": "object",
+            "required": [
+              "image",
+              "post",
+              "page"
+            ],
+            "properties": {
+              "image": {
+                "type": "string"
+              },
+              "post": {
+                "type": "string"
+              },
+              "page": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "indexes": {
+      "type": "object"
+    },
+    "draw": {
+      "type": "object",
+      "required": [
+        "modes",
+        "defaults",
+        "parameters"
+      ]
+    }
+  }
+}

@@ -1,0 +1,46 @@
+name: Rebuild contributions index
+
+# 内容管理台在线上传时只提交「一个内容文件 + 图片」，不改索引；
+# 这个工作流负责重建 docs/assets/data/contributions/index.json 并提交回去，
+# 于是多人同时上传也不会产生 index.json 的写冲突。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/assets/data/contributions/**'
+      - 'tools/rebuild_contributions_index.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: contributions-index
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 重建索引
+        run: node tools/rebuild_contributions_index.mjs
+
+      - name: 提交变更（如有）
+        run: |
+          if git diff --quiet -- docs/assets/data/contributions/index.json; then
+            echo "索引无变化"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/data/contributions/index.json
+          git commit -m "chore(data): rebuild contributions index [skip ci]"
+          git push

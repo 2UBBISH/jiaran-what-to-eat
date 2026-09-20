@@ -1,0 +1,11 @@
+# 本地测试用的一次性依赖（DOM 测试才需要，见 docs/README.md）
+.tmp-jsdom/
+node_modules/
+
+# 系统垃圾
+.DS_Store
+*.log
+
+# Python 缓存
+__pycache__/
+*.pyc
