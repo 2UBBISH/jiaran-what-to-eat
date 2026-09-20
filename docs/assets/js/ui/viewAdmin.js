@@ -366,10 +366,10 @@ export function createAdminView({ root, onMenuReload }) {
           value: d.stallName, placeholder: '例如：锅仔 / 最左边的炸鸡窗口',
           oninput: (e) => { d.stallName = e.target.value; },
         })),
-        field('菜名 *', input({
+        field('菜名（可选）', input({
           value: d.name, placeholder: '例如：羊肉锅（不辣）',
           oninput: (e) => { d.name = e.target.value; },
-        })),
+        }), '留空会记为「自选菜」'),
         field('价格（照抄窗口价签即可）', input({
           value: d.priceText, placeholder: '例如：¥18 / 20-30 / 10元以下',
           oninput: (e) => { d.priceText = e.target.value; },
@@ -380,7 +380,7 @@ export function createAdminView({ root, onMenuReload }) {
         ], { value: d.spicyLevel, onChange: (value) => { d.spicyLevel = value; } })),
       ]),
       el('div', { class: 'form__block' }, [
-        el('div', { class: 'form__label', text: '菜系 *（至少 1 个，可多选）' }),
+        el('div', { class: 'form__label', text: '菜系（可多选；留空则归入「未标菜系」）' }),
         chipRow(cuisineItems, {
           multi: true, value: d.cuisines,
           onChange: (value) => { d.cuisines = value; },

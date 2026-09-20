@@ -37,6 +37,16 @@ export const DEFAULT_OPTIONS = {
 
 const CANTEEN_WEIGHTS = ['balanced', 'dishWeight', 'uniform'];
 
+/** 没标菜系的菜（例如只传了 图片+饭堂+楼层+窗口+价格）归一到这里，仍然能被推送 */
+export const UNCATEGORIZED = {
+  id: '__uncategorized__',
+  name: '未标菜系',
+  emoji: '🍱',
+  group: '其他',
+  keywords: ['上传时没标菜系'],
+  dishCount: 0,
+};
+
 export function normalizeOptions(options = {}) {
   const merged = { ...DEFAULT_OPTIONS, ...options };
   merged.cuisines = Array.isArray(merged.cuisines) ? merged.cuisines.filter(Boolean) : [];
@@ -169,11 +179,20 @@ export function floorBuckets(dishes, weightOf) {
 /** 把候选菜按菜系分桶；多菜系菜品把权重均摊，避免重复计数 */
 export function cuisineBuckets(dishes, weightOf) {
   const map = new Map();
+  const ensure = (id) => {
+    if (!map.has(id)) map.set(id, { cuisineId: id, dishes: [], weight: 0 });
+    return map.get(id);
+  };
   dishes.forEach((dish) => {
+    if (!dish.cuisines.length) {
+      const bucket = ensure(UNCATEGORIZED.id);
+      bucket.dishes.push(dish);
+      bucket.weight += weightOf(dish);
+      return;
+    }
     const share = weightOf(dish) / Math.max(1, dish.cuisines.length);
     dish.cuisines.forEach((id) => {
-      if (!map.has(id)) map.set(id, { cuisineId: id, dishes: [], weight: 0 });
-      const bucket = map.get(id);
+      const bucket = ensure(id);
       bucket.dishes.push(dish);
       bucket.weight += share;
     });
@@ -265,7 +284,8 @@ export function draw(menu, rawOptions = {}, env = {}) {
     : allCuisineBuckets;
   const cuisineBucket = pickWeighted(cuisines, cuisineRng, (bucket) => bucket.weight);
   const cuisine = cuisineBucket
-    ? (menu.cuisines.find((c) => c.id === cuisineBucket.cuisineId) || null)
+    ? (menu.cuisines.find((c) => c.id === cuisineBucket.cuisineId)
+      || (cuisineBucket.cuisineId === UNCATEGORIZED.id ? UNCATEGORIZED : null))
     : null;
   if (!cuisine) warnings.push('这一层的菜还没有菜系标签，先看看推荐菜');
 

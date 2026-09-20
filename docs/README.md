@@ -21,13 +21,207 @@ docs/                              ← GitHub Pages 站点根目录
     │   ├── admin.js               管理台装配（admin.html）
     │   ├── store.js / router.js   状态与 hash 路由
     │   └── userData.js            本机历史 / 收藏 / 偏好
-    ├── data/                      构建产物 + 线上贡献内容（见下）
+    ├── data/                      构建产物 + 线上贡献内容 + 上传接口 schema（见 1 节）
     └── uploads/                   在线上传的图片
 ```
 
 ---
 
-## 1. 本地预览
+## 1. 上传接口（对外契约 v1）
+
+给其他 agent / 脚本看的接口说明。**必填只有五项：饭菜图片 + 饭堂 + 楼层 + 窗口 + 价格**，
+其余都可以不传，系统会补默认值。
+
+机器可读版本：`docs/assets/data/intake-schema.json`（JSON Schema，`x-interface-version: v1`）。
+该 schema 与代码常量 `docs/assets/js/core/intake.js` 的 `INTAKE_SPEC` 由测试强制保持一致，
+改一边不改另一边会测试失败。
+
+### 1.1 最小请求（一条）
+
+```json
+{
+  "image": "assets/uploads/20260920-abc.jpg",
+  "canteen": "澜园",
+  "floor": "一楼",
+  "window": "自选窗口",
+  "price": "12"
+}
+```
+
+规范化后的内部记录（自动补全）：
+
+```json
+{
+  "id": "20260920-dk3f9",
+  "kind": "dish",
+  "createdAt": "2026-09-20T04:12:33.000Z",
+  "author": "匿名同学",
+  "payload": {
+    "canteenId": "lan_yuan",
+    "floor": "1F",
+    "stallName": "自选窗口",
+    "name": "自选菜",
+    "unnamed": true,
+    "priceText": "12",
+    "cuisines": [],
+    "spicyLevel": 0,
+    "tags": [],
+    "reviewLabel": "好评",
+    "reviewText": null,
+    "image": "assets/uploads/20260920-abc.jpg",
+    "date": "2026-09-20",
+    "mealSlots": ["lunch", "dinner"],
+    "vegetarian": null
+  }
+}
+```
+
+### 1.2 四种调用方式
+
+| 方式 | 适合谁 | 怎么做 |
+| --- | --- | --- |
+| **A. 写 JSON 文件 + git push** | agent / 脚本（推荐，不需要 Token） | 图片放 `docs/assets/uploads/`，一条内容一个文件放 `docs/assets/data/contributions/<id>.json`，然后 commit & push |
+| **B. JS 接口** | 页面/Node 脚本 | `const { normalizeIntakeBatch } = core/intake` 规范化 → `source.saveMany(records, { images })` |
+| **C. HTTP 后端** | 以后接自建服务 | `POST {base}/batch`，body `{ "records": [...], "images": [{name, mime, base64}] }` |
+| **D. 网页上传** | 手机上人工传 | `upload.html`（自选菜快传）/ `admin.html`（完整表单） |
+
+方式 A 的完整步骤（可直接照抄）：
+
+```bash
+# 1) 放图片（文件名建议 日期-随机.jpg，避免撞名）
+cp ~/photo.jpg docs/assets/uploads/20260920-abc.jpg
+
+# 2) 写一条内容：直接写「1.1 的最小请求」就行，不需要包 payload
+cat > docs/assets/data/contributions/20260920-abc.json <<'JSON'
+{
+  "image": "assets/uploads/20260920-abc.jpg",
+  "canteen": "澜园",
+  "floor": "一楼",
+  "window": "自选窗口",
+  "price": "¥12",
+  "name": "红烧肉"
+}
+JSON
+
+# 3) 提交（contributions/index.json 由 GitHub Actions 自动重建，不用手改）
+git add docs/assets/uploads docs/assets/data/contributions
+git commit -m "content: 澜园 1F 自选窗口 红烧肉"
+git push          # 约 1 分钟后线上生效
+```
+
+**两种格式都收**（`core/menu.js` 的 `prepareContribution`）：
+
+| 写进 `contributions/*.json` 的内容 | 是否接受 | 说明 |
+| --- | --- | --- |
+| 裸接口格式（1.1 的五项 + 可选字段） | ✅ | 前端读取时自动规范化，并生成**稳定 id**（按内容指纹，刷新不变） |
+| 内部记录格式 `{ id, kind, payload }` | ✅ | 网页上传写出的就是这种，老数据也兼容 |
+| 裸接口格式但 `image` 用 base64 | ❌ | 文件方式不支持内联图片：请把图片放进 `docs/assets/uploads/` 并写路径，或改用 `upload.html` / `saveMany` 接口 |
+
+> 文件名可以随便取（建议 `日期-序号.json`，便于人工排查）；`_` 开头的文件会被忽略，
+> `contributions/index.json` 由 CI 维护，不要手改。
+
+### 1.3 字段规范
+
+必填（缺任何一个都会被拒绝）：
+
+| 字段 | 类型 | 说明 | 别名 |
+| --- | --- | --- | --- |
+| `image` | string \| object | 饭菜图片，见 1.4 | `imageUrl` `photo` `photoUrl` `pic` |
+| `canteen` | string | 饭堂，中文名或 id | `canteenId` `canteenName` `hall` |
+| `floor` | string | 楼层，见 1.4；空字符串 = 未标注 | `floorId` `floorLabel` |
+| `window` | string | 窗口名，≤40 字 | `stall` `stallName` `counter` |
+| `price` | string \| number | 价格，必须能解析出数字 | `priceText` `cost` |
+
+可选（不传就用默认值）：
+
+| 字段 | 默认 | 说明 |
+| --- | --- | --- |
+| `name` | `自选菜` | 菜名，≤40 字；留空时按图片去重 |
+| `date` | 今天 | `YYYY-MM-DD`；**带日期的菜只当天有效**，第二天自动退场 |
+| `cuisines` | `[]` | 菜系 id 或中文名；留空归入「未标菜系」，仍能被抽签推送 |
+| `spicyLevel` | `0` | 0-3，或 `不辣/微辣/中辣/重辣` |
+| `reviewLabel` | `好评` | 也可用 `强烈推荐/值得一试/两极/信息较少` |
+| `reviewText` | `null` | 评价正文，≤400 字 |
+| `tags` | `[]` | 需来自数据里的标签词表，如 `["必点"]` |
+| `author` | `匿名同学` | 上传者昵称 |
+| `id` | 自动生成 | 建议留空；重复 id 会覆盖同一条 |
+
+### 1.4 取值容错规则（写错也有人兜）
+
+| 字段 | 接受 | 规范化结果 |
+| --- | --- | --- |
+| `floor` | `1F` `f1` `1` `一层` `一楼` `1楼` | `1F` |
+| | `""` `-` `未标注` `未知` `none` | `null` |
+| | 其他（如 `9F`） | ❌ 报错「楼层无法识别」 |
+| `price` | `12`（数字）、`"12"`、`"¥12"`、`"12-15"`、`"10元以下"`、`"按重量约20"` | 文本原样保留，数字则格式化为 `¥12` |
+| | 不含数字（如 `"很便宜"`） | ❌ 报错「价格里没有数字」 |
+| `canteen` | id `lan_yuan` / 中文名 `澜园` | `lan_yuan` |
+| | 不存在 | ❌ 报错并**列出全部可用饭堂名** |
+| `cuisines` | `sichuan` / `川菜` / `家常菜` | `homestyle` 等 id |
+| | 多个候选（如 `菜`） | ❌ 报错「有歧义，请用 id」 |
+| `image` | `assets/uploads/a.jpg` | 原样 |
+| | `https://cdn…/a.jpg` | 原样（外链） |
+| | `a.jpg`（裸文件名） | `assets/uploads/a.jpg` |
+| | `data:image/jpeg;base64,…` | 落盘为 `assets/uploads/intake-*.jpg` |
+| | `{"name":"a.jpg","base64":"…"}` | `assets/uploads/a.jpg` |
+| | 其他（如 `ftp://…`） | ❌ 报错「图片地址无法识别」 |
+| `spicyLevel` | `0/1/2/3`、`不辣/微辣/中辣/重辣` | `0-3` |
+| `name` | 不传 / 空 | `自选菜`，并标记 `unnamed: true` |
+
+### 1.5 批量上传
+
+```json
+{
+  "records": [
+    { "image": "assets/uploads/a.jpg", "canteen": "澜园", "floor": "1F", "window": "自选窗口", "price": "12", "name": "红烧肉" },
+    { "image": "assets/uploads/b.jpg", "canteen": "澜园", "floor": "1F", "window": "自选窗口", "price": "6" },
+    { "image": {"name": "c.jpg", "base64": "/9j/4AAQ…"}, "canteen": "听涛园", "floor": "2F", "window": "桂林米粉", "price": "9" }
+  ]
+}
+```
+
+**一条坏不影响其他**：成功的照常入库，失败的返回下标与原因：
+
+```json
+{
+  "records": [ { "id": "20260920-d1", "kind": "dish", "payload": { "…": "…" } } ],
+  "assets": [ { "name": "c.jpg", "base64": "…" } ],
+  "failed": [
+    { "index": 1, "errors": ["饭堂无法识别：不存在（可用中文名或 id；现有：荷园、紫荆园、观畴园…）"] }
+  ]
+}
+```
+
+### 1.6 常见报错与处理
+
+| 报错 | 原因 | 处理 |
+| --- | --- | --- |
+| `饭堂无法识别：xxx` | 饭堂名/ id 不对 | 用报错信息里列出的名字，或先跑 `GET assets/data/canteens.json` 取 id |
+| `楼层无法识别：9F` | 楼层不在 1F/2F/3F | 用 `1F`，或留空表示未标注 |
+| `价格里没有数字：很便宜` | 价格没有数字 | 传 `"12"` 这类可解析值 |
+| `缺少饭菜图片` / `图片地址无法识别` | image 缺失或格式怪 | 用约定路径 / 外链 / base64 对象 |
+| `菜系不存在：xxx` / `有歧义` | 菜系名不对 | 用 `GET assets/data/cuisines.json` 里的 id |
+| `date 需为 YYYY-MM-DD` | 日期格式错 | 用 `2026-09-20` 这种格式，或干脆不传（默认今天） |
+| 提交后线上没变化 | 索引/部署还在跑 | 等约 1 分钟；看 Actions 里 `Rebuild contributions index` 与 `Deploy GitHub Pages` |
+
+### 1.7 图片规则
+
+- 落盘位置固定：`docs/assets/uploads/<文件名>`，记录里写 `assets/uploads/<文件名>`
+- 单张 ≤ 2MB（`githubSource` 默认上限）；网页上传会在浏览器先压到最长边 1280px / JPEG
+- **一次上传的所有图片与 JSON 只产生 1 个 commit**（GitHub 数据源走 Git Data API；
+  `upload.html` 就是这个路径），不会因为传了 5 张图刷 5 条历史
+- 同一次上传里内容与图片若要绑定，请让 `payload.image` 与图片文件名一致（约定路径）
+
+### 1.8 去重与覆盖规则
+
+| 情况 | 行为 |
+| --- | --- |
+| 同饭堂 + 同楼层 + 同窗口 + 同一天 + **同名** | 只保留最后上传的一条（重拍同一道菜不会重复计入抽签权重） |
+| 同上但**没有菜名** | 按图片去重：不同照片是不同菜，同一张照片重复上传会合并 |
+| 不同窗口 / 不同日期 | 互不影响 |
+| `id` 相同 | 覆盖同一条内容 |
+
+## 2. 本地预览
 
 因为用了 ES Module，必须用 HTTP 打开（不能双击 html）：
 
@@ -46,7 +240,7 @@ python3 tools/build_menu_data.py      # 生成 source_pic/* + docs/assets/data/*
 python3 tools/validate_menu_data.py   # 数据完整性校验
 ```
 
-## 2. 部署到 GitHub Pages
+## 3. 部署到 GitHub Pages
 
 **当前部署状态**
 
@@ -75,7 +269,7 @@ git push -u origin main
 
 > 因为用了 hash 路由（`#/draw`、`#/r?k=...`），刷新子页面不会 404，也不需要 404.html 兜底。
 
-## 3. 在线上传内容
+## 4. 在线上传内容
 
 打开 `https://<用户名>.github.io/<仓库名>/admin.html`，在「数据源」里选一种：
 
@@ -139,7 +333,7 @@ git push -u origin main
 }
 ```
 
-## 4. 自选窗口与「天天变」的自选菜
+## 5. 自选窗口与「天天变」的自选菜
 
 食堂的自选窗口菜品每天都不一样，所以数据模型分两层：
 
@@ -176,7 +370,7 @@ git push -u origin main
 - 按钮会直接告诉你还差什么（「还需填 2 个菜名」），未填的输入框标红。
 - 日期默认今天，也可以补昨天的（做回溯记录）。
 
-## 5. 架构：前后端分离怎么落的
+## 6. 架构：前后端分离怎么落的
 
 ```
 视图层 ui/  ──只读 state、只调 core──▶  core/（纯函数：抽签、合成、校验、分享码）
@@ -206,7 +400,7 @@ git push -u origin main
 **换成自建后端**：实现这 6 个方法并在 `data/index.js` 注册，界面代码零改动
 （端点约定写在 `httpSource.js` 顶部）。
 
-## 6. 抽签规则（可复现、可验证）
+## 7. 抽签规则（可复现、可验证）
 
 - 签号即种子：`seed` 派生 `:canteen`、`:floor`、`:cuisine` 三条独立随机流，
   同 `seed` + 同数据 + 同筛选 ⇒ 完全一样的结果。
@@ -223,10 +417,10 @@ git push -u origin main
 - 动效只是「揭晓方式」，不影响概率：结果先用种子算好，再播放动画；
   并且全程尊重系统的「减少动态效果」设置（开启后直接显示结果，粒子与签号跳动自动关闭）。
 
-## 7. 测试
+## 8. 测试
 
 ```bash
-node tools/test_site_core.mjs          # 46 项：抽签可复现/公平性/筛选/分享码/贡献内容合并/自选菜日期语义
+node tools/test_site_core.mjs          # 62 项：上传接口容错/裸格式文件/抽签可复现/公平性/自选菜日期语义
 python3 tools/validate_menu_data.py    # 2527 项：数据引用与索引完整性
 node tools/rebuild_contributions_index.mjs --check   # 索引是否最新
 
@@ -234,6 +428,7 @@ node tools/rebuild_contributions_index.mjs --check   # 索引是否最新
 mkdir -p .tmp-jsdom && cd .tmp-jsdom && npm init -y >/dev/null && npm install --cache ./.npm-cache jsdom
 cd .. && node tools/test_site_dom.mjs
 #   抽签页 13 + 管理台 10 + 抽签动效 6 + 自选菜快传 10 + 子路径部署 2 = 41 项
+#   另有 2 项校验 README 里的接口示例真的能跑通（防止文档漂移）
 #   其中「动效」用例会打开 prefers-reduced-motion=false，验证
 #   逐行高亮 → 锁定 → 粒子 → 签号乱码落定 → 结果入场 的完整状态机
 
@@ -246,7 +441,7 @@ node tools/test_live_e2e.mjs
 DOM 测试会真的把页面跑起来：点抽签 → 检查「推送菜系」页 → 打开分享深链接复现同一签
 → 逛一逛 → 筛选抽屉 → 管理台校验 → 真实提交一条内容并删除。
 
-## 8. 常见维护任务
+## 9. 常见维护任务
 
 | 想做的事 | 改哪里 |
 | --- | --- |
@@ -258,6 +453,7 @@ DOM 测试会真的把页面跑起来：点抽签 → 检查「推送菜系」�
 | 给窗口配照片 | `upload.html` 的「窗口照片」，或 `admin.html` 的「窗口」页签 |
 | 改自选菜的有效期规则 | `core/menu.js` 的 `isDishStale()` / `dedupeDaily()` |
 | 改批量提交策略 | `data/githubSource.js` 的 `commitFiles()`（Git Data API） |
+| 改上传接口字段 | `core/intake.js` 的 `INTAKE_SPEC` + `assets/data/intake-schema.json`（测试会强制两者一致）+ README 第 1 节 |
 | 改视觉 | `assets/css/tokens.css`（颜色/圆角/阴影/动效曲线）优先，其次 components/views |
 | 改抽签动效 | `assets/css/views.css` 里的 `reel*` / `burst` / `pushSweep` / `cardIn` 关键帧；粒子与签号乱码在 `ui/dom.js` 的 `burst()` / `scramble()` |
 | 换后端 | 实现 `data/contract.js` 的 6 个方法，在 `data/index.js` 注册 |

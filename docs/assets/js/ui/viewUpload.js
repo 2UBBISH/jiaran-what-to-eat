@@ -15,6 +15,7 @@ import {
   sectionTitle, emptyState, tagPill, toggleRow,
 } from './components.js';
 import { validateContribution } from '../core/menu.js';
+import { normalizeIntakeBatch, INTAKE_SPEC } from '../core/intake.js';
 import { dateKey, dateLabel } from '../core/date.js';
 import { uploadPathFor } from '../data/contract.js';
 import { loadConfig, saveConfig, createDataSource, SOURCE_MODES, describeConfig } from '../data/index.js';
@@ -261,19 +262,19 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
       const thumb = el('div', { class: 'up__thumb' }, [el('img', { src: entry.asset.dataUrl, alt: '' })]);
       const nameInput = input({
         value: entry.name,
-        placeholder: '菜名（必填）',
+        placeholder: '菜名（可选，默认「自选菜」）',
+        oninput: (e) => { entry.name = e.target.value; renderSubmit(); },
+      });
+      const priceInput = input({
+        value: entry.priceText,
+        placeholder: '价格（必填，如 ¥12）',
         oninput: (e) => {
-          entry.name = e.target.value;
-          nameInput.classList.toggle('is-invalid', !entry.name.trim());
+          entry.priceText = e.target.value;
+          priceInput.classList.toggle('is-invalid', !/\d/.test(entry.priceText));
           renderSubmit();
         },
       });
-      if (!entry.name.trim()) nameInput.classList.add('is-invalid');
-      const priceInput = input({
-        value: entry.priceText,
-        placeholder: '价格（可选，如 ¥12）',
-        oninput: (e) => { entry.priceText = e.target.value; },
-      });
+      if (!/\d/.test(entry.priceText)) priceInput.classList.add('is-invalid');
       return el('div', { class: 'up__entry' }, [
         thumb,
         el('div', { class: 'up__entry-body' }, [
@@ -388,97 +389,98 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
 
   /* ------------------------------------------------------------- 提交 */
 
-  function buildRecords() {
-    const base = {
-      canteenId: prefs.canteenId,
-      floor: prefs.floor || null,
-      stallName: prefs.stallName || null,
+  /** 位置信息（对外接口的 canteen / floor / window 三项） */
+  function locationInput() {
+    return {
+      canteen: prefs.canteenId,
+      floor: prefs.floor || '',
+      window: prefs.stallName,
     };
-    const records = [];
-    const stallExists = (menu?.stalls || []).some((stall) => (
-      stall.canteenId === base.canteenId
-      && (stall.floor || null) === base.floor
-      && stall.name === base.stallName
+  }
+
+  function needsStallRecord() {
+    const floor = prefs.floor || null;
+    const exists = (menu?.stalls || []).some((stall) => (
+      stall.canteenId === prefs.canteenId && (stall.floor || null) === floor && stall.name === prefs.stallName
     ));
-    // 新窗口建档，或给已有窗口换封面图
-    if (base.stallName && (!stallExists || state.windowPhoto)) {
-      records.push({
+    return Boolean(prefs.stallName) && (!exists || state.windowPhoto);
+  }
+
+  /**
+   * 组装这批上传：菜品记录交给 core/intake 规范化（与 agent 调接口走同一条路径），
+   * 窗口建档/换封面图另外生成一条 stall 记录。
+   */
+  function buildBatch() {
+    const inputs = state.entries.map((entry) => ({
+      ...locationInput(),
+      image: uploadPathFor(entry.asset),
+      price: entry.priceText,
+      name: entry.name,
+      date: state.date,
+      cuisines: prefs.cuisines,
+      spicyLevel: prefs.spicyLevel,
+      reviewLabel: prefs.reviewLabel,
+    }));
+    const normalized = normalizeIntakeBatch(inputs, menu, { author: author || '匿名同学' });
+    const records = normalized.records.slice();
+    const assets = [...normalized.assets, ...state.entries.map((entry) => entry.asset)];
+
+    if (needsStallRecord()) {
+      records.unshift({
         id: newId('w'),
         kind: 'stall',
         createdAt: new Date().toISOString(),
         author: author || '匿名同学',
         payload: {
-          canteenId: base.canteenId,
-          floor: base.floor,
-          name: base.stallName,
+          canteenId: prefs.canteenId,
+          floor: state.windowPhoto ? (prefs.floor || null) : (prefs.floor || null),
+          name: prefs.stallName,
           windowType: state.windowType || '自选',
           note: null,
           image: state.windowPhoto ? uploadPathFor(state.windowPhoto) : null,
         },
       });
+      if (state.windowPhoto) assets.push(state.windowPhoto);
     }
-
-    state.entries.forEach((entry) => {
-      records.push({
-        id: newId('d'),
-        kind: 'dish',
-        createdAt: new Date().toISOString(),
-        author: author || '匿名同学',
-        payload: {
-          canteenId: base.canteenId,
-          floor: base.floor,
-          stallName: base.stallName || null,
-          name: entry.name.trim(),
-          priceText: entry.priceText.trim() || null,
-          cuisines: prefs.cuisines,
-          spicyLevel: prefs.spicyLevel,
-          tags: [],
-          reviewLabel: prefs.reviewLabel,
-          reviewText: null,
-          image: uploadPathFor(entry.asset),
-          date: state.date, // 关键：自选菜按天有效
-          mealSlots: ['lunch', 'dinner'],
-          vegetarian: null,
-        },
-      });
-    });
-    return records;
+    return { records, assets, failed: normalized.failed };
   }
 
-  function validateAll(records) {
+  function validateBatch(batch) {
     if (!menu) return ['菜单还没加载完'];
     const errors = [];
     if (!state.entries.length) errors.push('先选至少一张照片');
-    records.forEach((record, index) => {
+    batch.failed.forEach((item) => {
+      item.errors.forEach((error) => errors.push(`第 ${item.index + 1} 道菜：${error}`));
+    });
+    batch.records.filter((record) => record.kind === 'stall').forEach((record) => {
       const result = validateContribution(record, menu);
-      if (!result.ok) {
-        const label = record.kind === 'stall' ? '窗口' : `第 ${index + 1} 道菜`;
-        result.errors.forEach((error) => errors.push(`${label}：${error}`));
-      }
+      if (!result.ok) result.errors.forEach((error) => errors.push(`窗口：${error}`));
     });
     return errors;
   }
 
   function renderSubmit() {
     clear(submitHost);
-    const records = buildRecords();
+    const batch = buildBatch();
+    const records = batch.records;
     const dishCount = records.filter((r) => r.kind === 'dish').length;
     const writable = source.capabilities.write;
-    const errors = validateAll(records);
-    const missingNames = state.entries.filter((entry) => !entry.name.trim()).length;
+    const errors = validateBatch(batch);
+    const missingPrices = state.entries.filter((entry) => !/\d/.test(entry.priceText)).length;
 
     // 高频上传要一眼看出「还差什么」，而不是点了才知道
     let label = `一次提交 ${dishCount} 道菜`;
     if (busy) label = '提交中…';
     else if (!state.entries.length) label = '先选照片';
-    else if (missingNames) label = `还需填 ${missingNames} 个菜名`;
+    else if (!prefs.stallName) label = '还需填窗口名';
+    else if (missingPrices) label = `还需填 ${missingPrices} 个价格`;
     else if (errors.length) label = '还有信息要补';
 
     mount(
       submitHost,
       button(label, {
         size: 'lg',
-        onClick: () => submit(records),
+        onClick: () => submit(batch),
       }),
       el('p', { class: 'up__hint', text: writable
         ? '照片和内容会在同一个 commit 里提交，线上 1 分钟左右生效'
@@ -505,8 +507,8 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
     if (submitButton) submitButton.disabled = busy || !writable || !dishCount || errors.length > 0;
   }
 
-  async function submit(records) {
-    validationErrors = validateAll(records);
+  async function submit(batch) {
+    validationErrors = validateBatch(batch);
     if (validationErrors.length) {
       renderSubmit();
       toast('还有几项要补一下', { tone: 'bad' });
@@ -515,7 +517,8 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
     busy = true;
     renderSubmit();
     try {
-      const images = [...state.entries.map((entry) => entry.asset), state.windowPhoto].filter(Boolean);
+      const records = batch.records;
+      const images = batch.assets;
       const dishCount = records.filter((r) => r.kind === 'dish').length;
       const result = await source.saveMany(records, {
         images,

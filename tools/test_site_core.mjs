@@ -14,9 +14,11 @@ import {
 } from '../docs/assets/js/core/menu.js';
 import { draw, preview, redrawCuisine, plan, resolveSeed } from '../docs/assets/js/core/lottery.js';
 import { dateKey, daysAgo, shiftDate } from '../docs/assets/js/core/date.js';
+import { UNCATEGORIZED } from '../docs/assets/js/core/lottery.js';
 import { encodeShare, decodeShare, optionsFromHash, buildShareText } from '../docs/assets/js/core/share.js';
 import { createRng, hashSeed, pickWeightedMany, poolWeights, ticketOf } from '../docs/assets/js/core/rng.js';
 import { uploadPathFor } from '../docs/assets/js/data/contract.js';
+import { normalizeIntake, normalizeIntakeBatch, INTAKE_SPEC } from '../docs/assets/js/core/intake.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const base = JSON.parse(readFileSync(join(ROOT, 'docs/assets/data/menu.json'), 'utf8'));
@@ -468,6 +470,261 @@ test('以 _ 开头的文件被忽略', () => {
   const merged = buildMenu(base, [{ id: '_example', kind: 'dish', payload: { name: 'x' } }]);
   assert.equal(merged.rejected.length, 0);
   assert.equal(merged.contributions.length, 0);
+});
+
+/* ------------------------------------- 对外上传接口（图片+饭堂+楼层+窗口+价格） */
+section('上传接口 normalizeIntake');
+
+const MINIMAL = {
+  image: 'assets/uploads/20260920-abc.jpg',
+  canteen: '澜园',
+  floor: '一楼',
+  window: '自选窗口',
+  price: '12',
+};
+
+test('只给五个必填项就能生成合法记录', () => {
+  const result = normalizeIntake(MINIMAL, menu, { today: '2026-09-20' });
+  assert.ok(result.ok, result.errors.join('; '));
+  const { payload } = result.record;
+  assert.equal(payload.canteenId, 'lan_yuan', '中文饭堂名应解析成 id');
+  assert.equal(payload.floor, '1F', '「一楼」应规范成 1F');
+  assert.equal(payload.stallName, '自选窗口');
+  assert.equal(payload.priceText, '12');
+  assert.equal(payload.image, 'assets/uploads/20260920-abc.jpg');
+  assert.equal(payload.name, '自选菜', '没给菜名时用默认名');
+  assert.equal(payload.unnamed, true);
+  assert.equal(payload.date, '2026-09-20', '默认今天');
+  assert.deepEqual(payload.cuisines, [], '菜系可留空');
+  assert.ok(result.record.id, '应自动生成 id');
+  // 产出的记录必须能通过系统校验
+  assert.ok(validateContribution(result.record, menu).ok);
+});
+
+test('字段名别名都认（canteenName / stall / price / photo）', () => {
+  const result = normalizeIntake({
+    photo: 'x.jpg', canteenName: 'lan_yuan', floor: '2F', stall: '面食窗口', price: 8,
+  }, menu);
+  assert.ok(result.ok, result.errors.join('; '));
+  assert.equal(result.record.payload.image, 'assets/uploads/x.jpg', '裸文件名应补成约定路径');
+  assert.equal(result.record.payload.priceText, '¥8', '数字价格应格式化成 ¥8');
+  assert.equal(result.record.payload.stallName, '面食窗口');
+});
+
+test('饭堂可以用 id、中文名，无法识别时报错并列出可选值', () => {
+  assert.ok(normalizeIntake({ ...MINIMAL, canteen: 'lan_yuan' }, menu).ok);
+  assert.ok(normalizeIntake({ ...MINIMAL, canteen: '澜园' }, menu).ok);
+  const bad = normalizeIntake({ ...MINIMAL, canteen: '不存在的食堂' }, menu);
+  assert.equal(bad.ok, false);
+  assert.ok(bad.errors[0].includes('饭堂无法识别'));
+  assert.ok(bad.errors[0].includes('澜园'), '错误信息里应列出可用饭堂');
+});
+
+test('楼层别名：1F/一层/一楼/1 都能收，未知楼层报错', () => {
+  ['1F', '一层', '一楼', '1', 'f1'].forEach((floor) => {
+    const result = normalizeIntake({ ...MINIMAL, floor }, menu);
+    assert.ok(result.ok, `${floor} 应该被接受：${result.errors.join('; ')}`);
+    assert.equal(result.record.payload.floor, '1F');
+  });
+  const none = normalizeIntake({ ...MINIMAL, floor: '' }, menu);
+  assert.ok(none.ok);
+  assert.equal(none.record.payload.floor, null, '空楼层 = 未标注');
+  const bad = normalizeIntake({ ...MINIMAL, floor: '9F' }, menu);
+  assert.equal(bad.ok, false);
+  assert.ok(bad.errors[0].includes('楼层无法识别'));
+});
+
+test('价格接受多种写法，没有数字则报错', () => {
+  [12, '12', '¥12', '12-15', '10元以下', '按重量约20'].forEach((price) => {
+    const result = normalizeIntake({ ...MINIMAL, price }, menu);
+    assert.ok(result.ok, `${price} 应该被接受：${result.errors.join('; ')}`);
+  });
+  const bad = normalizeIntake({ ...MINIMAL, price: '很便宜' }, menu);
+  assert.equal(bad.ok, false);
+  assert.ok(bad.errors.some((e) => e.includes('价格里没有数字')));
+  const missing = normalizeIntake({ image: MINIMAL.image, canteen: '澜园', floor: '1F', window: '自选' }, menu);
+  assert.equal(missing.ok, false);
+  assert.ok(missing.errors.some((e) => e.includes('缺少价格')));
+});
+
+test('图片接受约定路径 / 外链 / 裸文件名 / base64 / 对象', () => {
+  assert.equal(normalizeIntake({ ...MINIMAL, image: 'assets/uploads/a.jpg' }, menu).record.payload.image, 'assets/uploads/a.jpg');
+  assert.equal(normalizeIntake({ ...MINIMAL, image: 'https://cdn.example.com/a.jpg' }, menu).record.payload.image, 'https://cdn.example.com/a.jpg');
+  assert.equal(normalizeIntake({ ...MINIMAL, image: 'a.jpg' }, menu).record.payload.image, 'assets/uploads/a.jpg');
+
+  const dataUrl = normalizeIntake({ ...MINIMAL, image: 'data:image/jpeg;base64,QUJD' }, menu);
+  assert.ok(dataUrl.ok, dataUrl.errors.join('; '));
+  assert.equal(dataUrl.assets.length, 1, 'dataURL 会作为待提交图片返回');
+  assert.equal(dataUrl.assets[0].base64, 'QUJD');
+
+  const obj = normalizeIntake({ ...MINIMAL, image: { name: 'p.jpg', base64: 'QUJD' } }, menu);
+  assert.ok(obj.ok);
+  assert.equal(obj.record.payload.image, 'assets/uploads/p.jpg');
+  assert.equal(obj.assets[0].name, 'p.jpg');
+
+  const bad = normalizeIntake({ ...MINIMAL, image: 'ftp://x/a.bmp' }, menu);
+  assert.equal(bad.ok, false);
+  assert.ok(bad.errors.some((e) => e.includes('图片地址无法识别')));
+});
+
+test('菜系可用中文名，辣度可用标签', () => {
+  const result = normalizeIntake({ ...MINIMAL, cuisines: ['川菜'], spicyLevel: '微辣' }, menu);
+  assert.ok(result.ok, result.errors.join('; '));
+  assert.deepEqual(result.record.payload.cuisines, ['sichuan']);
+  assert.equal(result.record.payload.spicyLevel, 1);
+
+  const ambiguous = normalizeIntake({ ...MINIMAL, cuisines: ['菜'] }, menu);
+  assert.equal(ambiguous.ok, false);
+  assert.ok(ambiguous.errors.some((e) => e.includes('歧义')));
+
+  const bad = normalizeIntake({ ...MINIMAL, spicyLevel: '超辣' }, menu);
+  assert.equal(bad.ok, false);
+  assert.ok(bad.errors.some((e) => e.includes('辣度无法识别')));
+});
+
+test('批量上传：一条坏不影响其他', () => {
+  const batch = normalizeIntakeBatch([
+    { ...MINIMAL, price: '12' },
+    { ...MINIMAL, canteen: '不存在', price: '12' },
+    { ...MINIMAL, price: '15', window: '另一个窗口' },
+  ], menu);
+  assert.equal(batch.records.length, 2);
+  assert.equal(batch.failed.length, 1);
+  assert.equal(batch.failed[0].index, 1, '应指出第几条失败');
+  assert.ok(batch.failed[0].errors[0].includes('饭堂'));
+});
+
+test('接口说明里列出的必填项就是那五个', () => {
+  assert.deepEqual(INTAKE_SPEC.required, ['image', 'canteen', 'floor', 'window', 'price']);
+  assert.equal(INTAKE_SPEC.version, 'v1');
+});
+
+test('对外 JSON Schema 与代码常量保持一致（防止文档漂移）', () => {
+  const schema = JSON.parse(readFileSync(join(ROOT, 'docs/assets/data/intake-schema.json'), 'utf8'));
+  const item = schema.$defs.intakeItem;
+  assert.deepEqual(item.required, INTAKE_SPEC.required, 'schema 的必填项应与 INTAKE_SPEC.required 一致');
+  assert.equal(schema['x-interface-version'], INTAKE_SPEC.version, 'schema 版本号应与 INTAKE_SPEC.version 一致');
+  INTAKE_SPEC.required.concat(INTAKE_SPEC.optional).forEach((field) => {
+    assert.ok(item.properties[field], `schema 里缺少字段：${field}`);
+  });
+  // 别名表也要与 schema 描述对得上（至少保证别名在文档里有出现）
+  Object.entries(INTAKE_SPEC.aliases).forEach(([field, aliases]) => {
+    if (!item.properties[field]) return;
+    const description = item.properties[field].description || '';
+    aliases.slice(1).forEach((alias) => {
+      assert.ok(description.includes(alias), `${field} 的别名 ${alias} 没写进 schema 描述`);
+    });
+  });
+});
+
+test('没标菜系的菜照样能被抽签推送（未标菜系桶）', () => {
+  // 用一个截图数据里没有菜的楼层，保证池子里只有这两道「未标菜系」的菜
+  const menu2 = buildMenu(base, [
+    { id: 'u-1', kind: 'dish', payload: { canteenId: 'zhi_lan_yuan', floor: '3F', stallName: '自选窗口', name: '红烧肉', priceText: '¥12', cuisines: [], date: TODAY } },
+    { id: 'u-2', kind: 'dish', payload: { canteenId: 'zhi_lan_yuan', floor: '3F', stallName: '自选窗口', name: '青菜', priceText: '¥6', cuisines: [], date: TODAY } },
+  ]);
+  const result = draw(menu2, { canteenId: 'zhi_lan_yuan', floor: '3F', seed: 3, avoidRecent: false });
+  assert.ok(result.ok);
+  assert.equal(result.cuisine.id, UNCATEGORIZED.id, '应推送「未标菜系」');
+  assert.equal(result.dishes.length, 2);
+  assert.ok(result.dishes.every((d) => d.cuisines.length === 0));
+
+  // 混着有菜系的菜时，「未标菜系」也应出现在候选里
+  const mixed = buildMenu(base, [
+    { id: 'u-3', kind: 'dish', payload: { canteenId: 'zhi_lan_yuan', floor: '3F', stallName: '自选窗口', name: '红烧肉', priceText: '¥12', cuisines: [], date: TODAY } },
+    { id: 'u-4', kind: 'dish', payload: { canteenId: 'zhi_lan_yuan', floor: '3F', stallName: '自选窗口', name: '回锅肉', priceText: '¥14', cuisines: ['sichuan'], date: TODAY } },
+  ]);
+  const seen = new Set();
+  for (let seed = 0; seed < 20; seed += 1) {
+    const r = draw(mixed, { canteenId: 'zhi_lan_yuan', floor: '3F', seed, avoidRecent: false });
+    if (r.ok) seen.add(r.cuisine.id);
+  }
+  assert.ok(seen.has(UNCATEGORIZED.id) && seen.has('sichuan'), `两种菜系都应能被推到：${[...seen].join(', ')}`);
+});
+
+test('未命名多张照片不会被去重合并；同图重复上传会合并', () => {
+  const unnamed = (id, image) => ({
+    id, kind: 'dish',
+    payload: { canteenId: 'lan_yuan', floor: '1F', stallName: '自选窗口', priceText: '¥10', cuisines: [], date: TODAY, image, unnamed: true },
+  });
+  const menu2 = buildMenu(base, [unnamed('n-1', 'assets/uploads/a.jpg'), unnamed('n-2', 'assets/uploads/b.jpg')]);
+  assert.equal(menu2.dishes.filter((d) => d.unnamed).length, 2, '不同照片应各自保留');
+  assert.equal(menu2.meta.stats.dedupedDailyCount, 0);
+
+  const menu3 = buildMenu(base, [unnamed('n-3', 'assets/uploads/a.jpg'), unnamed('n-4', 'assets/uploads/a.jpg')]);
+  assert.equal(menu3.dishes.filter((d) => d.unnamed).length, 1, '同一张图重复上传应合并');
+  assert.equal(menu3.meta.stats.dedupedDailyCount, 1);
+});
+
+test('README 里的接口示例都是合法 JSON 且能通过规范化', () => {
+  const readme = readFileSync(join(ROOT, 'docs/README.md'), 'utf8');
+  const blocks = [...readme.matchAll(/```json\n([\s\S]*?)```/g)].map((m) => m[1]);
+  assert.ok(blocks.length >= 4, `README 里的 JSON 示例太少：${blocks.length}`);
+
+  const REQUIRED = INTAKE_SPEC.required;
+  let checked = 0;
+  blocks.forEach((block, index) => {
+    let parsed;
+    try {
+      parsed = JSON.parse(block);
+    } catch (error) {
+      throw new Error(`README 第 ${index + 1} 个 JSON 示例不是合法 JSON：${error.message}`);
+    }
+
+    const isItem = REQUIRED.every((key) => Object.prototype.hasOwnProperty.call(parsed, key));
+    if (isItem) {
+      const result = normalizeIntake(parsed, menu);
+      assert.ok(result.ok, `README 最小请求示例没通过规范化：${result.errors.join('; ')}`);
+      checked += 1;
+    }
+
+    if (Array.isArray(parsed.records)
+      && parsed.records.length
+      && parsed.records.every((item) => REQUIRED.every((key) => key in item))) {
+      const batch = normalizeIntakeBatch(parsed, menu);
+      assert.equal(batch.failed.length, 0, `README 批量示例有失败项：${JSON.stringify(batch.failed)}`);
+      assert.equal(batch.records.length, parsed.records.length);
+      checked += 1;
+    }
+  });
+  assert.ok(checked >= 2, `至少应校验「最小请求」与「批量」两个示例，实际校验了 ${checked}`);
+});
+
+test('裸接口格式的 JSON 文件也能直接收（不需要包 payload）', () => {
+  const raw = { image: 'assets/uploads/a.jpg', canteen: '澜园', floor: '一楼', window: '自选窗口', price: '12' };
+  const menuA = buildMenu(base, [raw]);
+  const menuB = buildMenu(base, [raw]);
+  const dishA = menuA.dishes.find((d) => d.origin === 'community');
+  const dishB = menuB.dishes.find((d) => d.origin === 'community');
+
+  assert.ok(dishA, '裸接口格式的文件应被接受');
+  assert.equal(dishA.payload ? '' : dishA.canteenId, 'lan_yuan');
+  assert.equal(dishA.floor, '1F', '「一楼」应规范化');
+  assert.equal(dishA.name, '自选菜');
+  assert.equal(dishA.price.min, 12);
+  assert.equal(dishA.date, TODAY, '默认今天');
+  assert.equal(dishA.id, dishB.id, 'id 必须稳定（否则收藏/历史会指错）');
+  assert.equal(menuA.meta.stats.rejectedCount, 0);
+  assert.ok(menuA.stalls.some((stall) => stall.name === '自选窗口'), '窗口应自动派生');
+});
+
+test('裸接口格式可以引用同一批上传的新饭堂', () => {
+  const merged = buildMenu(base, [
+    { ...{ image: 'assets/uploads/a.jpg', canteen: '新食堂', floor: '1F', window: '自选窗口', price: '12' } },
+    { id: 'newhall-1', kind: 'canteen', payload: { id: 'new_hall', name: '新食堂', floors: ['1F'] } },
+  ]);
+  assert.equal(merged.meta.stats.rejectedCount, 0, JSON.stringify(merged.rejected));
+  const dish = merged.dishes.find((d) => d.origin === 'community');
+  assert.equal(dish.canteenId, 'new_hall');
+});
+
+test('文件方式用 base64 会被明确拒绝并给出替代方案', () => {
+  const merged = buildMenu(base, [
+    { image: 'data:image/jpeg;base64,QUJD', canteen: '澜园', floor: '1F', window: '自选窗口', price: '12' },
+  ]);
+  assert.equal(merged.meta.stats.rejectedCount, 1);
+  assert.ok(merged.rejected[0].errors[0].includes('base64'), merged.rejected[0].errors[0]);
+  assert.ok(merged.rejected[0].errors[0].includes('upload.html'), '应提示改用哪个入口');
 });
 
 /* --------------------------------------------------- 上传路径约定 */

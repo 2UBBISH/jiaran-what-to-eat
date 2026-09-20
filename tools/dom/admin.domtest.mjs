@@ -73,8 +73,13 @@ await suite.test('数据源下拉包含四种模式', () => {
 });
 
 await suite.test('必填项为空时给出校验错误并禁用提交', () => {
+  // 菜名/菜系现在可选（对齐对外接口），但饭堂是必填
   assert.ok(q(window, '.valid.is-bad'), '没有显示校验错误');
-  assert.ok(qa(window, '.valid.is-bad li').length >= 3, '错误条目太少');
+  assert.ok(qa(window, '.valid.is-bad li').length >= 1, '错误条目太少');
+  assert.ok(
+    q(window, '.valid.is-bad').textContent.includes('饭堂'),
+    `应提示缺饭堂：${q(window, '.valid.is-bad').textContent}`,
+  );
   assert.ok(submitButton().disabled, '校验不通过时应禁用提交');
 });
 

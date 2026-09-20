@@ -8,6 +8,8 @@
  */
 
 import { dateKey, isDateKey } from './date.js';
+import { normalizeIntake, INTAKE_SPEC } from './intake.js';
+import { hashSeed } from './rng.js';
 
 const FLOOR_IDS = ['1F', '2F', '3F'];
 const CONTRIBUTION_KINDS = ['dish', 'canteen', 'stall', 'note'];
@@ -85,7 +87,9 @@ export function validateContribution(raw, menu) {
   const tagNames = new Set(menu.taxonomy.tags.map((t) => t.name));
 
   if (raw.kind === 'dish') {
-    if (!isStr(payload.name, 1, 40)) errors.push('菜名需为 1-40 字');
+    if (payload.name != null && String(payload.name).trim() !== '' && !isStr(payload.name, 1, 40)) {
+      errors.push('菜名最多 40 字');
+    }
     if (!canteenIds.has(payload.canteenId)) errors.push(`饭堂 id 不存在：${payload.canteenId}`);
     const floor = payload.floor ?? null;
     if (floor != null && !FLOOR_IDS.includes(floor)) errors.push('floor 只能是 1F / 2F / 3F 或留空');
@@ -94,7 +98,7 @@ export function validateContribution(raw, menu) {
     cuisines.forEach((id2) => {
       if (!cuisineIds.has(id2)) errors.push(`菜系 id 不存在：${id2}`);
     });
-    if (!cuisines.length) errors.push('至少选择 1 个菜系');
+    // 菜系可留空：没标菜系的菜会进「未分类」桶，仍然能被推送（见 core/lottery.js）
     const tags = Array.isArray(payload.tags) ? payload.tags : [];
     tags.forEach((tag) => {
       if (!tagNames.has(tag)) errors.push(`标签不在词表内：${tag}`);
@@ -163,12 +167,15 @@ function newDishFromContribution(menu, contrib, index) {
   const level = byLabel.get(p.reviewLabel) || byLabel.get('好评');
   const price = parsePriceText(p.priceText);
   const variants = Array.isArray(p.variants) ? p.variants.filter((v) => isStr(v, 1, 40)) : [];
+  const hasName = isStr(p.name, 1, 40);
+  const name = hasName ? p.name.trim() : '自选菜';
   return {
     id: `x-${contrib.id}`,
     type: 'dish',
     origin: 'community',
     contributionId: contrib.id,
-    name: p.name.trim(),
+    name,
+    unnamed: !hasName, // 没菜名时按图片去重
     variants,
     canteenId: p.canteenId,
     floor: p.floor ?? null,
@@ -192,7 +199,7 @@ function newDishFromContribution(menu, contrib, index) {
     image: p.image || null,
     author: contrib.author || null,
     createdAt: contrib.createdAt || null,
-    searchKeys: [p.name.trim(), ...variants, p.stallName || ''].filter(Boolean),
+    searchKeys: [name, ...variants, p.stallName || ''].filter(Boolean),
     source: { contribution: contrib.id, author: contrib.author || null, page: null },
     _index: index,
   };
@@ -263,6 +270,39 @@ function priceTierOf(price) {
     if (anchor > low && (high == null || anchor <= high)) return id;
   }
   return null;
+}
+
+/**
+ * 兼容两种写入格式：
+ *   1. 内部记录格式  { id, kind, payload }              —— 网页上传 / 老数据
+ *   2. 裸接口格式     { image, canteen, floor, window, price, ... }  —— 见 README 第 1 节
+ * 裸接口格式用 core/intake.js 规范化，并生成**稳定 id**（同一份内容每次加载 id 相同，
+ * 否则收藏/历史记录会指向不存在的菜）。
+ */
+function prepareContribution(item, menu) {
+  const looksLikeIntake = !item.kind
+    && !item.payload
+    && INTAKE_SPEC.required.every((key) => item[key] !== undefined
+      || (INTAKE_SPEC.aliases[key] || []).some((alias) => item[alias] !== undefined));
+
+  if (!looksLikeIntake) return { ok: true, record: item, id: item.id ?? '(无 id)' };
+
+  const normalized = normalizeIntake(item, menu);
+  if (!normalized.ok) return { ok: false, id: item.id ?? '(裸接口格式)', errors: normalized.errors };
+  if (normalized.assets.length) {
+    return {
+      ok: false,
+      id: item.id ?? '(裸接口格式)',
+      errors: ['文件方式不支持内联 base64 图片：请把图片放到 docs/assets/uploads/ 并写路径，或改用 upload.html / saveMany 接口'],
+    };
+  }
+  const record = normalized.record;
+  if (!item.id) {
+    const { canteenId, floor, stallName, date, name, priceText, image } = record.payload;
+    const fingerprint = [canteenId, floor || '', stallName || '', date || '', name, priceText || '', image || ''].join('|');
+    record.id = `raw-${hashSeed(fingerprint).toString(36)}`;
+  }
+  return { ok: true, record, id: record.id };
 }
 
 /**
@@ -340,11 +380,13 @@ function dedupeDaily(menu) {
   const lastIndexByKey = new Map();
   // 注意用 dish.date 而不是 dish.daily：daily 标记是在聚合阶段才算出来的，
   // 去重发生在此之前。
-  const keyOf = (dish) => (
-    dish.date && dish.stallName
-      ? `${dish.canteenId}|${dish.floor || ''}|${dish.stallName}|${dish.date}|${dish.name}`
-      : null
-  );
+  // 有菜名 -> 按菜名去重（重拍同一道菜只留最新）；
+  // 没菜名 -> 按图片去重（同一窗口多张未命名照片是不同菜，不能被合并）。
+  const keyOf = (dish) => {
+    if (!dish.date || !dish.stallName) return null;
+    const tag = dish.unnamed ? `img:${dish.image || dish.id}` : `name:${dish.name}`;
+    return `${dish.canteenId}|${dish.floor || ''}|${dish.stallName}|${dish.date}|${tag}`;
+  };
 
   menu.dishes.forEach((dish, index) => {
     const key = keyOf(dish);
@@ -519,9 +561,14 @@ export function buildMenu(base, contributions = [], { today = dateKey() } = {}) 
     .slice()
     .sort((a, b) => (KIND_ORDER[a.kind] ?? 9) - (KIND_ORDER[b.kind] ?? 9))
     .forEach((item) => {
-      const result = validateContribution(item, menu);
+      const prepared = prepareContribution(item, menu);
+      if (!prepared.ok) {
+        menu.rejected.push({ id: prepared.id, errors: prepared.errors });
+        return;
+      }
+      const result = validateContribution(prepared.record, menu);
       if (!result.ok) {
-        menu.rejected.push({ id: item.id ?? '(无 id)', errors: result.errors });
+        menu.rejected.push({ id: prepared.id, errors: result.errors });
         return;
       }
       applyContribution(menu, result.value);

@@ -10,6 +10,22 @@
 | `tools/` | 生成、校验、测试脚本 | `python3 tools/build_menu_data.py` |
 | `.github/workflows/` | Pages 部署 + 贡献索引重建 | push 即自动部署 |
 
+## 上传接口（给 agent / 脚本）
+
+对外接口只要求五项：**饭菜图片 + 饭堂 + 楼层 + 窗口 + 价格**，其余可选。
+完整字段表、别名、容错规则、批量格式、错误码与可直接照抄的 `git` 步骤见
+**`docs/README.md` 第 1 节**；机器可读版本是 `docs/assets/data/intake-schema.json`（v1）。
+
+```json
+{
+  "image": "assets/uploads/20260920-abc.jpg",
+  "canteen": "澜园",
+  "floor": "一楼",
+  "window": "自选窗口",
+  "price": "12"
+}
+```
+
 ## 快速开始
 
 ```bash

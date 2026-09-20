@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2ubbish.github.io/jiaran-what-to-eat/assets/data/intake-schema.json",
+  "title": "今天吃什么 · 菜品上传接口 v1",
+  "description": "对外上传接口：饭菜图片 + 饭堂 + 楼层 + 窗口 + 价格（五项必填），其余可选。字段名与取值都做了容错，见 core/intake.js。",
+  "x-interface-version": "v1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/intakeItem"
+    },
+    {
+      "type": "object",
+      "required": [
+        "records"
+      ],
+      "properties": {
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/intakeItem"
+          },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": true
+    }
+  ],
+  "$defs": {
+    "intakeItem": {
+      "type": "object",
+      "required": [
+        "image",
+        "canteen",
+        "floor",
+        "window",
+        "price"
+      ],
+      "properties": {
+        "image": {
+          "description": "饭菜图片：约定路径 assets/uploads/xxx.jpg、外链 https://…、data:image/…、裸文件名 xxx.jpg，或 {name, base64}。别名：imageUrl、photo、photoUrl、pic",
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "object",
+              "required": [
+                "base64"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "mime": {
+                  "type": "string"
+                },
+                "base64": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "canteen": {
+          "description": "饭堂：中文名或 id，例：澜园 / lan_yuan。别名：canteenId、canteenName、hall",
+          "type": "string",
+          "minLength": 1
+        },
+        "floor": {
+          "description": "楼层：1F/2F/3F，也接受 一层/二楼/1/f1；空字符串 = 楼层未标注。别名：floorId、floorLabel",
+          "type": "string"
+        },
+        "window": {
+          "description": "窗口：例「自选窗口」。别名：stall、stallName、counter",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "price": {
+          "description": "价格：数字或文本，必须能解析出数字。例：12 / \"¥12\" / \"12-15\" / \"10元以下\"。别名：priceText、cost",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            }
+          ]
+        },
+        "name": {
+          "description": "菜名（可选）：留空记为「自选菜」，并按图片去重。别名：dish、dishName、title",
+          "type": "string",
+          "maxLength": 40
+        },
+        "date": {
+          "description": "生效日期（可选）：自选菜只在该日期有效，默认今天。别名：day",
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "cuisines": {
+          "description": "菜系（可选）：id 或中文名，例 [\"homestyle\"] / [\"家常菜\"]；留空归入「未标菜系」桶。别名：cuisine、cuisineIds",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "spicyLevel": {
+          "description": "辣度（可选）：0-3 或 不辣/微辣/中辣/重辣，默认 0。别名：spicy、spiciness",
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "reviewLabel": {
+          "description": "评价标签（可选）：好评 / 强烈推荐 / 值得一试 / 两极 / 信息较少，默认 好评",
+          "type": "string"
+        },
+        "reviewText": {
+          "description": "评价正文（可选，≤400 字）。别名：review、note、comment",
+          "type": "string",
+          "maxLength": 400
+        },
+        "tags": {
+          "description": "标签（可选）：需来自数据里的标签词表，例 [\"必点\"]、[\"性价比高\"]",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "author": {
+          "description": "上传者昵称（可选）",
+          "type": "string"
+        },
+        "id": {
+          "description": "自定义 id（可选，建议留空由服务生成）",
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
