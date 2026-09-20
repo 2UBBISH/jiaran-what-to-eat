@@ -11,7 +11,7 @@ import { APP_NAME, APP_TAGLINE, APP_SUB, SHARE_TITLE } from '../brand.js';
 import {
   button, chipRow, segmented, toggleRow, dishCard, ticketChip,
   emptyState, sectionTitle, toast, bottomSheet, historyItem,
-  stallStrip, todayBoard,
+  stallStrip, todayBoard, stallDishCard,
 } from './components.js';
 import { draw, redrawCuisine, preview } from '../core/lottery.js';
 import { dateLabel } from '../core/date.js';
@@ -94,6 +94,29 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     cuisine: createRoller(reelCuisine),
   };
 
+  /** 把菜按「窗口」聚合：自选是窗口，菜是窗口的当天菜色 */
+  function groupByWindow(menu, dishes) {
+    const stallMap = new Map((menu.stalls || []).map((stall) => [
+      `${stall.canteenId}|${stall.floor || ''}|${stall.name}`,
+      stall,
+    ]));
+    const groups = new Map();
+    dishes.forEach((dish) => {
+      const key = `${dish.canteenId}|${dish.floor || ''}|${dish.stallName || '未标注窗口'}`;
+      if (!groups.has(key)) {
+        groups.set(key, {
+          stall: stallMap.get(key) || {
+            id: key, canteenId: dish.canteenId, floor: dish.floor,
+            name: dish.stallName || '未标注窗口', windowType: '自选', image: null, note: null,
+          },
+          dishes: [],
+        });
+      }
+      groups.get(key).dishes.push(dish);
+    });
+    return [...groups.values()].sort((a, b) => b.dishes.length - a.dishes.length);
+  }
+
   /* ------------------------------------------------------------ 渲染 */
 
   function activeFilterSummary() {
@@ -137,7 +160,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
         ? el('button', {
           class: 'stage__today',
           type: 'button',
-          text: `· 今日自选 ${todayCount} 道`,
+          text: `· 今日自选窗口 ${todayCount} 道`,
           onclick: () => todayHost.scrollIntoView({ behavior: 'smooth', block: 'start' }),
         })
         : null,
@@ -145,8 +168,8 @@ export function createDrawView({ getMenu, onNeedMenu }) {
   }
 
   /**
-   * 「今日自选」专区：不管抽没抽、抽到哪个饭堂，今天上传的自选菜都在这里，
-   * 图片是主角。点卡片可以直接抽那个饭堂+楼层。
+   * 「今日自选窗口」专区：自选是食堂的一个**窗口**，所以一张卡 = 一个窗口，
+   * 窗口今天的菜色列在卡片里。不用抽签就能看到，点封面/缩略图看大图。
    */
   function renderToday() {
     clear(todayHost);
@@ -159,46 +182,18 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     }
     todayHost.hidden = false;
     const byCanteen = new Map(menu.canteens.map((canteen) => [canteen.id, canteen]));
-    const groups = new Map();
-    dailies.forEach((dish) => {
-      const key = `${dish.canteenId}|${dish.floor || ''}|${dish.stallName || ''}`;
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(dish);
-    });
-
-    const cards = [...groups.values()].map((dishes) => {
-      const first = dishes[0];
-      const canteen = byCanteen.get(first.canteenId);
-      const card = todayBoard(dishes, { canteen }).firstElementChild;
-      const footer = el('div', { class: 'today-card__footer' }, [
-        el('button', {
-          class: 'btn btn--soft btn--tiny',
-          type: 'button',
-          text: '抽这一层',
-          onclick: (event) => {
-            event.stopPropagation();
-            runDraw({ canteenId: first.canteenId, floor: first.floor ?? null, lockFloor: true });
-          },
-        }),
-        el('span', {
-          class: 'today-card__where',
-          text: [
-            canteen?.name || first.canteenId,
-            first.floor ? ({ '1F': '一层', '2F': '二层', '3F': '三层' }[first.floor] || first.floor) : '未标注楼层',
-          ].join(' · '),
-        }),
-      ]);
-      card.querySelector('.today-card__body')?.append(footer);
-      return card;
-    });
+    const windows = groupByWindow(menu, dailies);
 
     mount(
       todayHost,
       sectionTitle(
-        `今日自选 · ${dailies.length} 道`,
+        `今日自选窗口 · ${windows.length} 个 · ${dailies.length} 道菜`,
         el('a', { class: 'link', href: 'upload.html', text: '去上传 →' }),
       ),
-      el('div', { class: 'today-board' }, cards),
+      el('div', { class: 'stall-window-grid' }, windows.map((group) => stallDishCard(group.stall, group.dishes, {
+        canteen: byCanteen.get(group.stall.canteenId),
+        onDraw: (stall) => runDraw({ canteenId: stall.canteenId, floor: stall.floor ?? null, lockFloor: true }),
+      }))),
     );
   }
 
@@ -266,7 +261,10 @@ export function createDrawView({ getMenu, onNeedMenu }) {
       ]),
     ]);
 
-    const dishList = el('div', { class: `dish-list dish-list--push${animate ? '' : ' no-anim'}` }, dishes.map((dish, index) => {
+    const dishList = el('div', {
+      class: `dish-list dish-list--push${animate ? '' : ' no-anim'}`,
+      dataset: { gallery: 'push' },
+    }, dishes.map((dish, index) => {
       const card = dishCard(dish, {
         canteen,
         favorite: favorites.includes(dish.id),
@@ -332,12 +330,14 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     ));
     const todayBlock = todayDishes.length
       ? el('div', { class: 'today-section' }, [
-        sectionTitle(`今日自选 · ${dateLabel(menu.today, menu.today)}`, el('span', { class: 'pill', text: `${todayDishes.length} 道` })),
-        todayBoard(todayDishes, { canteen, favorites, onFavorite: (item) => {
-          toggleFavorite(item.id);
-          renderResult(next, { shared });
-        } }),
-        el('p', { class: 'up__hint', text: '自选窗口的菜每天更新，只当天参与抽签' }),
+        sectionTitle(
+          `这层的自选窗口 · ${dateLabel(menu.today, menu.today)}`,
+          el('span', { class: 'pill', text: `${todayDishes.length} 道` }),
+        ),
+        el('div', { class: 'stall-window-grid' }, groupByWindow(menu, todayDishes).map((group) => stallDishCard(
+          group.stall, group.dishes, { canteen },
+        ))),
+        el('p', { class: 'up__hint', text: '自选窗口的菜每天更新，只当天参与抽签；点图片可看大图' }),
       ])
       : null;
 
@@ -524,9 +524,9 @@ export function createDrawView({ getMenu, onNeedMenu }) {
           hint: `当前 ${menu.dishes.filter((d) => d.floor).length} 道菜有明确楼层`,
           onChange: (value) => { settings.labeledFloorsOnly = value; },
         }),
-        toggleRow('包含往日的自选菜', {
+        toggleRow('包含往日的窗口菜色', {
           checked: Boolean(settings.includePastDaily),
-          hint: '自选菜天天变，默认只用今天上传的',
+          hint: '自选窗口的菜天天变，默认只用今天上传的',
           onChange: (value) => { settings.includePastDaily = value; },
         }),
       ]),

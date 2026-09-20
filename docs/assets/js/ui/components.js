@@ -188,7 +188,20 @@ export function dishCard(dish, { canteen = null, onFavorite = null, favorite = f
   ].filter(Boolean);
 
   const node = el('article', { class: 'dish-card' }, [
-    dish.image ? el('div', { class: 'dish-card__media' }, [el('img', { src: dish.image, alt: dish.name, loading: 'lazy' })]) : null,
+    dish.image
+      ? el('div', { class: 'dish-card__media' }, [el('img', {
+        class: 'zoomable',
+        src: dish.image,
+        alt: dish.name,
+        loading: 'lazy',
+        title: '点击看大图',
+        dataset: {
+          zoomTitle: dish.name,
+          zoomMeta: [canteen?.name, dish.floor ? floorLabel(dish.floor) : null, dish.stallName, formatPrice(dish.price)]
+            .filter(Boolean).join(' · '),
+        },
+      })])
+      : null,
     el('div', { class: 'dish-card__body' }, [
       el('div', { class: 'dish-card__head' }, [
         el('h3', { class: 'dish-card__name', text: dish.name }),
@@ -274,12 +287,83 @@ export function bottomSheet({ title, onClose } = {}) {
 }
 
 
+/* --------------------------------------------------- 自选窗口（窗口为主） */
+
+/**
+ * 一张卡片 = 一个自选窗口：封面上是这个窗口的照片，
+ * 下面列出它今天的菜（菜名 + 价格）。这才是「自选」的正确口径 ——
+ * 自选是食堂的一个窗口，不是「我自己挑的菜」。
+ */
+export function stallDishCard(stall, dishes, { canteen = null, onDraw = null } = {}) {
+  const cover = stall.image || dishes.find((dish) => dish.image)?.image || null;
+  const coverDish = dishes.find((dish) => dish.image) || dishes[0] || null;
+
+  const media = el('div', { class: 'stall-dish-card__media' }, cover
+    ? [el('img', {
+      class: 'zoomable',
+      src: cover,
+      alt: `${stall.name} 封面`,
+      loading: 'lazy',
+      title: '点击看大图',
+      dataset: {
+        zoomTitle: `${stall.name}（窗口照片）`,
+        zoomMeta: [canteen?.name, stall.floor ? floorLabel(stall.floor) : null].filter(Boolean).join(' · '),
+      },
+    })]
+    : [el('span', { class: 'stall-card__placeholder', text: '🍱' })]);
+
+  const rows = dishes.map((dish) => el('div', { class: 'stall-dish-row' }, [
+    dish.image
+      ? el('img', {
+        class: 'zoomable stall-dish-row__thumb',
+        src: dish.image,
+        alt: dish.name,
+        loading: 'lazy',
+        title: '点击看大图',
+        dataset: {
+          zoomTitle: dish.name,
+          zoomMeta: [canteen?.name, stall.name, formatPrice(dish.price)].filter(Boolean).join(' · '),
+        },
+      })
+      : el('span', { class: 'stall-dish-row__dot' }),
+    el('span', { class: 'stall-dish-row__name', text: dish.name }),
+    pricePill(dish.price),
+  ]));
+
+  return el('article', { class: 'stall-dish-card', dataset: { gallery: `stall-${stall.id}` } }, [
+    media,
+    el('div', { class: 'stall-dish-card__body' }, [
+      el('div', { class: 'stall-dish-card__head' }, [
+        el('h3', { class: 'stall-dish-card__name', text: stall.name }),
+        stall.windowType === '自选' ? tagPill('自选窗口', 'spicy') : tagPill(stall.windowType),
+      ]),
+      el('div', { class: 'stall-dish-card__where', text: [
+        canteen?.name || stall.canteenId,
+        stall.floor ? floorLabel(stall.floor) : '楼层未标注',
+        `${dishes.length} 道`,
+      ].join(' · ') }),
+      stall.note ? el('p', { class: 'stall-dish-card__note', text: stall.note }) : null,
+      rows.length ? el('div', { class: 'stall-dish-rows' }, rows) : el('p', { class: 'up__hint', text: '今天还没有上传菜色' }),
+      onDraw
+        ? el('div', { class: 'stall-dish-card__actions' }, [
+          el('button', {
+            class: 'btn btn--soft btn--tiny',
+            type: 'button',
+            text: '抽这一层',
+            onclick: () => onDraw(stall),
+          }),
+        ])
+        : null,
+    ]),
+  ]);
+}
+
 /* --------------------------------------------------------------- 窗口 */
 
 /** 窗口横滑条：有照片就显示照片，没有就用类型占位 */
 export function stallStrip(stalls, { onPick = null } = {}) {
   if (!stalls.length) return null;
-  return el('div', { class: 'stall-strip scroll-x' }, stalls.map((stall) => el(
+  return el('div', { class: 'stall-strip scroll-x', dataset: { gallery: 'stalls' } }, stalls.map((stall) => el(
     onPick ? 'button' : 'div',
     {
       class: `stall-card${onPick ? ' stall-card--tap' : ''}`,
@@ -288,7 +372,14 @@ export function stallStrip(stalls, { onPick = null } = {}) {
     },
     [
       el('div', { class: 'stall-card__media' }, stall.image
-        ? [el('img', { src: stall.image, alt: stall.name, loading: 'lazy' })]
+        ? [el('img', {
+          class: 'zoomable',
+          src: stall.image,
+          alt: stall.name,
+          loading: 'lazy',
+          title: '点击看大图',
+          dataset: { zoomTitle: stall.name, zoomMeta: `${stall.windowType}窗口` },
+        })]
         : [el('span', { class: 'stall-card__placeholder', text: stall.windowType === '自选' ? '🍱' : '🍽' })]),
       el('div', { class: 'stall-card__body' }, [
         el('div', { class: 'stall-card__name', text: stall.name }),
@@ -305,10 +396,21 @@ export function stallStrip(stalls, { onPick = null } = {}) {
 /** 今日自选：自选窗口当天的菜，带照片 */
 export function todayBoard(dishes, { canteen = null, onFavorite = null, favorites = [] } = {}) {
   if (!dishes.length) return null;
-  return el('div', { class: 'today-board' }, dishes.map((dish) => {
+  return el('div', { class: 'today-board', dataset: { gallery: 'today' } }, dishes.map((dish) => {
     const card = el('article', { class: 'today-card' }, [
       dish.image
-        ? el('div', { class: 'today-card__media' }, [el('img', { src: dish.image, alt: dish.name, loading: 'lazy' })])
+        ? el('div', { class: 'today-card__media' }, [el('img', {
+          class: 'zoomable',
+          src: dish.image,
+          alt: dish.name,
+          loading: 'lazy',
+          title: '点击看大图',
+          dataset: {
+            zoomTitle: dish.name,
+            zoomMeta: [canteen?.name, dish.floor ? floorLabel(dish.floor) : null, dish.stallName, formatPrice(dish.price)]
+              .filter(Boolean).join(' · '),
+          },
+        })])
         : el('div', { class: 'today-card__media today-card__media--empty' }, [el('span', { text: '🍱' })]),
       el('div', { class: 'today-card__body' }, [
         el('div', { class: 'today-card__head' }, [

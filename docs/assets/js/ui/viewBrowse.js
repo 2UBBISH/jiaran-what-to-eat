@@ -1,7 +1,9 @@
 /** 浏览视图：按饭堂 / 菜系翻菜单（展示层，只读） */
 
 import { el, clear } from './dom.js';
-import { dishCard, emptyState, tagPill, stallStrip, todayBoard, toggleRow, sectionTitle } from './components.js';
+import {
+  dishCard, emptyState, tagPill, stallStrip, todayBoard, toggleRow, sectionTitle, stallDishCard,
+} from './components.js';
 import { filterDishes, stallsOf } from '../core/menu.js';
 import { dateLabel } from '../core/date.js';
 import { floorLabel } from '../core/format.js';
@@ -31,9 +33,9 @@ export function createBrowseView({ getMenu }) {
     el('div', { class: 'browse__bar card card--glass' }, [
       modeRow,
       searchInput,
-      toggleRow('显示往日的自选菜', {
+      toggleRow('显示往日的窗口菜色', {
         checked: showPastDaily,
-        hint: '自选菜天天变，默认只看今天的',
+        hint: '自选窗口的菜天天变，默认只看今天的',
         onChange: (value) => { showPastDaily = value; render(); },
       }),
     ]),
@@ -42,7 +44,7 @@ export function createBrowseView({ getMenu }) {
 
   function renderModeRow() {
     clear(modeRow);
-    [['canteen', '按饭堂'], ['cuisine', '按菜系'], ['today', '上传的菜']].forEach(([value, label]) => {
+    [['canteen', '按饭堂'], ['cuisine', '按菜系'], ['stall', '自选窗口']].forEach(([value, label]) => {
       modeRow.append(el('button', {
         class: `segmented__item${mode === value ? ' is-active' : ''}`,
         type: 'button',
@@ -116,40 +118,136 @@ export function createBrowseView({ getMenu }) {
     return host;
   }
 
-  /** 「上传的菜」：按日期倒序列出所有按天上传的菜（今天的在最上面），永远找得到 */
-  function renderTodayList(menu) {
-    const dailies = filterDishes(menu, {
+  /**
+   * 「自选窗口」页签：自选是食堂的窗口，所以这里列窗口。
+   * 每个窗口一张卡（封面上传一次即可），点进去看它按日期分组的菜色。
+   */
+  function renderStallList(menu) {
+    const dailies = filterDishes(menu, { onlyDaily: true, includePastDaily: true });
+    const counts = new Map();
+    dailies.forEach((dish) => {
+      const key = `${dish.canteenId}|${dish.floor || ''}|${dish.stallName || ''}`;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+
+    const windows = (menu.stalls || []).filter((stall) => {
+      const key = `${stall.canteenId}|${stall.floor || ''}|${stall.name}`;
+      const isSelfSelect = stall.windowType === '自选';
+      if (!isSelfSelect && !counts.has(key)) return false;
+      if (!keyword) return true;
+      const canteen = menu.canteens.find((c) => c.id === stall.canteenId);
+      return `${stall.name}|${canteen?.name || ''}`.includes(keyword);
+    });
+
+    if (!windows.length) {
+      return emptyState(
+        '还没有自选窗口',
+        '打开「窗口菜色快传」，选好饭堂/楼层/窗口拍几张照片就有了',
+        el('a', { class: 'link', href: 'upload.html', text: '去上传 →' }),
+      );
+    }
+
+    const canteenMap = new Map(menu.canteens.map((canteen) => [canteen.id, canteen]));
+    const host = el('div', {});
+    host.append(el('p', { class: 'up__hint', text: '自选窗口 = 食堂里菜品天天换的那个窗口；点卡片看它各天的菜色' }));
+    host.append(el('div', { class: 'stall-window-grid' }, windows.map((stall) => {
+      const key = `${stall.canteenId}|${stall.floor || ''}|${stall.name}`;
+      const todayDishes = dailies.filter((dish) => (
+        `${dish.canteenId}|${dish.floor || ''}|${dish.stallName || ''}` === key && dish.date === menu.today
+      ));
+      const card = stallDishCard(stall, todayDishes, { canteen: canteenMap.get(stall.canteenId) });
+      const badge = el('span', { class: 'pill', text: `共 ${counts.get(key) || 0} 道` });
+      card.querySelector('.stall-dish-card__head')?.append(badge);
+      const open = el('button', {
+        class: 'btn btn--ghost btn--tiny',
+        type: 'button',
+        text: '看全部日期',
+        onclick: () => { detail = { type: 'stall', id: stall.id }; render(); },
+      });
+      card.querySelector('.stall-dish-card__actions')
+    || card.querySelector('.stall-dish-card__body')?.append(el('div', { class: 'stall-dish-card__actions' }, [open]));
+      card.querySelector('.stall-dish-card__actions')?.append(open);
+      return card;
+    })));
+    return host;
+  }
+
+  /** 某个自选窗口的全部菜色，按日期倒序 */
+  function renderStallDetail(menu) {
+    const stall = (menu.stalls || []).find((item) => item.id === detail.id);
+    if (!stall) { detail = null; return render(); }
+    const canteen = menu.canteens.find((c) => c.id === stall.canteenId);
+    const dishes = filterDishes(menu, {
       onlyDaily: true,
       includePastDaily: true,
-      includeStallRecommendations: true,
       keyword,
-    });
-    if (!dailies.length) {
-      return emptyState('还没有上传过自选菜', '打开「自选菜快传」拍几张照片就有了', el('a', {
-        class: 'link', href: 'upload.html', text: '去上传 →',
-      }));
+    }).filter((dish) => dish.stallName === stall.name && dish.canteenId === stall.canteenId
+      && (dish.floor || null) === (stall.floor || null));
+
+    const dates = [...new Set(dishes.map((dish) => dish.date))].sort().reverse();
+    const host = el('div', {}, [
+      el('div', { class: 'detail__head' }, [
+        el('button', { class: 'link', type: 'button', text: '‹ 返回', onclick: () => { detail = null; render(); } }),
+        el('h1', { class: 'detail__title', text: stall.name }),
+        el('p', { class: 'detail__sub', text: [
+          canteen?.name,
+          stall.floor ? floorLabel(stall.floor) : '楼层未标注',
+          `${dishes.length} 道`,
+          stall.note || '',
+        ].filter(Boolean).join(' · ') }),
+      ]),
+    ]);
+
+    if (stall.image) {
+      host.append(el('div', { class: 'stall-detail__cover', dataset: { gallery: 'stall-cover' } }, [
+        el('img', {
+          class: 'zoomable',
+          src: stall.image,
+          alt: `${stall.name} 封面`,
+          title: '点击看大图',
+          dataset: { zoomTitle: `${stall.name}（窗口照片）`, zoomMeta: canteen?.name || '' },
+        }),
+      ]));
     }
-    const dates = [...new Set(dailies.map((dish) => dish.date))].sort().reverse();
-    const canteenMap = new Map(menu.canteens.map((canteen) => [canteen.id, canteen]));
-    const favorites = loadFavorites();
-    const host = el('div', {});
+
     dates.forEach((date) => {
-      const items = dailies.filter((dish) => dish.date === date);
+      const items = dishes.filter((dish) => dish.date === date);
       host.append(el('div', { class: 'floor-block' }, [
         el('div', { class: 'floor-block__head' }, [
           el('h2', { text: dateLabel(date, menu.today) }),
           el('span', { class: 'pill', text: `${items.length} 道` }),
           el('span', { class: 'pill', text: date }),
         ]),
-        todayBoard(items, {
-          canteen: null,
-          favorites,
+        el('div', { class: 'dish-list', dataset: { gallery: `stall-${date}` } }, items.map((dish) => dishCard(dish, {
+          canteen,
+          favorite: loadFavorites().includes(dish.id),
           onFavorite: (item) => { toggleFavorite(item.id); render(); },
-        }),
-        el('p', { class: 'up__hint', text: '点开卡片上的饭堂名可以看这个饭堂的全部菜单' }),
+        }))),
       ]));
     });
     return host;
+  }
+
+  /** 把某饭堂的菜按窗口聚合（与抽签页同一口径） */
+  function groupByWindowForCanteen(menu, dishes) {
+    const stallMap = new Map((menu.stalls || []).map((stall) => [
+      `${stall.canteenId}|${stall.floor || ''}|${stall.name}`, stall,
+    ]));
+    const groups = new Map();
+    dishes.forEach((dish) => {
+      const key = `${dish.canteenId}|${dish.floor || ''}|${dish.stallName || '未标注窗口'}`;
+      if (!groups.has(key)) {
+        groups.set(key, {
+          stall: stallMap.get(key) || {
+            id: key, canteenId: dish.canteenId, floor: dish.floor,
+            name: dish.stallName || '未标注窗口', windowType: '自选', image: null, note: null,
+          },
+          dishes: [],
+        });
+      }
+      groups.get(key).dishes.push(dish);
+    });
+    return [...groups.values()];
   }
 
   function renderDetail(menu) {
@@ -182,12 +280,13 @@ export function createBrowseView({ getMenu }) {
         ]),
         todayDishes.length
           ? el('div', { class: 'today-section' }, [
-            sectionTitle(`${dateLabel(menu.today, menu.today)}的自选`, el('span', { class: 'pill', text: `${todayDishes.length} 道` })),
-            todayBoard(todayDishes, {
-              canteen,
-              favorites,
-              onFavorite: (item) => { toggleFavorite(item.id); render(); },
-            }),
+            sectionTitle(
+              `${dateLabel(menu.today, menu.today)}的自选窗口`,
+              el('span', { class: 'pill', text: `${todayDishes.length} 道` }),
+            ),
+            el('div', { class: 'stall-window-grid' }, groupByWindowForCanteen(menu, todayDishes).map((group) => (
+              stallDishCard(group.stall, group.dishes, { canteen })
+            ))),
           ])
           : null,
         stalls.length
@@ -205,7 +304,7 @@ export function createBrowseView({ getMenu }) {
               el('h2', { text: floor === '__none__' ? '楼层未标注' : floorLabel(floor) }),
               el('span', { class: 'pill', text: `${items.length} 道` }),
             ]),
-            el('div', { class: 'dish-list' }, items.map((dish) => dishCard(dish, {
+            el('div', { class: 'dish-list', dataset: { gallery: `floor-${floor}` } }, items.map((dish) => dishCard(dish, {
               canteen,
               favorite: favorites.includes(dish.id),
               onFavorite: (item) => { toggleFavorite(item.id); render(); },
@@ -214,6 +313,8 @@ export function createBrowseView({ getMenu }) {
         });
       return host;
     }
+
+    if (detail.type === 'stall') return renderStallDetail(menu);
 
     const cuisine = menu.cuisines.find((c) => c.id === detail.id);
     if (!cuisine) { detail = null; return render(); }
@@ -246,7 +347,7 @@ export function createBrowseView({ getMenu }) {
       return;
     }
     listHost.append(detailBreadcrumb());
-    if (mode === 'today') listHost.append(renderTodayList(menu));
+    if (mode === 'stall') listHost.append(renderStallList(menu));
     else listHost.append(mode === 'canteen' ? renderCanteenList(menu) : renderCuisineList(menu));
   }
 
@@ -258,7 +359,7 @@ export function createBrowseView({ getMenu }) {
           ? `${menu.canteens.length} 个饭堂`
           : (mode === 'cuisine'
             ? `${menu.cuisines.filter((c) => c.dishCount).length} 个菜系`
-            : `${menu.dishes.filter((d) => d.date).length} 道上传的菜`),
+            : `${(menu.stalls || []).filter((s) => s.windowType === '自选').length} 个自选窗口`),
       }),
       el('span', { class: 'dot' }),
       el('span', { text: `${menu.dishes.length} 道菜` }),

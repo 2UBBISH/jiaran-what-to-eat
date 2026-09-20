@@ -548,7 +548,7 @@ test('只给五个必填项就能生成合法记录', () => {
   assert.equal(payload.stallName, '自选窗口');
   assert.equal(payload.priceText, '12');
   assert.equal(payload.image, 'assets/uploads/20260920-abc.jpg');
-  assert.equal(payload.name, '自选菜', '没给菜名时用默认名');
+  assert.equal(payload.name, '窗口菜色', '没给菜名时用默认名');
   assert.equal(payload.unnamed, true);
   assert.equal(payload.date, '2026-09-20', '默认今天');
   assert.deepEqual(payload.cuisines, [], '菜系可留空');
@@ -756,7 +756,7 @@ test('裸接口格式的 JSON 文件也能直接收（不需要包 payload）', 
   assert.ok(dishA, '裸接口格式的文件应被接受');
   assert.equal(dishA.payload ? '' : dishA.canteenId, 'lan_yuan');
   assert.equal(dishA.floor, '1F', '「一楼」应规范化');
-  assert.equal(dishA.name, '自选菜');
+  assert.equal(dishA.name, '窗口菜色');
   assert.equal(dishA.price.min, 12);
   assert.equal(dishA.date, TODAY, '默认今天');
   assert.equal(dishA.id, dishB.id, 'id 必须稳定（否则收藏/历史会指错）');

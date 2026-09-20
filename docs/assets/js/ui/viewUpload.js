@@ -1,11 +1,11 @@
 /**
- * 自选菜快传（upload.html）
+ * 窗口菜色快传（upload.html）—— 传的是「食堂自选窗口」当天的菜色
  * ---------------------------------------------------------------------------
  * 为「一天要传好几次」设计：
  *   - 位置（饭堂/楼层/窗口）与菜系记住上次选择，下次打开直接传
  *   - 一次可选多张照片，拍完只补菜名
  *   - 照片与内容走 saveMany(records, { images })，线上只产生 1 个 commit
- *   - 日期默认今天：自选菜只当天有效，第二天自动退场（不会污染抽签池）
+ *   - 日期默认今天：窗口菜色只当天有效，第二天自动退场（不会污染抽签池）
  *   - 同窗口同一天同名会自动去重（重拍/重复上传不会放大抽签权重）
  */
 
@@ -63,9 +63,9 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
 
   const container = el('div', { class: 'view view--upload' }, [
     el('header', { class: 'hero hero--compact' }, [
-      el('div', { class: 'hero__eyebrow', text: '自选窗口 · 高频上传' }),
-      el('h1', { class: 'hero__title', text: '传今天的自选菜' }),
-      el('p', { class: 'hero__sub', text: '拍几张照片，补上菜名就行；只当天有效，第二天自动退场' }),
+      el('div', { class: 'hero__eyebrow', text: '食堂自选窗口 · 高频上传' }),
+      el('h1', { class: 'hero__title', text: '传窗口今天的菜色' }),
+      el('p', { class: 'hero__sub', text: '「自选」是食堂里的那个窗口，菜天天换 —— 拍几张照片、补上菜名和价格就行；只当天有效，第二天自动退场' }),
     ]),
     sourceHost,
     locationHost,
@@ -203,11 +203,11 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
           el('span', { text: stall.name }),
           stall.windowType === '自选' ? el('span', { class: 'chip__count', text: '自选' }) : null,
           stall.todayDishCount ? el('span', { class: 'chip__count', text: `今日 ${stall.todayDishCount}` }) : null,
-        ]))) : el('p', { class: 'up__hint', text: '这个楼层还没有窗口记录，直接输入名字即可，提交时自动建档' }),
-        field('窗口名', stallInput, '新窗口会在提交时自动建成「自选」窗口'),
+        ]))) : el('p', { class: 'up__hint', text: '还没有这个窗口的记录 —— 直接输入食堂里那个窗口的名字（例如「自选窗口」「风味套餐」），提交时会自动建档' }),
+        field('窗口名', stallInput, '新窗口会在提交时自动建成「自选」类型的窗口'),
       ]),
       el('div', { class: 'up__block-inner' }, [
-        el('div', { class: 'up__label', text: '日期（自选菜只当天有效）' }),
+        el('div', { class: 'up__label', text: '日期（窗口菜色只当天有效）' }),
         segmented([
           { label: '今天', value: 'today' },
           { label: '昨天', value: 'yesterday' },
@@ -262,7 +262,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
       const thumb = el('div', { class: 'up__thumb' }, [el('img', { src: entry.asset.dataUrl, alt: '' })]);
       const nameInput = input({
         value: entry.name,
-        placeholder: '菜名（可选，默认「自选菜」）',
+        placeholder: '菜名（可选，默认「窗口菜色」）',
         oninput: (e) => { entry.name = e.target.value; renderSubmit(); },
       });
       const priceInput = input({
@@ -307,7 +307,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
         el('span', { class: 'up__picker-text', text: state.entries.length ? '继续加照片' : '拍照 / 从相册选择（可多选）' }),
         fileInput,
       ]),
-      rows.length ? el('div', { class: 'up__entries' }, rows) : el('p', { class: 'up__hint', text: '选好照片后，逐张填上菜名即可提交' }),
+      rows.length ? el('div', { class: 'up__entries' }, rows) : el('p', { class: 'up__hint', text: '选好照片后，逐张填上菜名和价格即可提交' }),
       el('div', { class: 'up__window-photo' }, [
         el('div', { class: 'up__label', text: '窗口照片（可选，一张就够）' }),
         state.windowPhoto
@@ -522,7 +522,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
       const dishCount = records.filter((r) => r.kind === 'dish').length;
       const result = await source.saveMany(records, {
         images,
-        message: `content: ${dishCount} 自选菜 @ ${prefs.canteenId} ${prefs.floor || '-'} ${prefs.stallName || ''} ${state.date}`,
+        message: `content: ${dishCount} 窗口菜色 @ ${prefs.canteenId} ${prefs.floor || '-'} ${prefs.stallName || ''} ${state.date}`,
       });
       lastResult = { dishCount, commit: result.commit };
       state.entries = [];

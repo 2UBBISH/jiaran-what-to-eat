@@ -7,7 +7,7 @@
  *     price / priceText、image / imageUrl / photo
  *   - 取值容错：楼层收 1F/一层/一楼/1，价格收 12 / "12" / "¥12" / "12-15"，
  *     菜系收 id 或中文名（「川菜」→ sichuan），辣度收 0-3 或「微辣」
- *   - 缺省补全：id、date（默认今天）、name（默认「自选菜」）、author
+ *   - 缺省补全：id、date（默认今天）、name（默认「窗口菜色」）、author
  *
  * 用法：
  *   const { records, errors } = normalizeIntakeBatch(inputs, menu)
@@ -182,7 +182,7 @@ export function normalizeIntake(input, menu, { today = dateKey(), author = '匿�
     else spicyLevel = SPICY_ALIASES[key];
   }
 
-  const name = String(pick(input, 'name') ?? '').trim() || '自选菜';
+  const name = String(pick(input, 'name') ?? '').trim() || '窗口菜色';
   if (name.length > 40) errors.push('菜名过长（≤40 字）');
   const reviewText = pick(input, 'reviewText');
   if (reviewText != null && String(reviewText).length > 400) errors.push('评价最多 400 字');

@@ -154,8 +154,8 @@ await suite.test('提交后：窗口自动建档 + 自选菜带当天日期 + �
   assert.equal(stall.payload.floor, '1F');
 
   assert.equal(dishes.length, 2, `菜品条数不对：${dishes.length}`);
-  // 菜名可留空：没填的自动叫「自选菜」，并按图片去重（两张照片不会被合并）
-  assert.deepEqual(dishes.map((d) => d.payload.name).sort(), ['红烧肉', '自选菜'].sort());
+  // 菜名可留空：没填的自动叫「窗口菜色」，并按图片去重（两张照片不会被合并）
+  assert.deepEqual(dishes.map((d) => d.payload.name).sort(), ['红烧肉', '窗口菜色'].sort());
   assert.ok(dishes.every((d) => /\d/.test(d.payload.priceText)), '每道菜都要带上价格');
   assert.equal(dishes.filter((d) => d.payload.unnamed).length, 1, '未命名的那条应带 unnamed 标记');
   assert.ok(dishes.every((d) => d.payload.date === dateKey()), '自选菜应带当天日期');
@@ -175,7 +175,7 @@ await suite.test('提交后清空照片、保留位置，并列出今天已上�
 
   const today = q(window, '.up__today');
   assert.ok(today, '缺少「今天已上传」提示');
-  assert.ok(today.textContent.includes('红烧肉') && today.textContent.includes('自选菜'));
+  assert.ok(today.textContent.includes('红烧肉') && today.textContent.includes('窗口菜色'));
 });
 
 await suite.test('窗口照片与内容同一次提交', async () => {

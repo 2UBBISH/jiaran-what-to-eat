@@ -12,6 +12,7 @@ import { createDrawView } from './ui/viewDraw.js';
 import { createBrowseView } from './ui/viewBrowse.js';
 import { el, clear, qs } from './ui/dom.js';
 import { button, skeleton, toast } from './ui/components.js';
+import { initLightbox } from './ui/lightbox.js';
 
 const appRoot = qs('#app');
 const navRoot = qs('#tabbar');
@@ -134,6 +135,8 @@ store.subscribe((state) => {
   renderStatus(state);
   renderFooterNote();
 });
+
+initLightbox();
 
 router.start();
 boot();

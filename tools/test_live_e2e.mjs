@@ -9,6 +9,7 @@
  * 用法：
  *   node tools/test_live_e2e.mjs                          # 默认线上地址
  *   node tools/test_live_e2e.mjs https://user.github.io/repo/
+ *   node tools/test_live_e2e.mjs --repeat=3               # 连跑 3 轮（查偶发失败）
  */
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -19,7 +20,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = join(ROOT, 'docs');
 const TMP = join(ROOT, '.tmp-live');
-const BASE = (process.argv[2] || 'https://2ubbish.github.io/jiaran-what-to-eat/').replace(/\/?$/, '/');
+const ARGS = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
+const REPEAT = Number((process.argv.find((arg) => arg.startsWith('--repeat=')) || '').split('=')[1]) || 1;
+const BASE = (ARGS[0] || 'https://2ubbish.github.io/jiaran-what-to-eat/').replace(/\/?$/, '/');
 const BASE_URL = new URL(BASE);
 const BASE_PATH = BASE_URL.pathname.endsWith('/') ? BASE_URL.pathname : `${BASE_URL.pathname}/`;
 
@@ -49,7 +52,8 @@ async function fetchWithRetry(url, attempts = 3) {
   throw lastError;
 }
 
-async function main() {
+async function runOnce(round) {
+  if (REPEAT > 1) console.log(`\n########## 第 ${round}/${REPEAT} 轮 ##########`);
   console.log(`线上 E2E：${BASE}`);
   console.log(`（站点基础路径 ${BASE_PATH}）\n`);
 
@@ -160,6 +164,7 @@ async function main() {
     'tools/dom/admin.domtest.mjs',
     'tools/dom/motion.domtest.mjs',
     'tools/dom/upload.domtest.mjs',
+    'tools/dom/today.domtest.mjs',
     'tools/dom/subpath.domtest.mjs',
   ];
   let failed = 0;
@@ -173,12 +178,21 @@ async function main() {
     if (result.status !== 0) failed += 1;
   }
 
-  console.log(`\n${failed === 0 ? '✓ 线上 E2E 全部通过' : `✗ ${failed} 个套件失败`}`);
-  if (missing.length) {
-    console.log(`✗ 有 ${missing.length} 个文件在线上缺失`);
-    process.exit(1);
+  console.log(`\n${failed === 0 ? '✓ 本轮全部通过' : `✗ 本轮 ${failed} 个套件失败`}`);
+  return { failed, missing: missing.length };
+}
+
+async function main() {
+  let bad = 0;
+  for (let round = 1; round <= REPEAT; round += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    const result = await runOnce(round);
+    bad += result.failed + result.missing;
   }
-  process.exit(failed === 0 ? 0 : 1);
+  const total = REPEAT * 7; // 7 个 DOM 套件（app/admin/motion/upload/today/subpath × 轮次）
+  console.log(`\n${bad === 0 ? `✓ 线上 E2E ${REPEAT} 轮全部通过` : `✗ ${bad} 处失败`}`);
+  if (bad === 0) console.log(`  （每轮跑 6 个 DOM 套件 + 数据体检，共 ${total} 项检查点）`);
+  process.exit(bad === 0 ? 0 : 1);
 }
 
 main().catch((error) => {

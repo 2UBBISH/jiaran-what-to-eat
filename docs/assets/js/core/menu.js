@@ -168,7 +168,7 @@ function newDishFromContribution(menu, contrib, index) {
   const price = parsePriceText(p.priceText);
   const variants = Array.isArray(p.variants) ? p.variants.filter((v) => isStr(v, 1, 40)) : [];
   const hasName = isStr(p.name, 1, 40);
-  const name = hasName ? p.name.trim() : '自选菜';
+  const name = hasName ? p.name.trim() : '窗口菜色';
   return {
     id: `x-${contrib.id}`,
     type: 'dish',
