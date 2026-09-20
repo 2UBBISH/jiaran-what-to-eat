@@ -1,7 +1,17 @@
 {
-  "generatedAt": "2026-09-20T08:33:39.471Z",
-  "count": 0,
+  "generatedAt": "2026-09-20T12:44:47.453Z",
+  "count": 1,
   "invalidCount": 0,
-  "validCount": 0,
-  "files": []
+  "validCount": 1,
+  "files": [
+    {
+      "file": "20260920-01.json",
+      "id": null,
+      "kind": null,
+      "author": "匿名同学",
+      "createdAt": null,
+      "title": "20260920-01.json",
+      "valid": true
+    }
+  ]
 }
