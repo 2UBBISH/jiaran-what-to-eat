@@ -21,7 +21,7 @@ if (!existsSync(JSDOM)) {
   process.exit(0);
 }
 
-const suites = ['tools/dom/app.domtest.mjs', 'tools/dom/admin.domtest.mjs'];
+const suites = ['tools/dom/app.domtest.mjs', 'tools/dom/admin.domtest.mjs', 'tools/dom/subpath.domtest.mjs'];
 let failed = 0;
 for (const suite of suites) {
   console.log(`\n=== ${suite} ===`);

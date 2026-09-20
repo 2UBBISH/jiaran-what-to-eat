@@ -190,7 +190,7 @@ node tools/rebuild_contributions_index.mjs --check   # 索引是否最新
 
 # DOM 集成测试（可选，需要 jsdom；.tmp-jsdom 已被 .gitignore 忽略）
 mkdir -p .tmp-jsdom && cd .tmp-jsdom && npm init -y >/dev/null && npm install --cache ./.npm-cache jsdom
-cd .. && node tools/test_site_dom.mjs  # 21 项：真跑 index.html / admin.html
+cd .. && node tools/test_site_dom.mjs  # 22 项：真跑 index.html / admin.html + 子路径部署
 ```
 
 DOM 测试会真的把页面跑起来：点抽签 → 检查「推送菜系」页 → 打开分享深链接复现同一签
