@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-20T12:44:47.453Z",
+  "generatedAt": "2026-09-20T12:51:32.360Z",
   "count": 1,
   "invalidCount": 0,
   "validCount": 1,
   "files": [
     {
       "file": "20260920-01.json",
-      "id": null,
-      "kind": null,
+      "id": "raw-oag525",
+      "kind": "dish",
       "author": "匿名同学",
-      "createdAt": null,
-      "title": "20260920-01.json",
+      "createdAt": "2026-09-20T12:51:32.358Z",
+      "title": "炸鸡腿+鸡胗",
       "valid": true
     }
   ]
