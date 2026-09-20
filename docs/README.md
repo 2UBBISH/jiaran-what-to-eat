@@ -29,8 +29,11 @@ docs/                              ← GitHub Pages 站点根目录
 
 ## 1. 上传接口（对外契约 v1）
 
-给其他 agent / 脚本看的接口说明。**必填只有五项：饭菜图片 + 饭堂 + 楼层 + 窗口 + 价格**，
-其余都可以不传，系统会补默认值。
+给其他 agent / 脚本看的接口说明。**必填只有五项：菜图 + 菜名 + 窗口 + 饭堂 + 楼层**
+（价格可选），其余都可以不传，系统会补默认值。
+
+> 「窗口」就是你在食堂打饭的那个窗口（例如 XX园 2F 的某个窗口，也就是「自选」）——
+> 菜一定挂在某个窗口下，所以窗口必填。
 
 机器可读版本：`docs/assets/data/intake-schema.json`（JSON Schema，`x-interface-version: v1`）。
 该 schema 与代码常量 `docs/assets/js/core/intake.js` 的 `INTAKE_SPEC` 由测试强制保持一致，
@@ -41,9 +44,10 @@ docs/                              ← GitHub Pages 站点根目录
 ```json
 {
   "image": "assets/uploads/20260920-abc.jpg",
+  "name": "红烧肉",
+  "window": "二楼自选",
   "canteen": "澜园",
   "floor": "一楼",
-  "window": "自选窗口",
   "price": "12"
 }
 ```
@@ -95,11 +99,11 @@ cp ~/photo.jpg docs/assets/uploads/20260920-abc.jpg
 cat > docs/assets/data/contributions/20260920-abc.json <<'JSON'
 {
   "image": "assets/uploads/20260920-abc.jpg",
+  "name": "红烧肉",
+  "window": "二楼自选",
   "canteen": "澜园",
   "floor": "一楼",
-  "window": "自选窗口",
-  "price": "¥12",
-  "name": "红烧肉"
+  "price": "¥12"
 }
 JSON
 
@@ -131,17 +135,17 @@ git push          # 约 1 分钟后线上生效
 
 | 字段 | 类型 | 说明 | 别名 |
 | --- | --- | --- | --- |
-| `image` | string \| object | 饭菜图片，见 1.4 | `imageUrl` `photo` `photoUrl` `pic` |
+| `image` | string \| object | 菜图，见 1.4 | `imageUrl` `photo` `photoUrl` `pic` |
+| `name` | string | 菜名，≤40 字 | `dish` `dishName` `title` |
+| `window` | string | 窗口名（打饭的那个窗口），≤40 字 | `stall` `stallName` `counter` |
 | `canteen` | string | 饭堂，中文名或 id | `canteenId` `canteenName` `hall` |
 | `floor` | string | 楼层，见 1.4；空字符串 = 未标注 | `floorId` `floorLabel` |
-| `window` | string | 窗口名，≤40 字 | `stall` `stallName` `counter` |
-| `price` | string \| number | 价格，必须能解析出数字 | `priceText` `cost` |
 
 可选（不传就用默认值）：
 
 | 字段 | 默认 | 说明 |
 | --- | --- | --- |
-| `name` | `自选菜` | 菜名，≤40 字；留空时按图片去重 |
+| `price` | `null` | 价格（可选）；填了必须能解析出数字 |
 | `date` | 今天 | `YYYY-MM-DD`；**带日期的菜只当天有效**，第二天自动退场 |
 | `cuisines` | `[]` | 菜系 id 或中文名；留空归入「未标菜系」，仍能被抽签推送 |
 | `spicyLevel` | `0` | 0-3，或 `不辣/微辣/中辣/重辣` |
@@ -158,7 +162,8 @@ git push          # 约 1 分钟后线上生效
 | `floor` | `1F` `f1` `1` `一层` `一楼` `1楼` | `1F` |
 | | `""` `-` `未标注` `未知` `none` | `null` |
 | | 其他（如 `9F`） | ❌ 报错「楼层无法识别」 |
-| `price` | `12`（数字）、`"12"`、`"¥12"`、`"12-15"`、`"10元以下"`、`"按重量约20"` | 文本原样保留，数字则格式化为 `¥12` |
+| `price`（可选） | `12`（数字）、`"12"`、`"¥12"`、`"12-15"`、`"10元以下"` | 文本原样保留，数字则格式化为 `¥12` |
+| | 不传 | 记为无价格（不报错） |
 | | 不含数字（如 `"很便宜"`） | ❌ 报错「价格里没有数字」 |
 | `canteen` | id `lan_yuan` / 中文名 `澜园` | `lan_yuan` |
 | | 不存在 | ❌ 报错并**列出全部可用饭堂名** |
@@ -171,16 +176,16 @@ git push          # 约 1 分钟后线上生效
 | | `{"name":"a.jpg","base64":"…"}` | `assets/uploads/a.jpg` |
 | | 其他（如 `ftp://…`） | ❌ 报错「图片地址无法识别」 |
 | `spicyLevel` | `0/1/2/3`、`不辣/微辣/中辣/重辣` | `0-3` |
-| `name` | 不传 / 空 | `自选菜`，并标记 `unnamed: true` |
+| `name` | 为空 | ❌ 报错「缺少菜名」 |
 
 ### 1.5 批量上传
 
 ```json
 {
   "records": [
-    { "image": "assets/uploads/a.jpg", "canteen": "澜园", "floor": "1F", "window": "自选窗口", "price": "12", "name": "红烧肉" },
-    { "image": "assets/uploads/b.jpg", "canteen": "澜园", "floor": "1F", "window": "自选窗口", "price": "6" },
-    { "image": {"name": "c.jpg", "base64": "/9j/4AAQ…"}, "canteen": "听涛园", "floor": "2F", "window": "桂林米粉", "price": "9" }
+    { "image": "assets/uploads/a.jpg", "name": "红烧肉", "window": "二楼自选", "canteen": "澜园", "floor": "1F", "price": "12" },
+    { "image": "assets/uploads/b.jpg", "name": "清炒时蔬", "window": "二楼自选", "canteen": "澜园", "floor": "1F" },
+    { "image": {"name": "c.jpg", "base64": "/9j/4AAQ…"}, "name": "香辣牛肉粉", "window": "桂林米粉", "canteen": "听涛园", "floor": "2F", "price": "9" }
   ]
 }
 ```
@@ -201,6 +206,7 @@ git push          # 约 1 分钟后线上生效
 
 | 报错 | 原因 | 处理 |
 | --- | --- | --- |
+| `缺少菜名（name…）` | 没填菜名 | 必填项，补上菜名 |
 | `饭堂无法识别：xxx` | 饭堂名/ id 不对 | 用报错信息里列出的名字，或先跑 `GET assets/data/canteens.json` 取 id |
 | `楼层无法识别：9F` | 楼层不在 1F/2F/3F | 用 `1F`，或留空表示未标注 |
 | `价格里没有数字：很便宜` | 价格没有数字 | 传 `"12"` 这类可解析值 |
@@ -363,9 +369,9 @@ git push -u origin main
 
 ## 5. 自选窗口与「天天变」的自选菜
 
-**口径说明**：「自选」指的是**食堂里那个窗口**（自选窗口，菜品天天换），
-不是「我自己挑的菜」。所以模型里窗口是一等实体，菜色挂在窗口下、按天有效。
-数据模型分两层：
+**口径说明**：「自选」就是**你在食堂打饭的那个窗口**（例如 XX园 2F 的某个窗口），
+不是一个特殊品类，也不是「我自己挑的菜」。菜一定挂在某个窗口下，
+窗口是餐单的组织单位；菜品天天换的窗口，菜就按天上传。数据模型分两层：
 
 | 概念 | 表示 | 行为 |
 | --- | --- | --- |

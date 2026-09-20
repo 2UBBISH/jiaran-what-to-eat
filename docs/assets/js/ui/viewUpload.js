@@ -49,7 +49,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
     date: dateKey(),
     customDate: dateKey(),
     useCustomDate: false,
-    windowType: '自选',
+    windowType: '窗口',
     entries: [], // { asset, name, priceText, key }
     windowPhoto: null,
   };
@@ -63,9 +63,9 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
 
   const container = el('div', { class: 'view view--upload' }, [
     el('header', { class: 'hero hero--compact' }, [
-      el('div', { class: 'hero__eyebrow', text: '食堂自选窗口 · 高频上传' }),
-      el('h1', { class: 'hero__title', text: '传窗口今天的菜色' }),
-      el('p', { class: 'hero__sub', text: '「自选」是食堂里的那个窗口，菜天天换 —— 拍几张照片、补上菜名和价格就行；只当天有效，第二天自动退场' }),
+      el('div', { class: 'hero__eyebrow', text: '某园某层 · 某个窗口' }),
+      el('h1', { class: 'hero__title', text: '传窗口今天的菜' }),
+      el('p', { class: 'hero__sub', text: '菜一定是在某个窗口买的（XX园 2F 的那个窗口就是「自选」）：拍照片 + 填菜名，选好饭堂/楼层/窗口即可；只当天有效，第二天自动退场' }),
     ]),
     sourceHost,
     locationHost,
@@ -175,7 +175,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
 
     const stallInput = input({
       value: prefs.stallName,
-      placeholder: '例如：自选窗口 / 二楼自选',
+      placeholder: '例如：二楼自选 / 风味套餐',
       oninput: (e) => { prefs.stallName = e.target.value.trim(); persistPrefs(); renderSubmit(); },
     });
 
@@ -201,13 +201,12 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
           onclick: () => { prefs.stallName = stall.name; state.windowType = stall.windowType || '自选'; persistPrefs(); render(); },
         }, [
           el('span', { text: stall.name }),
-          stall.windowType === '自选' ? el('span', { class: 'chip__count', text: '自选' }) : null,
-          stall.todayDishCount ? el('span', { class: 'chip__count', text: `今日 ${stall.todayDishCount}` }) : null,
-        ]))) : el('p', { class: 'up__hint', text: '还没有这个窗口的记录 —— 直接输入食堂里那个窗口的名字（例如「自选窗口」「风味套餐」），提交时会自动建档' }),
-        field('窗口名', stallInput, '新窗口会在提交时自动建成「自选」类型的窗口'),
+                    stall.todayDishCount ? el('span', { class: 'chip__count', text: `今日 ${stall.todayDishCount}` }) : null,
+        ]))) : el('p', { class: 'up__hint', text: '还没有这个窗口的记录 —— 直接输入食堂里那个窗口的名字（例如「二楼自选」「风味套餐」），提交时会自动建档' }),
+        field('窗口名', stallInput, '就是你在食堂打饭的那个窗口；没有记录时会自动建档'),
       ]),
       el('div', { class: 'up__block-inner' }, [
-        el('div', { class: 'up__label', text: '日期（窗口菜色只当天有效）' }),
+        el('div', { class: 'up__label', text: '日期（窗口的菜只当天有效）' }),
         segmented([
           { label: '今天', value: 'today' },
           { label: '昨天', value: 'yesterday' },
@@ -262,19 +261,19 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
       const thumb = el('div', { class: 'up__thumb' }, [el('img', { src: entry.asset.dataUrl, alt: '' })]);
       const nameInput = input({
         value: entry.name,
-        placeholder: '菜名（可选，默认「窗口菜色」）',
-        oninput: (e) => { entry.name = e.target.value; renderSubmit(); },
-      });
-      const priceInput = input({
-        value: entry.priceText,
-        placeholder: '价格（必填，如 ¥12）',
+        placeholder: '菜名（必填，如 炸鸡腿+鸡胗）',
         oninput: (e) => {
-          entry.priceText = e.target.value;
-          priceInput.classList.toggle('is-invalid', !/\d/.test(entry.priceText));
+          entry.name = e.target.value;
+          nameInput.classList.toggle('is-invalid', !entry.name.trim());
           renderSubmit();
         },
       });
-      if (!/\d/.test(entry.priceText)) priceInput.classList.add('is-invalid');
+      if (!entry.name.trim()) nameInput.classList.add('is-invalid');
+      const priceInput = input({
+        value: entry.priceText,
+        placeholder: '价格（可选，如 ¥12）',
+        oninput: (e) => { entry.priceText = e.target.value; renderSubmit(); },
+      });
       return el('div', { class: 'up__entry' }, [
         thumb,
         el('div', { class: 'up__entry-body' }, [
@@ -307,7 +306,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
         el('span', { class: 'up__picker-text', text: state.entries.length ? '继续加照片' : '拍照 / 从相册选择（可多选）' }),
         fileInput,
       ]),
-      rows.length ? el('div', { class: 'up__entries' }, rows) : el('p', { class: 'up__hint', text: '选好照片后，逐张填上菜名和价格即可提交' }),
+      rows.length ? el('div', { class: 'up__entries' }, rows) : el('p', { class: 'up__hint', text: '选好照片后逐张填菜名（必填）；价格可选，填了抽签和展示都能用上' }),
       el('div', { class: 'up__window-photo' }, [
         el('div', { class: 'up__label', text: '窗口照片（可选，一张就够）' }),
         state.windowPhoto
@@ -435,7 +434,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
           canteenId: prefs.canteenId,
           floor: state.windowPhoto ? (prefs.floor || null) : (prefs.floor || null),
           name: prefs.stallName,
-          windowType: state.windowType || '自选',
+          windowType: state.windowType || '窗口',
           note: null,
           image: state.windowPhoto ? uploadPathFor(state.windowPhoto) : null,
         },
@@ -466,14 +465,14 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
     const dishCount = records.filter((r) => r.kind === 'dish').length;
     const writable = source.capabilities.write;
     const errors = validateBatch(batch);
-    const missingPrices = state.entries.filter((entry) => !/\d/.test(entry.priceText)).length;
+    const missingNames = state.entries.filter((entry) => !entry.name.trim()).length;
 
     // 高频上传要一眼看出「还差什么」，而不是点了才知道
     let label = `一次提交 ${dishCount} 道菜`;
     if (busy) label = '提交中…';
     else if (!state.entries.length) label = '先选照片';
     else if (!prefs.stallName) label = '还需填窗口名';
-    else if (missingPrices) label = `还需填 ${missingPrices} 个价格`;
+    else if (missingNames) label = `还需填 ${missingNames} 个菜名`;
     else if (errors.length) label = '还有信息要补';
 
     mount(

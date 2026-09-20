@@ -3,7 +3,7 @@
  * ---------------------------------------------------------------------------
  * 口径：自选 = 食堂的一个**窗口**（菜天天换），不是「我自己挑的菜」。
  * 覆盖：
- *   - 抽签页有独立的「今日自选窗口」专区：一个窗口一张卡，菜色列在卡里
+ *   - 抽签页有独立的「今日窗口菜色」专区：一个窗口一张卡，菜色列在卡里
  *   - 点图片打开灯箱看大图，可翻页、可关闭
  *   - 点「抽这一层」直接抽到该饭堂+楼层
  *   - 浏览页「自选窗口」页签 + 窗口详情（按日期分组，隔天仍可查）
@@ -31,7 +31,7 @@ window.localStorage.setItem('tsc:mock:contributions', JSON.stringify([
   {
     id: 'win-1', kind: 'stall', author: '我', createdAt: `${TODAY}T03:00:00.000Z`,
     payload: {
-      canteenId: 'ting_tao_yuan', floor: '1F', name: '风味套餐', windowType: '自选',
+      canteenId: 'ting_tao_yuan', floor: '1F', name: '风味套餐', windowType: '窗口',
       note: '每天中午 11 点出菜', image: 'assets/uploads/win-1.jpg',
     },
   },
@@ -54,16 +54,16 @@ await tick(160);
 
 suite.section('自选窗口（窗口为主）');
 
-await suite.test('抽签页有「今日自选窗口」专区：一个窗口一张卡，菜色列在卡里', () => {
+await suite.test('抽签页有「今日窗口菜色」专区：一个窗口一张卡，菜色列在卡里', () => {
   const section = q(window, '.today-section');
-  assert.ok(section && !section.hidden, '缺少今日自选窗口专区');
-  assert.ok(section.textContent.includes('今日自选窗口'), `标题不对：${section.textContent.slice(0, 40)}`);
+  assert.ok(section && !section.hidden, '缺少今日窗口菜色专区');
+  assert.ok(section.textContent.includes('今日窗口菜色'), `标题不对：${section.textContent.slice(0, 40)}`);
 
   const cards = qa(window, '.today-section .stall-dish-card');
   assert.equal(cards.length, 1, `窗口卡片数量不对：${cards.length}`);
   const card = cards[0];
   assert.ok(card.textContent.includes('风味套餐'), '没显示窗口名');
-  assert.ok(card.textContent.includes('自选窗口'), '没标出这是自选窗口');
+  assert.ok(card.textContent.includes('窗口'), '没标出这是窗口');
   assert.ok(card.textContent.includes('听涛园') && card.textContent.includes('一层'), '没显示饭堂/楼层');
   assert.ok(card.textContent.includes('每天中午 11 点出菜'), '没显示窗口备注');
 
@@ -122,11 +122,11 @@ await suite.test('点「抽这一层」直接抽到这个饭堂+楼层', async (
   assert.ok(q(window, '.push__name').textContent.trim().length > 0, '没有推送菜系');
 });
 
-await suite.test('浏览页「自选窗口」页签 → 窗口详情按日期分组', async () => {
+await suite.test('浏览页「窗口」页签 → 窗口详情按日期分组', async () => {
   qa(window, '.tabbar__item').find((node) => node.textContent.includes('逛一逛'))
     .dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
   await tick(80);
-  qa(window, '.segmented__item').find((node) => node.textContent.includes('自选窗口'))
+  qa(window, '.segmented__item').find((node) => node.textContent.trim() === '窗口')
     .dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
   await tick(80);
 
@@ -134,7 +134,9 @@ await suite.test('浏览页「自选窗口」页签 → 窗口详情按日期分
   assert.ok(text.includes('风味套餐'), '窗口没列出来');
   assert.ok(text.includes('共 3 道'), `窗口卡片没显示总数：${text.slice(0, 80)}`);
 
-  qa(window, '.view--browse .btn').find((node) => node.textContent.includes('看全部日期'))
+  // 找到「风味套餐」那张卡上的「看全部日期」
+  const card = qa(window, '.view--browse .stall-dish-card').find((node) => node.textContent.includes('风味套餐'));
+  [...card.querySelectorAll('.btn')].find((node) => node.textContent.includes('看全部日期'))
     .dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
   await tick(80);
   const detail = q(window, '.view--browse').textContent;

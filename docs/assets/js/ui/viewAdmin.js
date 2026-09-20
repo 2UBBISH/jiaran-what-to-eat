@@ -403,9 +403,9 @@ export function createAdminView({ root, onMenuReload }) {
         })),
       ]),
       el('div', { class: 'form__block' }, [
-        toggleRow('这是自选窗口的菜（只当天有效）', {
+        toggleRow('这是窗口当天的菜（只当天有效）', {
           checked: draft.dish.isDaily,
-          hint: '食堂自选窗口的菜天天变；填了日期就只在当天参与抽签与展示',
+          hint: '窗口的菜天天变；填了日期就只在当天参与抽签与展示',
           onChange: (value) => { draft.dish.isDaily = value; renderForm(); },
         }),
         draft.dish.isDaily
@@ -463,15 +463,15 @@ export function createAdminView({ root, onMenuReload }) {
           { value: '3F', label: '三层' },
         ], { value: w.floor, onChange: (value) => { w.floor = value; } })),
         field('窗口名 *', input({
-          value: w.name, placeholder: '例如：自选窗口 / 二楼自选',
+          value: w.name, placeholder: '例如：二楼自选 / 风味套餐',
           oninput: (e) => { w.name = e.target.value; },
         })),
         field('窗口类型', segmented([
-          { label: '自选', value: '自选' },
+          { label: '窗口', value: '窗口' },
           { label: '固定', value: '固定' },
           { label: '窗口', value: '窗口' },
         ], { value: w.windowType, onChange: (value) => { w.windowType = value; } }),
-        '自选 = 食堂里菜品天天换的那个窗口，用「窗口菜色快传」按天上传'),
+        '窗口 = 你在食堂打饭的那个窗口；菜品天天变的话，用「窗口菜色快传」按天上传'),
       ]),
       field('备注', textarea({
         value: w.note, placeholder: '位置、供应时间、有什么特色…',

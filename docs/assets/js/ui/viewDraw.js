@@ -94,7 +94,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     cuisine: createRoller(reelCuisine),
   };
 
-  /** 把菜按「窗口」聚合：自选是窗口，菜是窗口的当天菜色 */
+  /** 把菜按「窗口」聚合：菜一定挂在某个窗口下 */
   function groupByWindow(menu, dishes) {
     const stallMap = new Map((menu.stalls || []).map((stall) => [
       `${stall.canteenId}|${stall.floor || ''}|${stall.name}`,
@@ -107,7 +107,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
         groups.set(key, {
           stall: stallMap.get(key) || {
             id: key, canteenId: dish.canteenId, floor: dish.floor,
-            name: dish.stallName || '未标注窗口', windowType: '自选', image: null, note: null,
+            name: dish.stallName || '未标注窗口', windowType: '窗口', image: null, note: null,
           },
           dishes: [],
         });
@@ -160,7 +160,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
         ? el('button', {
           class: 'stage__today',
           type: 'button',
-          text: `· 今日自选窗口 ${todayCount} 道`,
+          text: `· 今日窗口菜色 ${todayCount} 道`,
           onclick: () => todayHost.scrollIntoView({ behavior: 'smooth', block: 'start' }),
         })
         : null,
@@ -168,7 +168,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
   }
 
   /**
-   * 「今日自选窗口」专区：自选是食堂的一个**窗口**，所以一张卡 = 一个窗口，
+   * 「今日窗口菜色」专区：一张卡 = 一个**窗口**（打饭的那个窗口），
    * 窗口今天的菜色列在卡片里。不用抽签就能看到，点封面/缩略图看大图。
    */
   function renderToday() {
@@ -187,7 +187,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     mount(
       todayHost,
       sectionTitle(
-        `今日自选窗口 · ${windows.length} 个 · ${dailies.length} 道菜`,
+        `今日窗口菜色 · ${windows.length} 个窗口 · ${dailies.length} 道菜`,
         el('a', { class: 'link', href: 'upload.html', text: '去上传 →' }),
       ),
       el('div', { class: 'stall-window-grid' }, windows.map((group) => stallDishCard(group.stall, group.dishes, {
@@ -331,13 +331,13 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     const todayBlock = todayDishes.length
       ? el('div', { class: 'today-section' }, [
         sectionTitle(
-          `这层的自选窗口 · ${dateLabel(menu.today, menu.today)}`,
+          `这层窗口今天的菜 · ${dateLabel(menu.today, menu.today)}`,
           el('span', { class: 'pill', text: `${todayDishes.length} 道` }),
         ),
         el('div', { class: 'stall-window-grid' }, groupByWindow(menu, todayDishes).map((group) => stallDishCard(
           group.stall, group.dishes, { canteen },
         ))),
-        el('p', { class: 'up__hint', text: '自选窗口的菜每天更新，只当天参与抽签；点图片可看大图' }),
+        el('p', { class: 'up__hint', text: '窗口的菜每天更新，只当天参与抽签；点图片可看大图' }),
       ])
       : null;
 
@@ -526,7 +526,7 @@ export function createDrawView({ getMenu, onNeedMenu }) {
         }),
         toggleRow('包含往日的窗口菜色', {
           checked: Boolean(settings.includePastDaily),
-          hint: '自选窗口的菜天天变，默认只用今天上传的',
+          hint: '窗口的菜天天变，默认只用今天上传的',
           onChange: (value) => { settings.includePastDaily = value; },
         }),
       ]),

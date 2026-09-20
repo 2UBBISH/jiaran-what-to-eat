@@ -1,5 +1,5 @@
 /**
- * 自选菜快传的 DOM 用例：选位置 → 选照片 → 填菜名 → 一次提交
+ * 传窗口的菜：选位置 → 选照片 → 填菜名 → 一次提交
  * ---------------------------------------------------------------------------
  * 图片压缩依赖 canvas（jsdom 没有），所以这里注入一个假的 prepareImage，
  * 其余流程（校验、日期语义、one-commit 提交、窗口自动建档）都是真实代码路径。
@@ -53,7 +53,7 @@ const pickPhotos = (names) => {
 // 提交区是最后一个 .up__block，按钮文案会变（先选照片 / 还需填 N 个菜名 / 一次提交 N 道菜）
 const submitButton = () => q(window, '.view--upload section.up__block:last-of-type .btn');
 
-suite.section('自选菜快传（upload.html）');
+suite.section('传窗口的菜（upload.html）');
 
 await suite.test('页面渲染：位置 / 照片 / 共同属性 / 提交', () => {
   assert.ok(q(window, '.view--upload'), '缺少快传视图');
@@ -93,7 +93,7 @@ await suite.test('选择饭堂/楼层/窗口', async () => {
   firstFloor.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
   await tick(60);
 
-  const stallInput = [...qa(window, '.up__block input')].find((n) => n.placeholder?.includes('自选窗口'));
+  const stallInput = [...qa(window, '.up__block input')].find((n) => n.placeholder?.includes('二楼自选'));
   stallInput.value = '测试自选窗口';
   stallInput.dispatchEvent(new window.Event('input', { bubbles: true }));
   await tick(40);
@@ -104,43 +104,46 @@ await suite.test('选择饭堂/楼层/窗口', async () => {
   assert.equal(saved.stallName, '测试自选窗口');
 });
 
-await suite.test('一次选两张照片 → 生成两行；价格是必填项，菜名可选', async () => {
+await suite.test('一次选两张照片 → 生成两行；菜名必填、价格可选', async () => {
   pickPhotos(['a.jpg', 'b.jpg']);
   await tick(120);
   const rows = qa(window, '.up__entries .up__entry');
   assert.equal(rows.length, 2, `照片行数不对：${rows.length}`);
   assert.ok(q(window, '.up__entries img'), '缺少缩略图');
-  assert.ok(submitButton().disabled, '价格没填时不应允许提交');
-  assert.ok(submitButton().textContent.includes('2 个价格'), `按钮文案应提示缺价格：${submitButton().textContent}`);
-  assert.equal(qa(window, '.up__entry input.is-invalid').length, 2, '未填价格的输入框应有红框提示');
+  assert.ok(submitButton().disabled, '菜名没填时不应允许提交');
+  assert.ok(submitButton().textContent.includes('2 个菜名'), `按钮文案应提示缺菜名：${submitButton().textContent}`);
+  assert.equal(qa(window, '.up__entry input.is-invalid').length, 2, '未填菜名的输入框应有红框提示');
 
   const nameInputs = qa(window, '.up__entry input').filter((n) => n.placeholder?.includes('菜名'));
-  assert.ok(nameInputs[0].placeholder.includes('可选'), '菜名应标注为可选');
+  assert.ok(nameInputs[0].placeholder.includes('必填'), '菜名应标注为必填');
+  const priceInputs = qa(window, '.up__entry input').filter((n) => n.placeholder?.includes('价格'));
+  assert.ok(priceInputs[0].placeholder.includes('可选'), '价格应标注为可选');
 });
 
-await suite.test('逐张补价格，按钮随之变化', async () => {
-  const priceInputs = qa(window, '.up__entry input').filter((n) => n.placeholder?.includes('价格'));
-  priceInputs[0].value = '¥12';
-  priceInputs[0].dispatchEvent(new window.Event('input', { bubbles: true }));
-  await tick(40);
-  assert.ok(submitButton().disabled, '还有一道菜没填价格，应仍禁用');
-  assert.ok(submitButton().textContent.includes('1 个价格'), `按钮文案不对：${submitButton().textContent}`);
-
-  priceInputs[1].value = '8';
-  priceInputs[1].dispatchEvent(new window.Event('input', { bubbles: true }));
-  await tick(60);
-  assert.ok(!submitButton().disabled, '两个价格都填好后应可提交（菜名可留空）');
-  assert.ok(submitButton().textContent.includes('提交 2 道菜'), `按钮文案不对：${submitButton().textContent}`);
-  assert.equal(qa(window, '.up__entry input.is-invalid').length, 0, '填好后不应再有红框');
-
-  // 补一个菜名，另一道留空 -> 留空的自动叫「自选菜」
+await suite.test('逐张补菜名，按钮随之变化（价格可不填）', async () => {
   const nameInputs = qa(window, '.up__entry input').filter((n) => n.placeholder?.includes('菜名'));
   nameInputs[0].value = '红烧肉';
   nameInputs[0].dispatchEvent(new window.Event('input', { bubbles: true }));
   await tick(40);
+  assert.ok(submitButton().disabled, '还有一道菜没填菜名，应仍禁用');
+  assert.ok(submitButton().textContent.includes('1 个菜名'), `按钮文案不对：${submitButton().textContent}`);
+
+  nameInputs[1].value = '清炒时蔬';
+  nameInputs[1].dispatchEvent(new window.Event('input', { bubbles: true }));
+  await tick(60);
+  assert.ok(!submitButton().disabled, '菜名填齐后即可提交（价格留空也行）');
+  assert.ok(submitButton().textContent.includes('提交 2 道菜'), `按钮文案不对：${submitButton().textContent}`);
+  assert.equal(qa(window, '.up__entry input.is-invalid').length, 0, '填好后不应再有红框');
+
+  // 价格可选：只给其中一道填价格
+  const priceInputs = qa(window, '.up__entry input').filter((n) => n.placeholder?.includes('价格'));
+  priceInputs[0].value = '¥12';
+  priceInputs[0].dispatchEvent(new window.Event('input', { bubbles: true }));
+  await tick(40);
+  assert.ok(!submitButton().disabled, '只填一个价格也应可提交');
 });
 
-await suite.test('提交后：窗口自动建档 + 自选菜带当天日期 + 落库', async () => {
+await suite.test('提交后：窗口自动建档 + 菜带当天日期 + 落库', async () => {
   submitButton().dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
   await tick(300);
 
@@ -150,15 +153,15 @@ await suite.test('提交后：窗口自动建档 + 自选菜带当天日期 + �
 
   assert.ok(stall, '没有自动建立窗口记录');
   assert.equal(stall.payload.name, '测试自选窗口');
-  assert.equal(stall.payload.windowType, '自选');
+  assert.equal(stall.payload.windowType, '窗口');
   assert.equal(stall.payload.floor, '1F');
 
   assert.equal(dishes.length, 2, `菜品条数不对：${dishes.length}`);
-  // 菜名可留空：没填的自动叫「窗口菜色」，并按图片去重（两张照片不会被合并）
-  assert.deepEqual(dishes.map((d) => d.payload.name).sort(), ['红烧肉', '窗口菜色'].sort());
-  assert.ok(dishes.every((d) => /\d/.test(d.payload.priceText)), '每道菜都要带上价格');
-  assert.equal(dishes.filter((d) => d.payload.unnamed).length, 1, '未命名的那条应带 unnamed 标记');
-  assert.ok(dishes.every((d) => d.payload.date === dateKey()), '自选菜应带当天日期');
+  assert.deepEqual(dishes.map((d) => d.payload.name).sort(), ['清炒时蔬', '红烧肉'].sort(), '两道菜都要有菜名');
+  const withPrice = dishes.filter((d) => d.payload.priceText);
+  assert.equal(withPrice.length, 1, '只填了一道菜的价格，另一道应为 null（价格可选）');
+  assert.equal(dishes.filter((d) => !d.payload.priceText).length, 1);
+  assert.ok(dishes.every((d) => d.payload.date === dateKey()), '窗口的菜应带当天日期');
   // 提交时写的是约定路径 assets/uploads/xxx；mock 数据源会把它换成内联图，便于本机直接看到
   assert.ok(
     dishes.every((d) => String(d.payload.image).startsWith('data:image/')),
@@ -175,7 +178,7 @@ await suite.test('提交后清空照片、保留位置，并列出今天已上�
 
   const today = q(window, '.up__today');
   assert.ok(today, '缺少「今天已上传」提示');
-  assert.ok(today.textContent.includes('红烧肉') && today.textContent.includes('窗口菜色'));
+  assert.ok(today.textContent.includes('红烧肉') && today.textContent.includes('清炒时蔬'));
 });
 
 await suite.test('窗口照片与内容同一次提交', async () => {

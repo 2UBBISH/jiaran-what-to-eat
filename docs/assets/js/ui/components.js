@@ -287,12 +287,11 @@ export function bottomSheet({ title, onClose } = {}) {
 }
 
 
-/* --------------------------------------------------- 自选窗口（窗口为主） */
+/* ------------------------------------------------------- 窗口（打饭的窗口） */
 
 /**
- * 一张卡片 = 一个自选窗口：封面上是这个窗口的照片，
- * 下面列出它今天的菜（菜名 + 价格）。这才是「自选」的正确口径 ——
- * 自选是食堂的一个窗口，不是「我自己挑的菜」。
+ * 一张卡片 = 一个窗口（你在食堂打饭的那个窗口，也就是「自选」）：
+ * 封面上是这个窗口的照片，下面列出它今天的菜（菜名 + 价格）。
  */
 export function stallDishCard(stall, dishes, { canteen = null, onDraw = null } = {}) {
   const cover = stall.image || dishes.find((dish) => dish.image)?.image || null;
@@ -335,7 +334,7 @@ export function stallDishCard(stall, dishes, { canteen = null, onDraw = null } =
     el('div', { class: 'stall-dish-card__body' }, [
       el('div', { class: 'stall-dish-card__head' }, [
         el('h3', { class: 'stall-dish-card__name', text: stall.name }),
-        stall.windowType === '自选' ? tagPill('自选窗口', 'spicy') : tagPill(stall.windowType),
+        tagPill(stall.windowType || '窗口'),
       ]),
       el('div', { class: 'stall-dish-card__where', text: [
         canteen?.name || stall.canteenId,
@@ -380,11 +379,10 @@ export function stallStrip(stalls, { onPick = null } = {}) {
           title: '点击看大图',
           dataset: { zoomTitle: stall.name, zoomMeta: `${stall.windowType}窗口` },
         })]
-        : [el('span', { class: 'stall-card__placeholder', text: stall.windowType === '自选' ? '🍱' : '🍽' })]),
+        : [el('span', { class: 'stall-card__placeholder', text: '🍽' })]),
       el('div', { class: 'stall-card__body' }, [
         el('div', { class: 'stall-card__name', text: stall.name }),
         el('div', { class: 'stall-card__meta' }, [
-          stall.windowType === '自选' ? tagPill('自选', 'spicy') : null,
           stall.todayDishCount ? tagPill(`今日 ${stall.todayDishCount}`) : null,
           !stall.todayDishCount && stall.dishCount ? tagPill(`${stall.dishCount} 道`) : null,
         ].filter(Boolean)),
@@ -393,7 +391,7 @@ export function stallStrip(stalls, { onPick = null } = {}) {
   )));
 }
 
-/** 今日自选：自选窗口当天的菜，带照片 */
+/** 窗口当天的菜（带照片） */
 export function todayBoard(dishes, { canteen = null, onFavorite = null, favorites = [] } = {}) {
   if (!dishes.length) return null;
   return el('div', { class: 'today-board', dataset: { gallery: 'today' } }, dishes.map((dish) => {

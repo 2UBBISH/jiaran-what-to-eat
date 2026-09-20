@@ -1,7 +1,11 @@
 /**
  * 上传接入层（core，纯函数）
  * ---------------------------------------------------------------------------
- * 对外接口只要求五项：**饭菜图片 + 饭堂 + 楼层 + 窗口 + 价格**。
+ * 对外接口只要求五项：**菜图 + 菜名 + 窗口 + 饭堂 + 楼层**。
+ * （价格可选 —— 能填就填，抽签与展示都能用上，但不填也能传。）
+ *
+ * 「窗口」就是你在食堂打饭的那个窗口（XX园 2F 的某个窗口），
+ * 菜一定挂在某个窗口下，所以窗口是必填。
  * 这个模块把「其他 agent 随手写的 JSON」规范化成系统内部的贡献内容记录：
  *   - 字段名容错：canteen / canteenId / canteenName、window / stall / stallName、
  *     price / priceText、image / imageUrl / photo
@@ -18,8 +22,8 @@ import { dateKey, isDateKey } from './date.js';
 
 export const INTAKE_SPEC = {
   version: 'v1',
-  required: ['image', 'canteen', 'floor', 'window', 'price'],
-  optional: ['name', 'date', 'cuisines', 'spicyLevel', 'reviewLabel', 'reviewText', 'tags', 'author', 'id'],
+  required: ['image', 'name', 'window', 'canteen', 'floor'],
+  optional: ['price', 'date', 'cuisines', 'spicyLevel', 'reviewLabel', 'reviewText', 'tags', 'author', 'id'],
   aliases: {
     image: ['image', 'imageUrl', 'photo', 'photoUrl', 'pic'],
     canteen: ['canteen', 'canteenId', 'canteenName', 'hall'],
@@ -161,7 +165,11 @@ export function normalizeIntake(input, menu, { today = dateKey(), author = '匿�
   if (!windowName) errors.push('缺少窗口（window，例如「自选窗口」）');
   else if (windowName.length > 40) errors.push('窗口名过长（≤40 字）');
 
-  const priceResult = normalizePrice(pick(input, 'price'));
+  // 价格可选：不填就没价格，填了必须能解析出数字
+  const rawPrice = pick(input, 'price');
+  const priceResult = rawPrice === undefined
+    ? { ok: true, text: null }
+    : normalizePrice(rawPrice);
   if (!priceResult.ok) errors.push(priceResult.error);
 
   const imageResult = normalizeImage(pick(input, 'image'));
@@ -182,8 +190,10 @@ export function normalizeIntake(input, menu, { today = dateKey(), author = '匿�
     else spicyLevel = SPICY_ALIASES[key];
   }
 
-  const name = String(pick(input, 'name') ?? '').trim() || '窗口菜色';
-  if (name.length > 40) errors.push('菜名过长（≤40 字）');
+  const nameRaw = String(pick(input, 'name') ?? '').trim();
+  if (!nameRaw) errors.push('缺少菜名（name，例如「炸鸡腿+鸡胗」）');
+  else if (nameRaw.length > 40) errors.push('菜名过长（≤40 字）');
+  const name = nameRaw;
   const reviewText = pick(input, 'reviewText');
   if (reviewText != null && String(reviewText).length > 400) errors.push('评价最多 400 字');
 
@@ -199,7 +209,7 @@ export function normalizeIntake(input, menu, { today = dateKey(), author = '匿�
       floor: floorResult.floor,
       stallName: windowName,
       name,
-      unnamed: !pick(input, 'name'), // 没给菜名时按图片去重，避免多张照片被当成同一道菜
+      unnamed: false,
       priceText: priceResult.text,
       cuisines: cuisineResult.ids,
       spicyLevel,
