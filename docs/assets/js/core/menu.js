@@ -297,6 +297,12 @@ function prepareContribution(item, menu) {
     };
   }
   const record = normalized.record;
+  // 裸接口格式的文件里没有 createdAt。若用「读取时刻」会导致每次加载都不一样，
+  // 索引脚本据此判断「有没有变化」就会永远认为有变化（CI 反复提交）。
+  // 用菜品的生效日期兜底：稳定且有意义。
+  if (!item.createdAt) {
+    record.createdAt = record.payload.date ? `${record.payload.date}T00:00:00.000Z` : null;
+  }
   if (!item.id) {
     const { canteenId, floor, stallName, date, name, priceText, image } = record.payload;
     const fingerprint = [canteenId, floor || '', stallName || '', date || '', name, priceText || '', image || ''].join('|');
