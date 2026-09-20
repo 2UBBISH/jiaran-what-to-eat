@@ -271,9 +271,14 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
       if (!entry.name.trim()) nameInput.classList.add('is-invalid');
       const priceInput = input({
         value: entry.priceText,
-        placeholder: '价格（可选，如 ¥12）',
-        oninput: (e) => { entry.priceText = e.target.value; renderSubmit(); },
+        placeholder: '价格（必填，如 ¥12）',
+        oninput: (e) => {
+          entry.priceText = e.target.value;
+          priceInput.classList.toggle('is-invalid', !/\d/.test(entry.priceText));
+          renderSubmit();
+        },
       });
+      if (!/\d/.test(entry.priceText)) priceInput.classList.add('is-invalid');
       return el('div', { class: 'up__entry' }, [
         thumb,
         el('div', { class: 'up__entry-body' }, [
@@ -306,7 +311,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
         el('span', { class: 'up__picker-text', text: state.entries.length ? '继续加照片' : '拍照 / 从相册选择（可多选）' }),
         fileInput,
       ]),
-      rows.length ? el('div', { class: 'up__entries' }, rows) : el('p', { class: 'up__hint', text: '选好照片后逐张填菜名（必填）；价格可选，填了抽签和展示都能用上' }),
+      rows.length ? el('div', { class: 'up__entries' }, rows) : el('p', { class: 'up__hint', text: '选好照片后逐张填菜名和价格（都必填）' }),
       el('div', { class: 'up__window-photo' }, [
         el('div', { class: 'up__label', text: '窗口照片（可选，一张就够）' }),
         state.windowPhoto
@@ -466,6 +471,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
     const writable = source.capabilities.write;
     const errors = validateBatch(batch);
     const missingNames = state.entries.filter((entry) => !entry.name.trim()).length;
+    const missingPrices = state.entries.filter((entry) => !/\d/.test(entry.priceText)).length;
 
     // 高频上传要一眼看出「还差什么」，而不是点了才知道
     let label = `一次提交 ${dishCount} 道菜`;
@@ -473,6 +479,7 @@ export function createUploadView({ root, prepareImage = prepareImageAsset }) {
     else if (!state.entries.length) label = '先选照片';
     else if (!prefs.stallName) label = '还需填窗口名';
     else if (missingNames) label = `还需填 ${missingNames} 个菜名`;
+    else if (missingPrices) label = `还需填 ${missingPrices} 个价格`;
     else if (errors.length) label = '还有信息要补';
 
     mount(

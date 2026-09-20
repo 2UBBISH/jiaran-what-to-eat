@@ -537,16 +537,17 @@ const MINIMAL = {
   window: '二楼自选',
   canteen: '澜园',
   floor: '一楼',
+  price: '12',
 };
 
-test('只给五个必填项（菜图+菜名+窗口+饭堂+楼层）就能生成合法记录', () => {
+test('只给六个必填项（菜图+菜名+窗口+饭堂+楼层+价格）就能生成合法记录', () => {
   const result = normalizeIntake(MINIMAL, menu, { today: '2026-09-20' });
   assert.ok(result.ok, result.errors.join('; '));
   const { payload } = result.record;
   assert.equal(payload.canteenId, 'lan_yuan', '中文饭堂名应解析成 id');
   assert.equal(payload.floor, '1F', '「一楼」应规范成 1F');
   assert.equal(payload.stallName, '二楼自选');
-  assert.equal(payload.priceText, null, '价格可选，没填就是 null');
+  assert.equal(payload.priceText, '12');
   assert.equal(payload.image, 'assets/uploads/20260920-abc.jpg');
   assert.equal(payload.name, '红烧肉');
   assert.equal(payload.date, '2026-09-20', '默认今天');
@@ -597,10 +598,9 @@ test('价格接受多种写法，没有数字则报错', () => {
   const bad = normalizeIntake({ ...MINIMAL, price: '很便宜' }, menu);
   assert.equal(bad.ok, false);
   assert.ok(bad.errors.some((e) => e.includes('价格里没有数字')));
-  // 价格现在可选：不填也能过
   const noPrice = normalizeIntake({ ...MINIMAL, price: undefined }, menu);
-  assert.ok(noPrice.ok, noPrice.errors.join('; '));
-  assert.equal(noPrice.record.payload.priceText, null);
+  assert.equal(noPrice.ok, false);
+  assert.ok(noPrice.errors.some((e) => e.includes('缺少价格')), noPrice.errors.join('; '));
 });
 
 test('图片接受约定路径 / 外链 / 裸文件名 / base64 / 对象', () => {
@@ -656,8 +656,8 @@ test('批量上传：一条坏不影响其他', () => {
   assert.ok(batch.failed[0].errors[0].includes('饭堂'));
 });
 
-test('接口说明里列出的必填项就是那五个', () => {
-  assert.deepEqual(INTAKE_SPEC.required, ['image', 'name', 'window', 'canteen', 'floor']);
+test('接口说明里列出的必填项就是那六个', () => {
+  assert.deepEqual(INTAKE_SPEC.required, ['image', 'name', 'window', 'canteen', 'floor', 'price']);
   assert.equal(INTAKE_SPEC.version, 'v1');
 });
 

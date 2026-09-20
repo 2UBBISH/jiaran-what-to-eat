@@ -1,8 +1,7 @@
 /**
  * 上传接入层（core，纯函数）
  * ---------------------------------------------------------------------------
- * 对外接口只要求五项：**菜图 + 菜名 + 窗口 + 饭堂 + 楼层**。
- * （价格可选 —— 能填就填，抽签与展示都能用上，但不填也能传。）
+ * 对外接口要求六项：**菜图 + 菜名 + 窗口 + 饭堂 + 楼层 + 价格**。
  *
  * 「窗口」就是你在食堂打饭的那个窗口（XX园 2F 的某个窗口），
  * 菜一定挂在某个窗口下，所以窗口是必填。
@@ -22,8 +21,8 @@ import { dateKey, isDateKey } from './date.js';
 
 export const INTAKE_SPEC = {
   version: 'v1',
-  required: ['image', 'name', 'window', 'canteen', 'floor'],
-  optional: ['price', 'date', 'cuisines', 'spicyLevel', 'reviewLabel', 'reviewText', 'tags', 'author', 'id'],
+  required: ['image', 'name', 'window', 'canteen', 'floor', 'price'],
+  optional: ['date', 'cuisines', 'spicyLevel', 'reviewLabel', 'reviewText', 'tags', 'author', 'id'],
   aliases: {
     image: ['image', 'imageUrl', 'photo', 'photoUrl', 'pic'],
     canteen: ['canteen', 'canteenId', 'canteenName', 'hall'],
@@ -165,11 +164,7 @@ export function normalizeIntake(input, menu, { today = dateKey(), author = '匿�
   if (!windowName) errors.push('缺少窗口（window，例如「自选窗口」）');
   else if (windowName.length > 40) errors.push('窗口名过长（≤40 字）');
 
-  // 价格可选：不填就没价格，填了必须能解析出数字
-  const rawPrice = pick(input, 'price');
-  const priceResult = rawPrice === undefined
-    ? { ok: true, text: null }
-    : normalizePrice(rawPrice);
+  const priceResult = normalizePrice(pick(input, 'price'));
   if (!priceResult.ok) errors.push(priceResult.error);
 
   const imageResult = normalizeImage(pick(input, 'image'));

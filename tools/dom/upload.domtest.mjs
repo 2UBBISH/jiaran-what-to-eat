@@ -104,23 +104,23 @@ await suite.test('选择饭堂/楼层/窗口', async () => {
   assert.equal(saved.stallName, '测试自选窗口');
 });
 
-await suite.test('一次选两张照片 → 生成两行；菜名必填、价格可选', async () => {
+await suite.test('一次选两张照片 → 生成两行；菜名与价格都必填', async () => {
   pickPhotos(['a.jpg', 'b.jpg']);
   await tick(120);
   const rows = qa(window, '.up__entries .up__entry');
   assert.equal(rows.length, 2, `照片行数不对：${rows.length}`);
   assert.ok(q(window, '.up__entries img'), '缺少缩略图');
-  assert.ok(submitButton().disabled, '菜名没填时不应允许提交');
+  assert.ok(submitButton().disabled, '菜名/价格没填时不应允许提交');
   assert.ok(submitButton().textContent.includes('2 个菜名'), `按钮文案应提示缺菜名：${submitButton().textContent}`);
-  assert.equal(qa(window, '.up__entry input.is-invalid').length, 2, '未填菜名的输入框应有红框提示');
+  assert.equal(qa(window, '.up__entry input.is-invalid').length, 4, '菜名与价格都应标红（2 道菜 × 2 项）');
 
   const nameInputs = qa(window, '.up__entry input').filter((n) => n.placeholder?.includes('菜名'));
   assert.ok(nameInputs[0].placeholder.includes('必填'), '菜名应标注为必填');
   const priceInputs = qa(window, '.up__entry input').filter((n) => n.placeholder?.includes('价格'));
-  assert.ok(priceInputs[0].placeholder.includes('可选'), '价格应标注为可选');
+  assert.ok(priceInputs[0].placeholder.includes('必填'), '价格应标注为必填');
 });
 
-await suite.test('逐张补菜名，按钮随之变化（价格可不填）', async () => {
+await suite.test('逐张补菜名与价格，按钮随之变化', async () => {
   const nameInputs = qa(window, '.up__entry input').filter((n) => n.placeholder?.includes('菜名'));
   nameInputs[0].value = '红烧肉';
   nameInputs[0].dispatchEvent(new window.Event('input', { bubbles: true }));
@@ -131,16 +131,23 @@ await suite.test('逐张补菜名，按钮随之变化（价格可不填）', as
   nameInputs[1].value = '清炒时蔬';
   nameInputs[1].dispatchEvent(new window.Event('input', { bubbles: true }));
   await tick(60);
-  assert.ok(!submitButton().disabled, '菜名填齐后即可提交（价格留空也行）');
-  assert.ok(submitButton().textContent.includes('提交 2 道菜'), `按钮文案不对：${submitButton().textContent}`);
-  assert.equal(qa(window, '.up__entry input.is-invalid').length, 0, '填好后不应再有红框');
+  // 菜名齐了但价格还没填 —— 价格也是必填，仍不能提交
+  assert.ok(submitButton().disabled, '价格没填时应仍禁用');
+  assert.ok(submitButton().textContent.includes('2 个价格'), `按钮文案不对：${submitButton().textContent}`);
 
-  // 价格可选：只给其中一道填价格
+  // 价格也是必填：逐张补
   const priceInputs = qa(window, '.up__entry input').filter((n) => n.placeholder?.includes('价格'));
   priceInputs[0].value = '¥12';
   priceInputs[0].dispatchEvent(new window.Event('input', { bubbles: true }));
   await tick(40);
-  assert.ok(!submitButton().disabled, '只填一个价格也应可提交');
+  assert.ok(submitButton().disabled, '还有一道菜没填价格，应仍禁用');
+  assert.ok(submitButton().textContent.includes('1 个价格'), `按钮文案不对：${submitButton().textContent}`);
+
+  priceInputs[1].value = '6';
+  priceInputs[1].dispatchEvent(new window.Event('input', { bubbles: true }));
+  await tick(60);
+  assert.ok(!submitButton().disabled, '菜名与价格都填齐后应可提交');
+  assert.equal(qa(window, '.up__entry input.is-invalid').length, 0, '填齐后不应再有红框');
 });
 
 await suite.test('提交后：窗口自动建档 + 菜带当天日期 + 落库', async () => {
@@ -159,8 +166,7 @@ await suite.test('提交后：窗口自动建档 + 菜带当天日期 + 落库',
   assert.equal(dishes.length, 2, `菜品条数不对：${dishes.length}`);
   assert.deepEqual(dishes.map((d) => d.payload.name).sort(), ['清炒时蔬', '红烧肉'].sort(), '两道菜都要有菜名');
   const withPrice = dishes.filter((d) => d.payload.priceText);
-  assert.equal(withPrice.length, 1, '只填了一道菜的价格，另一道应为 null（价格可选）');
-  assert.equal(dishes.filter((d) => !d.payload.priceText).length, 1);
+  assert.equal(withPrice.length, 2, '价格是必填项，两道菜都应带价格');
   assert.ok(dishes.every((d) => d.payload.date === dateKey()), '窗口的菜应带当天日期');
   // 提交时写的是约定路径 assets/uploads/xxx；mock 数据源会把它换成内联图，便于本机直接看到
   assert.ok(
