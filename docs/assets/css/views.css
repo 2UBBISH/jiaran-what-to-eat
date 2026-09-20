@@ -150,6 +150,9 @@
   color: var(--text-3);
 }
 .stage__sep { opacity: 0.5; }
+.stage__avoided { color: var(--warn); opacity: 0.85; }
+.stage__today { color: var(--accent); text-decoration: none; }
+.stage__today:hover { text-decoration: underline; }
 
 /* --------------------------------------------------------------- 结果区 */
 

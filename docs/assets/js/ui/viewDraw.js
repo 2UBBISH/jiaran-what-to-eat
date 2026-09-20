@@ -117,7 +117,18 @@ export function createDrawView({ getMenu, onNeedMenu }) {
     stageMeta.innerHTML = '';
     mount(
       stageMeta,
-      el('span', { class: 'stage__pool', text: `候选 ${p.poolSize} 道 · ${p.canteenCount} 个饭堂` }),
+      el('span', {
+        class: 'stage__pool',
+        text: `池子 ${p.poolSize} 道 · ${p.canteenCount} 个饭堂`,
+        title: '不含「避开最近吃过的」的稳定数量',
+      }),
+      p.avoidedCount
+        ? el('span', {
+          class: 'stage__avoided',
+          text: `· 已避开最近 ${p.avoidedCount} 道`,
+          title: '这些是最近抽到过的菜，本次不会再被抽中',
+        })
+        : null,
       el('span', { class: 'stage__sep', text: '·' }),
       el('span', { class: 'stage__filters', text: activeFilterSummary() }),
       todayCount

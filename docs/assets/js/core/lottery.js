@@ -142,11 +142,21 @@ export function plan(menu, rawOptions = {}) {
 
   const { total: canteenTotal, rows: canteenWeights } = poolWeights(canteenRows, (row) => row.weight);
 
+  // 稳定口径：不含冷却。界面上的「池子 N 道 · M 个饭堂」用它，
+  // 否则每抽一次数字都会变（最近吃过的被排除，只有一道菜的饭堂会整店掉出候选）。
+  // 注意：pool 本身不删元素，冷却体现在权重为 0 上，所以这里按权重统计。
+  const baseCanteenIds = new Set(basePool.map((dish) => dish.canteenId));
+  const drawablePool = relaxed ? pool : pool.filter((dish) => effectiveWeight(dish) > 0);
+
   return {
     options,
     filters,
     pool,
+    drawablePool,
     basePool,
+    baseCanteenCount: baseCanteenIds.size,
+    avoidedCount: Math.max(0, pool.length - drawablePool.length),
+    activeCanteenCount: canteenRows.length,
     canteenRows,
     canteenTotal,
     canteenWeights: canteenWeights.map((row) => ({
@@ -364,8 +374,13 @@ export function preview(menu, rawOptions = {}, env = {}) {
     seed,
     kind,
     ticket: ticketOf(seed),
-    poolSize: planResult.pool.length,
-    canteenCount: planResult.canteenRows.length,
+    // 稳定值（不受「避开最近吃过的」影响）——界面默认展示这两个
+    poolSize: planResult.basePool.length,
+    canteenCount: planResult.baseCanteenCount,
+    // 冷却带来的实际变化
+    activePoolSize: planResult.drawablePool.length,
+    activeCanteenCount: planResult.activeCanteenCount,
+    avoidedCount: planResult.avoidedCount,
     canteenWeights,
     topCanteens: top,
     warnings: planResult.warnings,

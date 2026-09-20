@@ -50,12 +50,18 @@ export function clearHistory() {
   return [];
 }
 
-/** 最近 N 次抽到的菜品/饭堂，用于冷却与均衡（去重后返回） */
+/**
+ * 最近 N 次抽签的语境，用于冷却与饭堂均衡。
+ * 冷却只取每次的「主推菜」（当时真正推给你的那道），
+ * 而不是整页推荐列表 —— 否则一次抽签就会把七八道菜都算成「最近吃过」，
+ * 池子和饭堂数掉得飞快。
+ */
 export function recentContext(window = 5) {
   const recent = loadHistory().slice(0, window);
   const dishIds = [];
   recent.forEach((entry) => {
-    (entry.dishIds || []).forEach((id) => { if (!dishIds.includes(id)) dishIds.push(id); });
+    const id = entry.primaryDishId || (entry.dishIds || [])[0];
+    if (id && !dishIds.includes(id)) dishIds.push(id);
   });
   return {
     recentDishIds: dishIds,

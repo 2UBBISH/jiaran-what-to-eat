@@ -15,6 +15,7 @@ import {
 import { draw, preview, redrawCuisine, plan, resolveSeed } from '../docs/assets/js/core/lottery.js';
 import { dateKey, daysAgo, shiftDate } from '../docs/assets/js/core/date.js';
 import { UNCATEGORIZED } from '../docs/assets/js/core/lottery.js';
+import { recordDraw, recentContext, clearHistory } from '../docs/assets/js/userData.js';
 import { encodeShare, decodeShare, optionsFromHash, buildShareText } from '../docs/assets/js/core/share.js';
 import { createRng, hashSeed, pickWeightedMany, poolWeights, ticketOf } from '../docs/assets/js/core/rng.js';
 import { uploadPathFor } from '../docs/assets/js/data/contract.js';
@@ -240,6 +241,61 @@ test('plan 不消费随机数（预览可重复计算）', () => {
   const b = plan(menu, { seed: 1, avoidRecent: false });
   assert.equal(a.pool.length, b.pool.length);
   assert.deepEqual(a.canteenWeights, b.canteenWeights);
+});
+
+test('舞台数字稳定：池子/饭堂数不受冷却影响（回归）', () => {
+  // 只统计真正可抽的菜（窗口级推荐、差评本来就不在池子里）
+  const canteenDishes = filterDishes(menu, { canteenId: 'lan_yuan' }).map((dish) => dish.id);
+  const before = preview(menu, { recentDishIds: [] });
+  const after = preview(menu, { recentDishIds: canteenDishes, recentCanteenIds: ['lan_yuan'] });
+
+  assert.equal(after.poolSize, before.poolSize, '池子数应保持不变（稳定口径）');
+  assert.equal(after.canteenCount, before.canteenCount, '饭堂数应保持不变（稳定口径）');
+  assert.equal(after.avoidedCount, canteenDishes.length, '应单独报出被冷却的菜数');
+  assert.equal(after.activePoolSize, before.poolSize - canteenDishes.length, '实际可抽池子应变小');
+});
+
+test('只有一道菜的饭堂被冷却时会临时退出，但显示值不变', () => {
+  const only = menu.dishes.find((dish) => dish.canteenId === 'zhi_lan_yuan');
+  assert.ok(only, '样本里应有单菜饭堂');
+  const base = preview(menu, {});
+  const cooled = preview(menu, { recentDishIds: [only.id] });
+  assert.equal(cooled.canteenCount, base.canteenCount, '显示的饭堂数不变');
+  assert.equal(cooled.activeCanteenCount, base.canteenCount - 1, '实际可抽饭堂少一个');
+  assert.equal(cooled.avoidedCount, 1);
+});
+
+test('冷却只记主推菜，不把整页推荐都算成「吃过」', () => {
+  clearHistory();
+  recordDraw({
+    ok: true, seed: 1, ticket: 'AAAAA',
+    canteen: { id: 'lan_yuan', name: '澜园' }, floor: '1F',
+    cuisine: { id: 'sichuan', name: '川菜' },
+    dishes: [{ id: 'd1', name: '一' }, { id: 'd2', name: '二' }, { id: 'd3', name: '三' }],
+  });
+  const ctx = recentContext();
+  assert.deepEqual(ctx.recentDishIds, ['d1'], '只应记主推菜');
+  assert.deepEqual(ctx.recentCanteenIds, ['lan_yuan']);
+  assert.equal(ctx.recent.length, 1);
+  clearHistory();
+});
+
+test('连续抽签：显示值恒定，冷却数封顶在窗口大小', () => {
+  let recentDishIds = [];
+  let recentCanteenIds = [];
+  const seen = [];
+  for (let i = 0; i < 8; i += 1) {
+    const p = preview(menu, { recentDishIds, recentCanteenIds });
+    seen.push([p.poolSize, p.canteenCount, p.avoidedCount]);
+    const r = draw(menu, { seed: 100 + i, recentDishIds, recentCanteenIds });
+    if (r.ok) {
+      recentDishIds = [r.dishes[0].id, ...recentDishIds].slice(0, 5);
+      recentCanteenIds = [r.canteen.id, ...recentCanteenIds].slice(0, 5);
+    }
+  }
+  assert.equal(new Set(seen.map(([pool]) => pool)).size, 1, '池子数应始终一致');
+  assert.equal(new Set(seen.map(([, canteens]) => canteens)).size, 1, '饭堂数应始终一致');
+  assert.equal(Math.max(...seen.map(([, , avoided]) => avoided)), 5, '冷却数不应超过窗口大小');
 });
 
 /* ------------------------------------------------------------- 分享 */

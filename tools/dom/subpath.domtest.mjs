@@ -70,7 +70,8 @@ await suite.test('子路径下抽签与推送菜系页面正常渲染', async ()
 
   const q = (selector) => window.document.querySelector(selector);
   assert0(q('.view--draw'), '抽签视图没渲染');
-  assert0(q('.stage__pool')?.textContent.includes('候选'), `菜单数据没加载：${q('.stage__meta')?.textContent || ''}`);
+  assert0(/池子 \d+ 道 · \d+ 个饭堂/.test(q('.stage__pool')?.textContent || ''),
+    `菜单数据没加载：${q('.stage__meta')?.textContent || ''}`);
 
   q('.stage__actions .btn--primary').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
   await new Promise((resolve) => setTimeout(resolve, 150));

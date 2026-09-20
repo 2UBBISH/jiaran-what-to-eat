@@ -82,6 +82,28 @@ await suite.test('结果区没有渲染出 null / undefined 文本（回归）',
   assert.equal(pageJunk.length, 0, `页面出现了脏文本节点：${pageJunk.join(', ')}`);
 });
 
+await suite.test('反复抽签时「池子 / 饭堂数」不变（回归）', async () => {
+  const read = () => {
+    const text = q(window, '.stage__pool').textContent;
+    const match = text.match(/池子 (\d+) 道 · (\d+) 个饭堂/);
+    return { dishes: match?.[1], canteens: match?.[2], text };
+  };
+  const before = read();
+  assert.ok(before.canteens, `没读到饭堂数：${before.text}`);
+
+  for (let i = 0; i < 6; i += 1) {
+    q(window, '.stage__actions .btn--primary').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    await tick(120);
+  }
+  const after = read();
+  assert.equal(after.canteens, before.canteens, `饭堂数变化了：${before.text} → ${after.text}`);
+  assert.equal(after.dishes, before.dishes, `池子数变化了：${before.text} → ${after.text}`);
+
+  const avoided = q(window, '.stage__avoided');
+  assert.ok(avoided, '缺少「已避开最近 N 道」的说明');
+  assert.match(avoided.textContent, /已避开最近 \d+ 道/);
+});
+
 await suite.test('概率透明面板概率归一', () => {
   const rows = qa(window, '.prob-row');
   assert.ok(rows.length > 0, '没有概率明细');
