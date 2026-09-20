@@ -7,13 +7,15 @@
  *   POST   {base}/contributions            -> 新增/覆盖一条（body: 记录 JSON）
  *   DELETE {base}/contributions/{id}       -> 删除
  *   POST   {base}/uploads                  -> multipart 上传图片，返回 { url }
+ *   POST   {base}/batch                    -> { records, images } 一次提交，返回 { ok, commit, results }
+ *   POST   {base}/uploads/batch            -> 批量图片（同样支持 multipart 多文件）
  *   GET    {base}/health                   -> { ok, writable, detail }
  *
  * 前端其它部分完全不用改：在 data/index.js 注册后，界面里切换数据源即可。
  */
 
 import { buildMenu } from '../core/menu.js';
-import { assertContract, DataSourceError } from './contract.js';
+import { assertContract, DataSourceError, sequentialBatch } from './contract.js';
 
 export function createHttpSource({
   baseUrl = '/api',
@@ -43,7 +45,7 @@ export function createHttpSource({
 
   return assertContract({
     kind: 'http',
-    capabilities: { read: true, write: true, upload: true, remove: true },
+    capabilities: { read: true, write: true, upload: true, remove: true, batch: true },
 
     async loadMenu() {
       const [base, contributions] = await Promise.all([
@@ -94,6 +96,40 @@ export function createHttpSource({
         body: { name: asset.name, mime: asset.mime, base64: asset.base64 },
       });
       return { ok: true, path: result?.path || asset.name, url: result?.url };
+    },
+
+    async saveMany(records, { images = [] } = {}) {
+      try {
+        const result = await request('/batch', {
+          method: 'POST',
+          body: {
+            records,
+            images: images.map((asset) => ({ name: asset.name, mime: asset.mime, base64: asset.base64 })),
+          },
+        });
+        return { ok: true, commit: result?.commit || null, batched: true, results: result?.results || [] };
+      } catch (error) {
+        // 后端没实现 /batch 时退化为逐个提交
+        console.warn('[http] /batch 不可用，退化为逐个提交', error.message);
+        return sequentialBatch(this, 'saveMany')(records);
+      }
+    },
+
+    async uploadImages(assets) {
+      try {
+        if (typeof FormData !== 'undefined') {
+          const form = new FormData();
+          assets.forEach((asset, index) => {
+            if (asset.blob) form.append('files', asset.blob, asset.name);
+            else form.append(`files[${index}]`, asset.dataUrl || asset.base64);
+          });
+          const result = await request('/uploads/batch', { method: 'POST', body: form, isForm: true });
+          return { ok: true, commit: null, batched: true, results: result?.results || [] };
+        }
+      } catch (error) {
+        console.warn('[http] 批量上传端点不可用，退化为逐个上传', error.message);
+      }
+      return sequentialBatch(this, 'uploadImages')(assets);
     },
 
     async deleteContribution(id) {

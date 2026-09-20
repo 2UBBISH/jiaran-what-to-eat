@@ -14,6 +14,9 @@
  *   listContributions()                   -> [{ id, kind, author, createdAt, path, title }]
  *   saveContribution(record, options)     -> { ok, path, url, commit }
  *   uploadImage(asset, options)           -> { ok, path, url }
+ *   saveMany(records, { images })         -> { ok, commit, results }
+ *        批量新增内容；可同时带上 images（照片），实现应尽量「内容+图片」一次提交
+ *   uploadImages(assets, options)         -> { ok, commit, results }   （批量图片，一次提交）
  *   deleteContribution(id, options)       -> { ok }
  *   health()                              -> { ok, mode, writable, detail }
  */
@@ -29,8 +32,43 @@ export class DataSourceError extends Error {
 }
 
 const REQUIRED_METHODS = [
-  'loadMenu', 'listContributions', 'saveContribution', 'uploadImage', 'deleteContribution', 'health',
+  'loadMenu', 'listContributions', 'saveContribution', 'uploadImage',
+  'saveMany', 'uploadImages', 'deleteContribution', 'health',
 ];
+
+/**
+ * 上传图片的路径约定（前端与各数据源共用）。
+ * 上传前就能算出最终地址，所以「内容 + 图片」可以在同一次提交里完成。
+ */
+export function uploadPathFor(asset) {
+  const safe = String(asset?.name || 'photo.jpg').replace(/[^A-Za-z0-9._-]/g, '_');
+  return `assets/uploads/${safe}`;
+}
+
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * 批量能力的默认实现：逐个调用单项方法。
+ * 能一次提交多个文件的实现（如 githubSource 用 Git Data API）应覆盖它，
+ * 这样「一次上传 5 张自选菜照片」只产生 1 个 commit。
+ */
+export function sequentialBatch(source, method) {
+  const single = method === 'saveMany' ? 'saveContribution' : 'uploadImage';
+  return async (items, options = {}) => {
+    const results = [];
+    for (const item of items) {
+      results.push(await source[single](item, options));
+    }
+    return {
+      ok: true,
+      commit: null,
+      batched: false,
+      results,
+    };
+  };
+}
 
 /** 启动时自检，避免「少写一个方法」在用户点击时才炸 */
 export function assertContract(source) {
@@ -54,6 +92,8 @@ export const CONTRACT_SUMMARY = [
   { method: 'listContributions()', desc: '列出全部已上传内容（管理台用）' },
   { method: 'saveContribution(record)', desc: '新增一条内容（菜品 / 饭堂 / 补充说明）' },
   { method: 'uploadImage(asset)', desc: '上传图片（已在前端压缩为 base64/multipart）' },
+  { method: 'saveMany(records, {images})', desc: '批量新增内容（可同时提交图片，一次上传只产生一个 commit）' },
+  { method: 'uploadImages(assets)', desc: '批量上传图片（自选菜高频上传用）' },
   { method: 'deleteContribution(id)', desc: '删除一条内容' },
   { method: 'health()', desc: '连通性与可写性自检' },
 ];

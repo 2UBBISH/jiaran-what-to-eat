@@ -11,6 +11,7 @@
 
 import { createRng, hashSeed, pickWeighted, poolWeights, ticketOf } from './rng.js';
 import { filterDishes } from './menu.js';
+import { dateKey } from './date.js';
 import { encodeShare } from './share.js';
 
 export const DEFAULT_OPTIONS = {
@@ -27,6 +28,7 @@ export const DEFAULT_OPTIONS = {
   keyword: '',
   labeledFloorsOnly: false,
   avoidRecent: true,
+  includePastDaily: false,
   recentDishIds: [],
   recentCanteenIds: [],
   canteenWeight: 'balanced', // balanced | dishWeight | uniform
@@ -53,12 +55,12 @@ export function resolveSeed(options = {}, now = Date.now()) {
     return { seed: hashSeed(options.seed), kind: 'explicit' };
   }
   if (options.daily) {
-    const dateKey = new Date(now).toISOString().slice(0, 10);
+    const today = dateKey(now);
     const signature = [
-      dateKey, options.canteenId || '', options.floor || '',
+      today, options.canteenId || '', options.floor || '',
       cuisines.join('+'), options.maxSpicyLevel ?? '', options.maxPrice ?? '',
     ].join('|');
-    return { seed: hashSeed(`daily|${signature}`), kind: 'daily', dateKey };
+    return { seed: hashSeed(`daily|${signature}`), kind: 'daily', dateKey: today };
   }
   return { seed: (Math.random() * 4294967296) >>> 0, kind: 'random' };
 }
@@ -74,6 +76,7 @@ export function plan(menu, rawOptions = {}) {
   const filters = {
     canteenId: options.canteenId || null,
     cuisines: options.cuisines,
+    includePastDaily: options.includePastDaily,
     maxSpicyLevel: options.maxSpicyLevel,
     maxPrice: options.maxPrice,
     requirePrice: options.requirePrice,

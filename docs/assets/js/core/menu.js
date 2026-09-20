@@ -7,8 +7,11 @@
  * 合成、校验、聚合、索引都在这里完成，视图层不关心数据从哪来。
  */
 
+import { dateKey, isDateKey } from './date.js';
+
 const FLOOR_IDS = ['1F', '2F', '3F'];
-const CONTRIBUTION_KINDS = ['dish', 'canteen', 'note'];
+const CONTRIBUTION_KINDS = ['dish', 'canteen', 'stall', 'note'];
+const WINDOW_TYPES = ['窗口', '自选', '固定'];
 
 /* ------------------------------------------------------------------ 校验 */
 
@@ -103,6 +106,10 @@ export function validateContribution(raw, menu) {
     if (payload.reviewText != null && !isStr(payload.reviewText, 0, 400)) errors.push('评价最多 400 字');
     if (payload.image != null && !isStr(payload.image, 0, 300)) errors.push('图片地址过长');
     if (payload.stallName != null && !isStr(payload.stallName, 0, 60)) errors.push('窗口名过长');
+    // date：填了就是「当天有效的自选菜」，不填就是常驻菜
+    if (payload.date != null && payload.date !== '' && !isDateKey(payload.date)) {
+      errors.push('date 需为 YYYY-MM-DD（自选菜填当天日期）');
+    }
 
     payload.floor = floor;
     payload.cuisines = cuisines;
@@ -124,6 +131,19 @@ export function validateContribution(raw, menu) {
       if (!FLOOR_IDS.includes(f)) errors.push(`楼层只能是 ${FLOOR_IDS.join(' / ')}`);
     });
     payload.floors = floors;
+  }
+
+  if (raw.kind === 'stall') {
+    if (!canteenIds.has(payload.canteenId)) errors.push(`饭堂 id 不存在：${payload.canteenId}`);
+    const floor = payload.floor ?? null;
+    if (floor != null && !FLOOR_IDS.includes(floor)) errors.push('floor 只能是 1F / 2F / 3F 或留空');
+    if (!isStr(payload.name, 1, 40)) errors.push('窗口名需为 1-40 字');
+    const windowType = payload.windowType || '窗口';
+    if (!WINDOW_TYPES.includes(windowType)) errors.push(`windowType 只能是 ${WINDOW_TYPES.join(' / ')}`);
+    if (payload.note != null && !isStr(payload.note, 0, 300)) errors.push('窗口说明最多 300 字');
+    if (payload.image != null && !isStr(payload.image, 0, 300)) errors.push('图片地址过长');
+    payload.floor = floor;
+    payload.windowType = windowType;
   }
 
   if (raw.kind === 'note') {
@@ -161,6 +181,7 @@ function newDishFromContribution(menu, contrib, index) {
     spicyLevel: p.spicyLevel,
     mealSlots: p.mealSlots.slice(),
     vegetarian: p.vegetarian,
+    date: isDateKey(p.date) ? p.date : null,
     price,
     priceTier: null,
     reviewLevel: level ? level.id : 'positive',
@@ -203,6 +224,21 @@ function applyContribution(menu, contrib) {
     });
     return;
   }
+  if (contrib.kind === 'stall') {
+    menu.stallRecords.push({
+      contributionId: contrib.id,
+      canteenId: p.canteenId,
+      floor: p.floor ?? null,
+      name: p.name.trim(),
+      windowType: p.windowType,
+      note: p.note || null,
+      image: p.image || null,
+      author: contrib.author || null,
+      createdAt: contrib.createdAt || null,
+    });
+    return;
+  }
+
   if (contrib.kind === 'note') {
     const dish = menu.dishes.find((d) => d.id === p.targetDishId);
     if (!dish) return;
@@ -229,7 +265,104 @@ function priceTierOf(price) {
   return null;
 }
 
+/**
+ * 把「窗口」变成一等实体：
+ *   - 从已有菜品的 stallName 自动派生（截图数据里就有窗口名）
+ *   - 线上新增的 stall 贡献可以补图片/说明/类型（自选 | 固定 | 窗口）
+ * 同一 (饭堂, 楼层, 窗口名) 视为同一个窗口。
+ */
+function deriveStalls(menu) {
+  const map = new Map();
+  const keyOf = (canteenId, floor, name) => `${canteenId}|${floor || ''}|${name}`;
+
+  function ensure(canteenId, floor, name) {
+    const key = keyOf(canteenId, floor, name);
+    if (!map.has(key)) {
+      map.set(key, {
+        id: `stall:${key}`,
+        canteenId,
+        floor: floor || null,
+        name,
+        windowType: '窗口',
+        note: null,
+        image: null,
+        origin: 'derived',
+        contributionId: null,
+        author: null,
+        createdAt: null,
+        dishCount: 0,
+        dailyDishCount: 0,
+        todayDishCount: 0,
+        dishIds: [],
+      });
+    }
+    return map.get(key);
+  }
+
+  menu.dishes.forEach((dish) => {
+    if (!dish.stallName) return;
+    const stall = ensure(dish.canteenId, dish.floor, dish.stallName);
+    stall.dishCount += 1;
+    stall.dishIds.push(dish.id);
+    if (dish.daily) {
+      stall.dailyDishCount += 1;
+      if (dish.isToday) stall.todayDishCount += 1;
+      if (!stall.image && dish.image) stall.image = dish.image; // 自选菜照片顺带当窗口图
+    }
+  });
+
+  menu.stallRecords.forEach((record) => {
+    const stall = ensure(record.canteenId, record.floor, record.name);
+    stall.windowType = record.windowType || stall.windowType;
+    if (record.note) stall.note = record.note;
+    if (record.image) stall.image = record.image;
+    stall.origin = 'community';
+    stall.contributionId = record.contributionId;
+    stall.author = record.author;
+    stall.createdAt = record.createdAt;
+  });
+
+  return [...map.values()].sort((a, b) => (
+    a.canteenId.localeCompare(b.canteenId)
+    || String(a.floor || 'zz').localeCompare(String(b.floor || 'zz'))
+    || b.todayDishCount - a.todayDishCount
+    || b.dishCount - a.dishCount
+    || a.name.localeCompare(b.name)
+  ));
+}
+
+/**
+ * 同窗口 + 同一天 + 同名 的自选菜只保留最后上传的一条。
+ * 高频上传时很常见：菜拍糊了重拍、或者一天传了两次同名菜，
+ * 不去重的话抽签权重会被悄悄放大。
+ */
+function dedupeDaily(menu) {
+  const lastIndexByKey = new Map();
+  // 注意用 dish.date 而不是 dish.daily：daily 标记是在聚合阶段才算出来的，
+  // 去重发生在此之前。
+  const keyOf = (dish) => (
+    dish.date && dish.stallName
+      ? `${dish.canteenId}|${dish.floor || ''}|${dish.stallName}|${dish.date}|${dish.name}`
+      : null
+  );
+
+  menu.dishes.forEach((dish, index) => {
+    const key = keyOf(dish);
+    if (key) lastIndexByKey.set(key, index);
+  });
+
+  const before = menu.dishes.length;
+  menu.dishes = menu.dishes.filter((dish, index) => {
+    const key = keyOf(dish);
+    return !key || lastIndexByKey.get(key) === index;
+  });
+  menu.dedupedDailyCount = before - menu.dishes.length;
+  return menu;
+}
+
 function recompute(menu) {
+  dedupeDaily(menu);
+
   // 菜系聚合
   const cuisineMap = new Map(menu.taxonomy.cuisines.map((c) => [c.id, {
     ...c, dishCount: 0, dishIds: [], canteenIds: new Set(),
@@ -243,6 +376,9 @@ function recompute(menu) {
 
   menu.dishes.forEach((dish) => {
     dish.priceTier = priceTierOf(dish.price);
+    dish.daily = Boolean(dish.date);
+    dish.isToday = !dish.daily || dish.date === menu.today;
+    dish.stale = dish.daily && !dish.isToday;
     const canteen = canteenMap.get(dish.canteenId);
     if (!canteen) return;
     canteen.dishCount += 1;
@@ -331,7 +467,10 @@ function recompute(menu) {
   });
   menu.indexes = indexes;
 
+  menu.stalls = deriveStalls(menu);
+
   const communityDishes = menu.dishes.filter((d) => d.origin === 'community').length;
+  const dailyDishes = menu.dishes.filter((d) => d.daily);
   menu.meta = {
     ...menu.meta,
     stats: {
@@ -339,6 +478,10 @@ function recompute(menu) {
       dishCount: menu.dishes.length,
       canteenCount: menu.canteens.length,
       communityDishCount: communityDishes,
+      stallCount: menu.stalls.length,
+      dailyDishCount: dailyDishes.length,
+      todayDailyDishCount: dailyDishes.filter((d) => d.isToday).length,
+      dedupedDailyCount: menu.dedupedDailyCount || 0,
       contributionCount: menu.contributions.length,
       rejectedCount: menu.rejected.length,
     },
@@ -351,8 +494,9 @@ function recompute(menu) {
  * @param {object} base docs/assets/data/menu.json
  * @param {object[]} contributions 已解析的贡献内容数组
  */
-export function buildMenu(base, contributions = []) {
+export function buildMenu(base, contributions = [], { today = dateKey() } = {}) {
   const menu = {
+    today,
     meta: { ...(base.meta || {}) },
     taxonomy: base.taxonomy,
     dishes: (base.dishes || []).map((d) => ({ origin: 'curated', ...d })),
@@ -360,6 +504,8 @@ export function buildMenu(base, contributions = []) {
     cuisines: [],
     indexes: {},
     draw: base.draw || {},
+    stallRecords: [],
+    stalls: [],
     contributions: [],
     rejected: [],
     builtAt: new Date().toISOString(),
@@ -367,7 +513,7 @@ export function buildMenu(base, contributions = []) {
 
   // 先合并「新增饭堂」，再合并菜品/补充说明，这样菜品可以引用同批上传的新饭堂，
   // 结果与文件顺序无关（CI 重建索引时也用同一套逻辑）。
-  const KIND_ORDER = { canteen: 0, dish: 1, note: 2 };
+  const KIND_ORDER = { canteen: 0, stall: 1, dish: 2, note: 3 };
   contributions
     .filter((item) => item && typeof item === 'object' && !String(item.id || '').startsWith('_'))
     .slice()
@@ -397,6 +543,25 @@ export function isDrawable(dish) {
   return dish.type !== 'stall_recommendation' && !dish.excludedByDefault;
 }
 
+/** 自选菜只在当天有效；常驻菜（没有 date）永远有效 */
+export function isDishToday(dish, today = dateKey()) {
+  return !dish.date || dish.date === today;
+}
+
+export function isDishStale(dish, today = dateKey()) {
+  return Boolean(dish.date) && dish.date !== today;
+}
+
+/** 某个饭堂/楼层下的窗口（默认只列有菜或有照片的） */
+export function stallsOf(menu, { canteenId = null, floor = undefined, withDishesOnly = false } = {}) {
+  return (menu.stalls || []).filter((stall) => {
+    if (canteenId && stall.canteenId !== canteenId) return false;
+    if (floor !== undefined && floor !== null && stall.floor !== floor) return false;
+    if (withDishesOnly && stall.dishCount === 0) return false;
+    return true;
+  });
+}
+
 /**
  * 统一的菜品筛选。视图层的每个筛选项都对应这里的一个字段，
  * 抽签和浏览共用同一套语义。
@@ -406,13 +571,18 @@ export function filterDishes(menu, filters = {}) {
     canteenId = null, floor = undefined, cuisines = [], maxSpicyLevel = null,
     maxPrice = null, requirePrice = false, mealSlot = null, vegetarian = null,
     keyword = '', allowExcluded = false, includeStallRecommendations = false,
-    labeledFloorsOnly = false,
+    labeledFloorsOnly = false, includePastDaily = false, onlyDaily = false,
+    today = null,
   } = filters;
+  const todayKey = today || menu.today || dateKey();
 
   const kw = String(keyword || '').trim();
   return menu.dishes.filter((dish) => {
     if (!allowExcluded && dish.excludedByDefault) return false;
     if (!includeStallRecommendations && dish.type === 'stall_recommendation') return false;
+    // 自选菜天天变：默认只用「今天」上传的，往日的自动退场
+    if (!includePastDaily && isDishStale(dish, todayKey)) return false;
+    if (onlyDaily && !dish.daily) return false;
     if (canteenId && dish.canteenId !== canteenId) return false;
     if (floor !== undefined && floor !== null && dish.floor !== floor) return false;
     if (labeledFloorsOnly && !dish.floor) return false;

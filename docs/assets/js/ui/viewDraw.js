@@ -11,8 +11,11 @@ import { APP_NAME, APP_TAGLINE, APP_SUB, SHARE_TITLE } from '../brand.js';
 import {
   button, chipRow, segmented, toggleRow, dishCard, ticketChip,
   emptyState, sectionTitle, toast, bottomSheet, historyItem,
+  stallStrip, todayBoard,
 } from './components.js';
 import { draw, redrawCuisine, preview } from '../core/lottery.js';
+import { dateLabel } from '../core/date.js';
+import { stallsOf } from '../core/menu.js';
 import { hashForResult, buildShareText, optionsFromHash } from '../core/share.js';
 import {
   loadSettings, saveSettings, recentContext, recordDraw, markEaten,
@@ -110,11 +113,16 @@ export function createDrawView({ getMenu, onNeedMenu }) {
       return;
     }
     const p = preview(menu, { ...settings, ...recentContext() }, { now: Date.now() });
+    const todayCount = menu.dishes.filter((dish) => dish.date === menu.today).length;
     stageMeta.innerHTML = '';
-    stageMeta.append(
+    mount(
+      stageMeta,
       el('span', { class: 'stage__pool', text: `候选 ${p.poolSize} 道 · ${p.canteenCount} 个饭堂` }),
       el('span', { class: 'stage__sep', text: '·' }),
       el('span', { class: 'stage__filters', text: activeFilterSummary() }),
+      todayCount
+        ? el('a', { class: 'stage__today', href: 'upload.html', text: `· 今日自选 ${todayCount} 道` })
+        : null,
     );
   }
 
@@ -239,7 +247,34 @@ export function createDrawView({ getMenu, onNeedMenu }) {
       ])
       : null;
 
-    mount(resultHost, head, pushCard, targets, warnings, dishList, actions, transparency, othersBlock);
+    // 自选窗口：当天上传的菜（带照片）+ 这层有哪些窗口
+    const todayDishes = (menu.dishes || []).filter((dish) => (
+      dish.date === menu.today
+      && dish.canteenId === canteen.id
+      && dish.type !== 'stall_recommendation'
+      && (floor ? dish.floor === floor : true)
+    ));
+    const todayBlock = todayDishes.length
+      ? el('div', { class: 'today-section' }, [
+        sectionTitle(`今日自选 · ${dateLabel(menu.today, menu.today)}`, el('span', { class: 'pill', text: `${todayDishes.length} 道` })),
+        todayBoard(todayDishes, { canteen, favorites, onFavorite: (item) => {
+          toggleFavorite(item.id);
+          renderResult(next, { shared });
+        } }),
+        el('p', { class: 'up__hint', text: '自选窗口的菜每天更新，只当天参与抽签' }),
+      ])
+      : null;
+
+    const stallsHere = stallsOf(menu, { canteenId: canteen.id, floor: floor ?? undefined });
+    const stallBlock = stallsHere.length
+      ? el('div', { class: 'stall-section' }, [
+        sectionTitle('这层的窗口', el('span', { class: 'pill', text: `${stallsHere.length} 个` })),
+        stallStrip(stallsHere),
+      ])
+      : null;
+
+    mount(resultHost, head, pushCard, targets, todayBlock, warnings, dishList,
+      stallBlock, actions, transparency, othersBlock);
     if (shared) highlightShared();
   }
 
@@ -411,6 +446,11 @@ export function createDrawView({ getMenu, onNeedMenu }) {
           checked: settings.labeledFloorsOnly,
           hint: `当前 ${menu.dishes.filter((d) => d.floor).length} 道菜有明确楼层`,
           onChange: (value) => { settings.labeledFloorsOnly = value; },
+        }),
+        toggleRow('包含往日的自选菜', {
+          checked: Boolean(settings.includePastDaily),
+          hint: '自选菜天天变，默认只用今天上传的',
+          onChange: (value) => { settings.includePastDaily = value; },
         }),
       ]),
       el('div', { class: 'sheet__footer' }, [

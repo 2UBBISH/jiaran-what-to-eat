@@ -1,14 +1,16 @@
 /** 浏览视图：按饭堂 / 菜系翻菜单（展示层，只读） */
 
 import { el, clear } from './dom.js';
-import { dishCard, emptyState, tagPill } from './components.js';
-import { filterDishes } from '../core/menu.js';
+import { dishCard, emptyState, tagPill, stallStrip, todayBoard, toggleRow, sectionTitle } from './components.js';
+import { filterDishes, stallsOf } from '../core/menu.js';
+import { dateLabel } from '../core/date.js';
 import { floorLabel } from '../core/format.js';
 import { loadFavorites, toggleFavorite } from '../userData.js';
 
 export function createBrowseView({ getMenu }) {
   let mode = 'canteen';
   let keyword = '';
+  let showPastDaily = false;
   let detail = null; // { type: 'canteen'|'cuisine', id }
 
   const listHost = el('div', { class: 'browse__list' });
@@ -26,7 +28,15 @@ export function createBrowseView({ getMenu }) {
       el('div', { class: 'hero__eyebrow', text: '清华食堂 · 全部菜单' }),
       el('h1', { class: 'hero__title', text: '逛一逛' }),
     ]),
-    el('div', { class: 'browse__bar card card--glass' }, [modeRow, searchInput]),
+    el('div', { class: 'browse__bar card card--glass' }, [
+      modeRow,
+      searchInput,
+      toggleRow('显示往日的自选菜', {
+        checked: showPastDaily,
+        hint: '自选菜天天变，默认只看今天的',
+        onChange: (value) => { showPastDaily = value; render(); },
+      }),
+    ]),
     listHost,
   ]);
 
@@ -60,9 +70,14 @@ export function createBrowseView({ getMenu }) {
           el('span', { class: 'pill', text: `${counts.get(canteen.id)} 道` }),
         ]),
         el('div', { class: 'canteen-card__meta', text: `${canteen.category}${canteen.status === 'discontinued' ? ' · 已停业' : ''}` }),
-        el('div', { class: 'canteen-card__floors' }, canteen.floors.length
-          ? canteen.floors.map((floor) => tagPill(`${floorLabel(floor.floor)} ${floor.dishCount}`))
-          : [tagPill('楼层未标注')]),
+        el('div', { class: 'canteen-card__floors' }, [
+          ...(canteen.floors.length
+            ? canteen.floors.map((floor) => tagPill(`${floorLabel(floor.floor)} ${floor.dishCount}`))
+            : [tagPill('楼层未标注')]),
+          menu.stalls.some((stall) => stall.canteenId === canteen.id && stall.todayDishCount)
+            ? tagPill('今日有自选', 'spicy')
+            : null,
+        ].filter(Boolean)),
         el('div', { class: 'canteen-card__cuisines' }, canteen.cuisines.slice(0, 6).map((id) => {
           const cuisine = menu.cuisines.find((c) => c.id === id);
           return cuisine ? el('span', { class: 'emoji', title: cuisine.name, text: cuisine.emoji || '•' }) : null;
@@ -111,19 +126,40 @@ export function createBrowseView({ getMenu }) {
       const canteen = menu.canteens.find((c) => c.id === detail.id);
       if (!canteen) { detail = null; return render(); }
       title = canteen.name;
-      dishes = filterDishes(menu, { canteenId: canteen.id, keyword, includeStallRecommendations: true });
+      dishes = filterDishes(menu, {
+        canteenId: canteen.id, keyword, includeStallRecommendations: true,
+        includePastDaily: showPastDaily,
+      });
       const byFloor = new Map();
       dishes.forEach((dish) => {
         const key = dish.floor || '__none__';
         if (!byFloor.has(key)) byFloor.set(key, []);
         byFloor.get(key).push(dish);
       });
+      const todayDishes = menu.dishes.filter((dish) => dish.date === menu.today && dish.canteenId === canteen.id);
+      const stalls = stallsOf(menu, { canteenId: canteen.id });
       const host = el('div', {}, [
         el('div', { class: 'detail__head' }, [
           back,
           el('h1', { class: 'detail__title', text: title }),
           el('p', { class: 'detail__sub', text: `${canteen.category} · ${dishes.length} 道 · ${canteen.note || ''}` }),
         ]),
+        todayDishes.length
+          ? el('div', { class: 'today-section' }, [
+            sectionTitle(`${dateLabel(menu.today, menu.today)}的自选`, el('span', { class: 'pill', text: `${todayDishes.length} 道` })),
+            todayBoard(todayDishes, {
+              canteen,
+              favorites,
+              onFavorite: (item) => { toggleFavorite(item.id); render(); },
+            }),
+          ])
+          : null,
+        stalls.length
+          ? el('div', { class: 'stall-section' }, [
+            sectionTitle('窗口', el('span', { class: 'pill', text: `${stalls.length} 个` })),
+            stallStrip(stalls),
+          ])
+          : null,
       ]);
       [...byFloor.entries()]
         .sort((a, b) => String(a[0]).localeCompare(String(b[0])))

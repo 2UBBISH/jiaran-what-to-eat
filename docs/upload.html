@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>内容管理 · 嘉然今天吃什么</title>
+<title>自选菜快传 · 嘉然今天吃什么</title>
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✎</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/components.css">
@@ -17,23 +17,23 @@
 <body>
   <header class="topbar">
     <div class="topbar__brand">
-      <span class="topbar__logo" aria-hidden="true">✎</span>
-      <span>内容管理</span>
+      <span class="topbar__logo" aria-hidden="true">📷</span>
+      <span>自选菜快传</span>
     </div>
     <nav class="topbar__links">
-      <a class="topbar__link" href="upload.html">自选菜快传</a>
-      <a class="topbar__link" href="index.html">← 回到抽签</a>
+      <a class="topbar__link" href="index.html">抽签</a>
+      <a class="topbar__link" href="admin.html">内容管理</a>
     </nav>
   </header>
 
   <main class="shell">
-    <div id="admin"></div>
+    <div id="upload"></div>
   </main>
 
   <p class="site-foot">
-    写操作只通过你配置的数据源进行；Token 仅保存在本机浏览器，不会上传到任何服务器。
+    照片会在手机上压缩后再上传；Token 仅保存在本机浏览器，不会发往任何服务器。
   </p>
 
-  <script type="module" src="assets/js/admin.js"></script>
+  <script type="module" src="assets/js/upload.js"></script>
 </body>
 </html>

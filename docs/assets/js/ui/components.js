@@ -272,3 +272,60 @@ export function bottomSheet({ title, onClose } = {}) {
   });
   return { close, body, panel };
 }
+
+
+/* --------------------------------------------------------------- 窗口 */
+
+/** 窗口横滑条：有照片就显示照片，没有就用类型占位 */
+export function stallStrip(stalls, { onPick = null } = {}) {
+  if (!stalls.length) return null;
+  return el('div', { class: 'stall-strip scroll-x' }, stalls.map((stall) => el(
+    onPick ? 'button' : 'div',
+    {
+      class: `stall-card${onPick ? ' stall-card--tap' : ''}`,
+      type: onPick ? 'button' : null,
+      onclick: onPick ? () => onPick(stall) : null,
+    },
+    [
+      el('div', { class: 'stall-card__media' }, stall.image
+        ? [el('img', { src: stall.image, alt: stall.name, loading: 'lazy' })]
+        : [el('span', { class: 'stall-card__placeholder', text: stall.windowType === '自选' ? '🍱' : '🍽' })]),
+      el('div', { class: 'stall-card__body' }, [
+        el('div', { class: 'stall-card__name', text: stall.name }),
+        el('div', { class: 'stall-card__meta' }, [
+          stall.windowType === '自选' ? tagPill('自选', 'spicy') : null,
+          stall.todayDishCount ? tagPill(`今日 ${stall.todayDishCount}`) : null,
+          !stall.todayDishCount && stall.dishCount ? tagPill(`${stall.dishCount} 道`) : null,
+        ].filter(Boolean)),
+      ]),
+    ],
+  )));
+}
+
+/** 今日自选：自选窗口当天的菜，带照片 */
+export function todayBoard(dishes, { canteen = null, onFavorite = null, favorites = [] } = {}) {
+  if (!dishes.length) return null;
+  return el('div', { class: 'today-board' }, dishes.map((dish) => {
+    const card = el('article', { class: 'today-card' }, [
+      dish.image
+        ? el('div', { class: 'today-card__media' }, [el('img', { src: dish.image, alt: dish.name, loading: 'lazy' })])
+        : el('div', { class: 'today-card__media today-card__media--empty' }, [el('span', { text: '🍱' })]),
+      el('div', { class: 'today-card__body' }, [
+        el('div', { class: 'today-card__head' }, [
+          el('h3', { class: 'today-card__name', text: dish.name }),
+          onFavorite ? el('button', {
+            class: `icon-btn${favorites.includes(dish.id) ? ' is-on' : ''}`,
+            type: 'button',
+            text: favorites.includes(dish.id) ? '♥' : '♡',
+            onclick: () => onFavorite(dish),
+          }) : null,
+        ]),
+        el('div', { class: 'today-card__meta' }, [
+          pricePill(dish.price),
+          dish.stallName ? tagPill(dish.stallName) : null,
+        ].filter(Boolean)),
+      ]),
+    ]);
+    return card;
+  }));
+}

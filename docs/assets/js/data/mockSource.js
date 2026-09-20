@@ -8,7 +8,7 @@
  */
 
 import { buildMenu } from '../core/menu.js';
-import { assertContract } from './contract.js';
+import { assertContract, sequentialBatch, uploadPathFor } from './contract.js';
 import { KEYS, getJSON, setJSON } from './local.js';
 
 export function createMockSource({ baseMenu = null, baseLoader = null, fetchImpl, baseUrl = 'assets/data/', storageKey = KEYS.mockContributions } = {}) {
@@ -30,7 +30,7 @@ export function createMockSource({ baseMenu = null, baseLoader = null, fetchImpl
 
   return assertContract({
     kind: 'mock',
-    capabilities: { read: true, write: true, upload: true, remove: true },
+    capabilities: { read: true, write: true, upload: true, remove: true, batch: true },
 
     async loadMenu() {
       const baseMenu = await loadBase();
@@ -72,6 +72,30 @@ export function createMockSource({ baseMenu = null, baseLoader = null, fetchImpl
     async uploadImage(asset) {
       // Mock 模式不落盘，直接把压缩后的 dataURL 内联在记录里
       return { ok: true, path: `inline:${asset.name}`, url: asset.dataUrl, commit: null };
+    },
+
+    async saveMany(records, { images = [] } = {}) {
+      // 本机演示没有「提交」概念，直接写入；把约定路径换成内联 dataURL 以便直接显示
+      const inline = new Map(images.map((asset) => [uploadPathFor(asset), asset.dataUrl]));
+      const results = [];
+      for (const record of records) {
+        const next = { ...record, payload: { ...record.payload } };
+        if (next.payload.image && inline.has(next.payload.image)) {
+          next.payload.image = inline.get(next.payload.image);
+        }
+        results.push(await this.saveContribution(next));
+      }
+      return { ok: true, commit: null, batched: true, results };
+    },
+
+    async uploadImages(assets) {
+      const results = assets.map((asset) => ({
+        ok: true,
+        name: asset.name,
+        path: `inline:${asset.name}`,
+        url: asset.dataUrl,
+      }));
+      return { ok: true, commit: null, batched: true, results };
     },
 
     async deleteContribution(id) {

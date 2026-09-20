@@ -1524,25 +1524,65 @@ def render_readme(data: dict) -> str:
     return readme
 
 
-CONTRIBUTION_EXAMPLE = {
-    "_comment": "这是贡献内容的格式示例。文件名以 _ 开头，构建脚本与前端都会跳过它。",
-    "id": "20260920-example",
-    "kind": "dish",
-    "createdAt": "2026-09-20T12:00:00.000Z",
-    "author": "匿名同学",
-    "payload": {
-        "canteenId": "lan_yuan",
-        "floor": "3F",
-        "stallName": "锅仔",
-        "name": "示例·羊肉锅",
-        "priceText": "¥18",
-        "cuisines": ["hotpot"],
-        "spicyLevel": 0,
-        "tags": ["必吃"],
-        "reviewLabel": "好评",
-        "reviewText": "把你在食堂的真实体验写在这里。",
-        "image": "assets/uploads/example.jpg",
-    },
+# 四种贡献类型的示例（文件以 _ 开头，构建脚本与前端都会跳过）
+CONTRIBUTION_EXAMPLES = {
+    "_comment": "贡献内容格式示例：dish=常驻菜 / stall=窗口（可含照片）/ canteen=新饭堂 / note=补充说明。文件名以 _ 开头会被跳过。",
+    "examples": [
+        {
+            "id": "20260920-example-dish",
+            "kind": "dish",
+            "createdAt": "2026-09-20T12:00:00.000Z",
+            "author": "匿名同学",
+            "payload": {
+                "canteenId": "lan_yuan",
+                "floor": "3F",
+                "stallName": "锅仔",
+                "name": "示例·羊肉锅",
+                "priceText": "¥18",
+                "cuisines": ["hotpot"],
+                "spicyLevel": 0,
+                "tags": ["必吃"],
+                "reviewLabel": "好评",
+                "reviewText": "把你在食堂的真实体验写在这里。",
+                "image": "assets/uploads/example.jpg",
+            },
+        },
+        {
+            "id": "20260920-example-stall",
+            "kind": "stall",
+            "createdAt": "2026-09-20T11:00:00.000Z",
+            "author": "匿名同学",
+            "payload": {
+                "canteenId": "lan_yuan",
+                "floor": "1F",
+                "name": "自选窗口",
+                "windowType": "自选",
+                "note": "每天中午 11:00 出菜，菜色天天不同。",
+                "image": "assets/uploads/example-window.jpg",
+            },
+        },
+        {
+            "id": "20260920-example-daily",
+            "kind": "dish",
+            "createdAt": "2026-09-20T11:05:00.000Z",
+            "author": "匿名同学",
+            "payload": {
+                "_comment": "带 date 的菜 = 自选菜，只在该日期参与抽签与展示；同窗口同一天同名会自动去重。",
+                "canteenId": "lan_yuan",
+                "floor": "1F",
+                "stallName": "自选窗口",
+                "name": "示例·红烧肉",
+                "priceText": "¥12",
+                "cuisines": ["homestyle"],
+                "spicyLevel": 0,
+                "tags": [],
+                "reviewLabel": "好评",
+                "reviewText": None,
+                "image": "assets/uploads/example-dish.jpg",
+                "date": "2026-09-20",
+            },
+        },
+    ],
 }
 
 
@@ -1575,8 +1615,7 @@ def emit_web_bundle(data: dict) -> list[Path]:
     if not index_path.exists():
         write_json(index_path, {"generatedAt": None, "files": []})
     example_path = contrib_dir / "_example.json"
-    if not example_path.exists():
-        write_json(example_path, CONTRIBUTION_EXAMPLE)
+    write_json(example_path, CONTRIBUTION_EXAMPLES)
 
     return [web_dir / "menu.json", web_dir / "canteens.json", web_dir / "cuisines.json",
             web_dir / "manifest.json", index_path, example_path]

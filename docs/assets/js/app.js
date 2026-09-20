@@ -65,6 +65,7 @@ function renderNav(route) {
   const items = [
     { id: 'draw', label: '抽签', icon: '🎲', hash: '#/draw' },
     { id: 'browse', label: '逛一逛', icon: '🍜', hash: '#/browse' },
+    { id: 'upload', label: '传自选菜', icon: '📷', href: 'upload.html' },
     { id: 'admin', label: '内容管理', icon: '✎', href: 'admin.html' },
   ];
   items.forEach((item) => {

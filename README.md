@@ -6,7 +6,7 @@
 | 目录 | 是什么 | 怎么用 |
 | --- | --- | --- |
 | `source_pic/` | **数据源**：17 个饭堂 / 10 个楼层条目 / 72 道菜 / 24 个菜系，含价格、辣度、评价权重、来源截图 | 见 `source_pic/README.md` |
-| `docs/` | **网页版**：抽「饭堂 + 楼层」→ 推送菜系，支持在线上传内容，已部署到 GitHub Pages | 见 `docs/README.md` |
+| `docs/` | **网页版**：抽「饭堂 + 楼层」→ 推送菜系；含自选菜快传页（`upload.html`）与内容管理台，已部署到 GitHub Pages | 见 `docs/README.md` |
 | `tools/` | 生成、校验、测试脚本 | `python3 tools/build_menu_data.py` |
 | `.github/workflows/` | Pages 部署 + 贡献索引重建 | push 即自动部署 |
 
@@ -47,6 +47,8 @@ tools/build_menu_data.py             唯一数据源（curated 记录 + 校验�
   信息较少 1、差评与已停业 0（默认不进池）。
 - 跟帖提到 C 楼蜜雪冰城已撤出、独峰书院已停业，相关记录分别标记为
   `可能已撤出` 与 `status: discontinued`。
+- 截图数据里只有固定菜品；**自选窗口与「天天变」的自选菜**在网页版里按
+  `窗口（stall）` + `带日期的菜（date）` 两层建模，用 `upload.html` 在线上传。
 
 ## 文档索引
 

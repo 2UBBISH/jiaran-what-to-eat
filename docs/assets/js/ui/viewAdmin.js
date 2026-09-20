@@ -14,9 +14,10 @@
 import { el, clear, mount } from './dom.js';
 import {
   button, chipRow, segmented, field, input, textarea, select,
-  toast, emptyState, sectionTitle, tagPill,
+  toast, emptyState, sectionTitle, tagPill, toggleRow,
 } from './components.js';
 import { validateContribution } from '../core/menu.js';
+import { dateKey } from '../core/date.js';
 import { CONTRACT_SUMMARY } from '../data/contract.js';
 import {
   SOURCE_MODES, describeConfig, loadConfig, saveConfig, createDataSource,
@@ -48,9 +49,14 @@ export function createAdminView({ root, onMenuReload }) {
     author: getJSON(AUTHOR_KEY, '') || '',
     dish: {
       canteenId: '', floor: '', stallName: '', name: '', priceText: '',
-      cuisines: [], spicyLevel: 0, tags: [], reviewLabel: '好评', reviewText: '', image: null, imageAsset: null,
+      cuisines: [], spicyLevel: 0, tags: [], reviewLabel: '好评', reviewText: '',
+      image: null, imageAsset: null, isDaily: false, date: dateKey(),
     },
     canteen: { id: '', name: '', category: '食堂', floors: [], note: '' },
+    stall: {
+      canteenId: '', floor: '', name: '', windowType: '自选', note: '',
+      image: null, imageAsset: null,
+    },
     note: { targetDishId: '', text: '' },
   };
 
@@ -185,8 +191,26 @@ export function createAdminView({ root, onMenuReload }) {
           reviewLabel: d.reviewLabel,
           reviewText: d.reviewText || null,
           image: d.image || null,
+          date: d.isDaily ? (d.date || dateKey()) : null,
           mealSlots: ['lunch', 'dinner'],
           vegetarian: null,
+        },
+      };
+    }
+    if (draft.kind === 'stall') {
+      const w = draft.stall;
+      return {
+        id,
+        kind: 'stall',
+        createdAt: new Date().toISOString(),
+        author: draft.author || '匿名同学',
+        payload: {
+          canteenId: w.canteenId,
+          floor: w.floor || null,
+          name: w.name,
+          windowType: w.windowType,
+          note: w.note || null,
+          image: w.image || null,
         },
       };
     }
@@ -221,8 +245,9 @@ export function createAdminView({ root, onMenuReload }) {
     clear(formHost);
 
     const kindRow = segmented([
-      { label: '新增菜品', value: 'dish' },
-      { label: '新增饭堂', value: 'canteen' },
+      { label: '菜品', value: 'dish' },
+      { label: '窗口', value: 'stall' },
+      { label: '饭堂', value: 'canteen' },
       { label: '补充说明', value: 'note' },
     ], {
       value: draft.kind,
@@ -240,6 +265,7 @@ export function createAdminView({ root, onMenuReload }) {
     // 表单主体：用事件委托统一刷新校验，避免每个控件都手写一遍回调
     const formBody = el('div', { class: 'form-body' });
     if (draft.kind === 'dish') formBody.append(renderDishForm());
+    if (draft.kind === 'stall') formBody.append(renderStallForm());
     if (draft.kind === 'canteen') formBody.append(renderCanteenForm());
     if (draft.kind === 'note') formBody.append(renderNoteForm());
     formBody.addEventListener('input', () => refreshValidation());
@@ -377,8 +403,89 @@ export function createAdminView({ root, onMenuReload }) {
         })),
       ]),
       el('div', { class: 'form__block' }, [
+        toggleRow('这是自选菜（只当天有效）', {
+          checked: draft.dish.isDaily,
+          hint: '自选窗口的菜天天变；填了日期就只在当天参与抽签与展示',
+          onChange: (value) => { draft.dish.isDaily = value; renderForm(); },
+        }),
+        draft.dish.isDaily
+          ? field('生效日期', input({
+            type: 'date',
+            value: draft.dish.date || dateKey(),
+            onchange: (e) => { draft.dish.date = e.target.value; },
+          }))
+          : null,
+      ]),
+      el('div', { class: 'form__block' }, [
         el('div', { class: 'form__label', text: '图片（可选）' }),
         el('div', { class: 'upload' }, [imagePreview, el('div', { class: 'upload__side' }, [fileInput, imageInfo])]),
+      ]),
+    ]);
+  }
+
+  function renderStallForm() {
+    const w = draft.stall;
+    const canteenOptions = menu.canteens.map((canteen) => ({ value: canteen.id, label: canteen.name }));
+    const imagePreview = el('div', { class: 'upload__preview' }, w.image
+      ? [el('img', { src: w.image, alt: '预览' })]
+      : [el('span', { class: 'upload__hint', text: '未选择图片' })]);
+
+    const fileInput = el('input', {
+      type: 'file',
+      accept: imageAccept(),
+      class: 'upload__input',
+      onchange: async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+          const asset = await prepareImageAsset(file);
+          draft.stall.imageAsset = asset;
+          draft.stall.image = asset.dataUrl;
+          clear(imagePreview);
+          imagePreview.append(el('img', { src: asset.dataUrl, alt: '预览' }));
+          renderForm();
+        } catch (error) {
+          toast(error.message, { tone: 'bad' });
+        }
+      },
+    });
+
+    return el('div', { class: 'form' }, [
+      el('div', { class: 'field-grid' }, [
+        field('饭堂 *', select(canteenOptions, {
+          value: w.canteenId, placeholder: '选择饭堂',
+          onChange: (value) => { w.canteenId = value; renderForm(); },
+        })),
+        field('楼层', select([
+          { value: '', label: '未标注' },
+          { value: '1F', label: '一层' },
+          { value: '2F', label: '二层' },
+          { value: '3F', label: '三层' },
+        ], { value: w.floor, onChange: (value) => { w.floor = value; } })),
+        field('窗口名 *', input({
+          value: w.name, placeholder: '例如：自选窗口 / 二楼自选',
+          oninput: (e) => { w.name = e.target.value; },
+        })),
+        field('窗口类型', segmented([
+          { label: '自选', value: '自选' },
+          { label: '固定', value: '固定' },
+          { label: '窗口', value: '窗口' },
+        ], { value: w.windowType, onChange: (value) => { w.windowType = value; } }),
+        '自选 = 菜品天天变，用「自选菜快传」按天上传'),
+      ]),
+      field('备注', textarea({
+        value: w.note, placeholder: '位置、供应时间、有什么特色…',
+        oninput: (e) => { w.note = e.target.value; },
+      })),
+      el('div', { class: 'form__block' }, [
+        el('div', { class: 'form__label', text: '窗口照片（可选）' }),
+        el('div', { class: 'upload' }, [
+          imagePreview,
+          el('div', { class: 'upload__side' }, [
+            fileInput,
+            el('span', { class: 'admin__note', text: '提交时会与内容一起进同一个 commit' }),
+          ]),
+        ]),
       ]),
     ]);
   }
@@ -442,6 +549,13 @@ export function createAdminView({ root, onMenuReload }) {
     busy = true;
     try {
       let payload = record;
+      if (draft.kind === 'stall' && draft.stall.imageAsset) {
+        toast('正在上传窗口照片…');
+        const uploaded = await source.uploadImage(draft.stall.imageAsset, {
+          message: `content: upload window photo for ${record.id}`,
+        });
+        payload = { ...record, payload: { ...record.payload, image: uploaded.url || record.payload.image } };
+      }
       if (draft.kind === 'dish' && draft.dish.imageAsset) {
         toast('正在上传图片…');
         const uploaded = await source.uploadImage(draft.dish.imageAsset, {
@@ -495,7 +609,7 @@ export function createAdminView({ root, onMenuReload }) {
       el('div', { class: 'admin__item-main' }, [
         el('div', { class: 'admin__item-title' }, [
           el('strong', { text: item.title || item.id }),
-          tagPill({ dish: '菜品', canteen: '饭堂', note: '补充说明' }[item.kind] || item.kind, 'tag'),
+          tagPill({ dish: '菜品', stall: '窗口', canteen: '饭堂', note: '补充说明' }[item.kind] || item.kind, 'tag'),
         ]),
         el('div', { class: 'admin__item-meta', text: `${item.author} · ${item.createdAt ? item.createdAt.slice(0, 16).replace('T', ' ') : ''}` }),
         el('div', { class: 'admin__item-path', text: item.path }),
@@ -538,6 +652,16 @@ export function createAdminView({ root, onMenuReload }) {
         tags: record.payload.tags || [],
         reviewLabel: record.payload.reviewLabel || '好评',
         reviewText: record.payload.reviewText || '',
+        image: record.payload.image || null,
+        imageAsset: null,
+      };
+    } else if (record.kind === 'stall') {
+      draft.stall = {
+        canteenId: record.payload.canteenId,
+        floor: record.payload.floor || '',
+        name: record.payload.name || '',
+        windowType: record.payload.windowType || '窗口',
+        note: record.payload.note || '',
         image: record.payload.image || null,
         imageAsset: null,
       };

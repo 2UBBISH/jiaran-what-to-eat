@@ -83,6 +83,49 @@ await suite.test('子路径下抽签与推送菜系页面正常渲染', async ()
   console.log(`      （请求了 ${new Set(requested).size} 个资源，全部带 ${SUB} 前缀）`);
 });
 
+await suite.test('子路径下自选菜快传页也能读到数据', async () => {
+  const dom = new JSDOM(readFileSync(join(DOCS, 'upload.html'), 'utf8'), {
+    url: `${BASE}upload.html`,
+    pretendToBeVisual: true,
+    runScripts: 'outside-only',
+  });
+  const { window: win } = dom;
+  win.matchMedia = (query) => ({ matches: /reduce/.test(query), addEventListener() {}, removeEventListener() {} });
+  ['window', 'document', 'navigator', 'location', 'localStorage', 'matchMedia', 'URL', 'Image',
+    'HTMLElement', 'Node', 'Blob'].forEach((name) => {
+    try {
+      globalThis[name] = win[name];
+    } catch (error) {
+      Object.defineProperty(globalThis, name, { value: win[name], configurable: true, writable: true });
+    }
+  });
+  Object.defineProperty(win.navigator, 'clipboard', { value: { writeText: async () => {} }, configurable: true });
+
+  const seen = [];
+  globalThis.fetch = async (input) => {
+    const url = typeof input === 'string' ? input : (input instanceof URL ? input.href : input?.url);
+    const { pathname } = new URL(url);
+    seen.push(pathname);
+    if (!pathname.startsWith(SUB)) return new Response('outside base path', { status: 404 });
+    const file = join(DOCS, pathname.slice(SUB.length));
+    if (!existsSync(file)) return new Response('not found', { status: 404 });
+    return new Response(readFileSync(file), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+
+  const { createUploadView } = await import(pathToFileURL(join(DOCS, 'assets/js/ui/viewUpload.js')).href);
+  const view = createUploadView({
+    root: win.document.querySelector('#upload'),
+    prepareImage: async () => ({ name: 'x.jpg', base64: 'AA==', dataUrl: 'data:image/jpeg;base64,AA==', bytes: 1, width: 1, height: 1 }),
+  });
+  await view.boot();
+  await new Promise((resolve) => setTimeout(resolve, 150));
+
+  assert0(win.document.querySelector('.view--upload'), '快传页没渲染');
+  assert0(win.document.querySelector('.up__block select')?.options.length > 3, '饭堂下拉没数据');
+  const bad = seen.filter((path) => !path.startsWith(SUB));
+  assert0(bad.length === 0, `有请求没带子路径前缀：${bad.join(', ')}`);
+});
+
 function assert0(condition, message) {
   if (!condition) throw new Error(message);
 }

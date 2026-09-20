@@ -58,7 +58,7 @@ export function createStaticSource({
 
   return assertContract({
     kind: 'static',
-    capabilities: { read: true, write: false, upload: false, remove: false },
+    capabilities: { read: true, write: false, upload: false, remove: false, batch: false },
 
     async loadMenu() {
       const [manifest, base, contributions] = await Promise.all([
@@ -95,6 +95,8 @@ export function createStaticSource({
 
     async saveContribution() { throw readOnly('上传内容'); },
     async uploadImage() { throw readOnly('上传图片'); },
+    async saveMany() { throw readOnly('批量上传内容'); },
+    async uploadImages() { throw readOnly('批量上传图片'); },
     async deleteContribution() { throw readOnly('删除内容'); },
 
     async health() {

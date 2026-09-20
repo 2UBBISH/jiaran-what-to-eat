@@ -11,7 +11,7 @@
  */
 
 import { buildMenu } from '../core/menu.js';
-import { assertContract, DataSourceError } from './contract.js';
+import { assertContract, DataSourceError, sleep, uploadPathFor } from './contract.js';
 
 const API_ROOT = 'https://api.github.com';
 const RAW_ROOT = 'https://raw.githubusercontent.com';
@@ -120,6 +120,65 @@ export function createGitHubSource({
     throw lastError;
   }
 
+  /**
+   * 用 Git Data API 一次提交多个文件（blobs -> tree -> commit -> 更新分支）。
+   * 为什么不用 Contents API 循环：那样 N 张照片会变成 N 个 commit，
+   * 高频上传自选菜照片时提交历史会被刷爆。
+   */
+  async function commitFiles(files, { message } = {}) {
+    assertConfigured();
+    if (!files.length) return { ok: true, commit: null, url: null, files: [] };
+
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      try {
+        const ref = await api(`/git/ref/heads/${encodeURIComponent(branch)}`);
+        const parentSha = ref.object.sha;
+        const parent = await api(`/git/commits/${parentSha}`);
+
+        const blobs = await Promise.all(files.map(async (file) => {
+          const blob = await api('/git/blobs', {
+            method: 'POST',
+            body: { content: file.base64, encoding: 'base64' },
+          });
+          return { path: file.path, mode: '100644', type: 'blob', sha: blob.sha };
+        }));
+
+        const tree = await api('/git/trees', {
+          method: 'POST',
+          body: { base_tree: parent.tree.sha, tree: blobs },
+        });
+        const commit = await api('/git/commits', {
+          method: 'POST',
+          body: {
+            message: message || `content: update ${files.length} file(s)`,
+            tree: tree.sha,
+            parents: [parentSha],
+          },
+        });
+        await api(`/git/refs/heads/${encodeURIComponent(branch)}`, {
+          method: 'PATCH',
+          body: { sha: commit.sha, force: false },
+        });
+        return {
+          ok: true,
+          batched: true,
+          commit: commit.sha,
+          url: `https://github.com/${owner}/${repo}/commit/${commit.sha}`,
+          files: files.map((file) => file.path),
+        };
+      } catch (error) {
+        // 并发提交会让分支指针前移：重新取 ref 再试
+        const retriable = error.code === 'conflict' || error.code === 'not_found';
+        if (retriable && attempt < 3) {
+          await sleep(320 * (attempt + 1));
+          continue;
+        }
+        throw error;
+      }
+    }
+    throw new DataSourceError('批量提交多次冲突，请稍后重试', { code: 'conflict' });
+  }
+
   async function shaOf(path) {
     try {
       const meta = await api(`/contents/${path}?ref=${encodeURIComponent(branch)}`);
@@ -132,8 +191,9 @@ export function createGitHubSource({
 
   return assertContract({
     kind: 'github',
-    capabilities: { read: true, write: true, upload: true, remove: true },
+    capabilities: { read: true, write: true, upload: true, remove: true, batch: true },
     config: { owner, repo, branch, dataDir, uploadDir },
+    commitFiles,
 
     async loadMenu() {
       assertConfigured();
@@ -241,6 +301,59 @@ export function createGitHubSource({
       });
       const publicUrl = `assets/uploads/${safeName}`;
       return { ok: true, path, url: publicUrl, rawUrl: result?.content?.download_url || null };
+    },
+
+    /**
+     * 批量新增内容；带 images 时把照片和 JSON 放进**同一个 commit**。
+     * 前端已经把 payload.image 写成 uploadPathFor(asset) 约定的路径，
+     * 所以这里直接按同样的路径提交图片即可。
+     */
+    async saveMany(records, { images = [], message } = {}) {
+      const imageFiles = images.map((asset) => ({
+        path: `${uploadDir}/${uploadPathFor(asset).split('/').pop()}`,
+        base64: asset.base64,
+      }));
+      const recordFiles = records.map((record) => ({
+        path: `${dataDir}/contributions/${record.id}.json`,
+        base64: utf8ToBase64(JSON.stringify(record, null, 2) + '\n'),
+      }));
+      const result = await commitFiles([...imageFiles, ...recordFiles], {
+        message: message || `content: add ${records.length} entr${records.length > 1 ? 'ies' : 'y'}`
+          + (images.length ? ` + ${images.length} photo(s)` : ''),
+      });
+      return {
+        ok: true,
+        commit: result.url,
+        batched: true,
+        results: recordFiles.map((file) => ({ ok: true, path: file.path, url: result.url })),
+      };
+    },
+
+    async uploadImages(assets, { message } = {}) {
+      const oversized = assets.find((asset) => Math.floor((asset.base64.length * 3) / 4) > maxUploadBytes);
+      if (oversized) {
+        throw new DataSourceError(`「${oversized.name}」超过 ${(maxUploadBytes / 1024 / 1024).toFixed(1)}MB 上限`, {
+          code: 'too_large',
+        });
+      }
+      const files = assets.map((asset) => ({
+        path: `${uploadDir}/${asset.name.replace(/[^A-Za-z0-9._-]/g, '_')}`,
+        base64: asset.base64,
+      }));
+      const result = await commitFiles(files, {
+        message: message || `content: upload ${assets.length} image(s)`,
+      });
+      return {
+        ok: true,
+        commit: result.url,
+        batched: true,
+        results: files.map((file, index) => ({
+          ok: true,
+          name: assets[index].name,
+          path: file.path,
+          url: `assets/uploads/${file.path.split('/').pop()}`,
+        })),
+      };
     },
 
     async deleteContribution(id, { message } = {}) {

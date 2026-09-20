@@ -8,6 +8,7 @@
 docs/                              ← GitHub Pages 站点根目录
 ├── index.html                     抽签页（抽饭堂+楼层 → 推送菜系）
 ├── admin.html                     内容管理台（在线上传内容）
+├── upload.html                    自选菜快传（手机上高频传图用）
 ├── package.json                   仅用于让 Node 以 ESM 方式跑测试
 ├── .nojekyll                      关闭 Jekyll 处理
 └── assets/
@@ -138,7 +139,44 @@ git push -u origin main
 }
 ```
 
-## 4. 架构：前后端分离怎么落的
+## 4. 自选窗口与「天天变」的自选菜
+
+食堂的自选窗口菜品每天都不一样，所以数据模型分两层：
+
+| 概念 | 表示 | 行为 |
+| --- | --- | --- |
+| **窗口** | `kind: "stall"` 贡献内容，`windowType: 自选 \| 固定 \| 窗口` | 一等实体：有名字、楼层、照片、备注；也会从截图数据里的 `窗口：` 自动派生（当前 41 个） |
+| **自选菜** | 普通 `kind: "dish"`，但带 `date: "YYYY-MM-DD"` | **只在该日期有效**：当天进抽签池、进「今日自选」；第二天自动退场 |
+| 常驻菜 | `kind: "dish"`，不带 `date` | 一直有效（截图里整理出来的 72 道都是这类） |
+
+配套的三个细节：
+
+1. **按本地日期判定**：用 UTC 的话北京时间早上 8 点才翻篇，午饭时段会算错一天，
+   所以 `core/date.js` 统一按本地日期算「今天」（抽签的每日签也用同一套）。
+2. **自动去重**：同窗口 + 同一天 + 同名 只保留最后上传的一条。菜拍糊了重拍、一天传两次，
+   都不会把抽签权重悄悄放大。
+3. **可回看**：浏览页有「显示往日的自选菜」开关；抽签页的筛选里也有「包含往日的自选菜」。
+
+### 在线上传自选菜（upload.html）
+
+手机打开 `https://2ubbish.github.io/jiaran-what-to-eat/upload.html`：
+
+1. 第一次先点「设置」把数据源切到 **GitHub 仓库**，填 owner / repo / branch / Token（只存本机）
+2. 选饭堂 → 楼层 → 窗口（已有窗口直接点，新窗口输入名字，**提交时自动建档为「自选」窗口**）
+3. 点「拍照 / 从相册选择」一次选多张 → 逐张填菜名（价格可选）
+4. 选中共同属性（菜系 / 辣度 / 评价）→ 点「一次提交 N 道菜」
+
+设计要点：
+
+- **位置与菜系记住上次选择**，第二次打开直接传，不用重复填。
+- **照片与内容只产生 1 个 commit**：走 `saveMany(records, { images })`，
+  GitHub 数据源用 Git Data API（blobs → tree → commit → 更新分支）一次提交，
+  不会因为传了 5 张图就刷 5 条提交历史。
+- 浏览器先把照片压到最长边 1280px / JPEG 再上传（默认单张上限 2MB）。
+- 按钮会直接告诉你还差什么（「还需填 2 个菜名」），未填的输入框标红。
+- 日期默认今天，也可以补昨天的（做回溯记录）。
+
+## 5. 架构：前后端分离怎么落的
 
 ```
 视图层 ui/  ──只读 state、只调 core──▶  core/（纯函数：抽签、合成、校验、分享码）
@@ -159,14 +197,16 @@ git push -u origin main
 | `loadMenu()` | 基础数据 + 线上贡献内容 → 合成 Menu |
 | `listContributions()` | 列出全部已上传内容 |
 | `saveContribution(record)` | 新增/覆盖一条内容 |
-| `uploadImage(asset)` | 上传图片（前端已压缩为 base64/blob） |
+| `uploadImage(asset)` | 上传单张图片（前端已压缩为 base64/blob） |
+| `saveMany(records, { images })` | 批量新增内容，可同时提交照片；GitHub 数据源一次提交只产生 1 个 commit |
+| `uploadImages(assets)` | 批量上传图片 |
 | `deleteContribution(id)` | 删除一条内容 |
 | `health()` | 连通性与可写性自检 |
 
 **换成自建后端**：实现这 6 个方法并在 `data/index.js` 注册，界面代码零改动
 （端点约定写在 `httpSource.js` 顶部）。
 
-## 5. 抽签规则（可复现、可验证）
+## 6. 抽签规则（可复现、可验证）
 
 - 签号即种子：`seed` 派生 `:canteen`、`:floor`、`:cuisine` 三条独立随机流，
   同 `seed` + 同数据 + 同筛选 ⇒ 完全一样的结果。
@@ -183,17 +223,17 @@ git push -u origin main
 - 动效只是「揭晓方式」，不影响概率：结果先用种子算好，再播放动画；
   并且全程尊重系统的「减少动态效果」设置（开启后直接显示结果，粒子与签号跳动自动关闭）。
 
-## 6. 测试
+## 7. 测试
 
 ```bash
-node tools/test_site_core.mjs          # 36 项：抽签可复现/公平性/筛选/分享码/贡献内容合并
+node tools/test_site_core.mjs          # 46 项：抽签可复现/公平性/筛选/分享码/贡献内容合并/自选菜日期语义
 python3 tools/validate_menu_data.py    # 2527 项：数据引用与索引完整性
 node tools/rebuild_contributions_index.mjs --check   # 索引是否最新
 
 # DOM 集成测试（可选，需要 jsdom；.tmp-jsdom 已被 .gitignore 忽略）
 mkdir -p .tmp-jsdom && cd .tmp-jsdom && npm init -y >/dev/null && npm install --cache ./.npm-cache jsdom
 cd .. && node tools/test_site_dom.mjs
-#   抽签页 13 项 + 管理台 10 项 + 抽签动效 6 项 + 子路径部署 1 项 = 30 项
+#   抽签页 13 + 管理台 10 + 抽签动效 6 + 自选菜快传 10 + 子路径部署 2 = 41 项
 #   其中「动效」用例会打开 prefers-reduced-motion=false，验证
 #   逐行高亮 → 锁定 → 粒子 → 签号乱码落定 → 结果入场 的完整状态机
 
@@ -206,7 +246,7 @@ node tools/test_live_e2e.mjs
 DOM 测试会真的把页面跑起来：点抽签 → 检查「推送菜系」页 → 打开分享深链接复现同一签
 → 逛一逛 → 筛选抽屉 → 管理台校验 → 真实提交一条内容并删除。
 
-## 7. 常见维护任务
+## 8. 常见维护任务
 
 | 想做的事 | 改哪里 |
 | --- | --- |
@@ -214,6 +254,10 @@ DOM 测试会真的把页面跑起来：点抽签 → 检查「推送菜系」�
 | 加/改菜品（线上即时） | 管理台上传，或直接加 `contributions/*.json` |
 | 调整抽签权重 | `DISHES` 的 `review` 标签，或 `core/menu.js` 的 `taxonomy.reviewLevels` |
 | 加菜系 / 标签 | `tools/build_menu_data.py` 的 `CUISINES` / `TAGS`（前端自动跟随 taxonomy） |
+| 每天传自选菜 | 打开 `upload.html`（手机上也能用），位置记上次选择 |
+| 给窗口配照片 | `upload.html` 的「窗口照片」，或 `admin.html` 的「窗口」页签 |
+| 改自选菜的有效期规则 | `core/menu.js` 的 `isDishStale()` / `dedupeDaily()` |
+| 改批量提交策略 | `data/githubSource.js` 的 `commitFiles()`（Git Data API） |
 | 改视觉 | `assets/css/tokens.css`（颜色/圆角/阴影/动效曲线）优先，其次 components/views |
 | 改抽签动效 | `assets/css/views.css` 里的 `reel*` / `burst` / `pushSweep` / `cardIn` 关键帧；粒子与签号乱码在 `ui/dom.js` 的 `burst()` / `scramble()` |
 | 换后端 | 实现 `data/contract.js` 的 6 个方法，在 `data/index.js` 注册 |

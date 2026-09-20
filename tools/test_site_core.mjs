@@ -9,10 +9,14 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { buildMenu, validateContribution, filterDishes, auditMenu, parsePriceText } from '../docs/assets/js/core/menu.js';
+import {
+  buildMenu, validateContribution, filterDishes, auditMenu, parsePriceText, stallsOf,
+} from '../docs/assets/js/core/menu.js';
 import { draw, preview, redrawCuisine, plan, resolveSeed } from '../docs/assets/js/core/lottery.js';
+import { dateKey, daysAgo, shiftDate } from '../docs/assets/js/core/date.js';
 import { encodeShare, decodeShare, optionsFromHash, buildShareText } from '../docs/assets/js/core/share.js';
 import { createRng, hashSeed, pickWeightedMany, poolWeights, ticketOf } from '../docs/assets/js/core/rng.js';
+import { uploadPathFor } from '../docs/assets/js/data/contract.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const base = JSON.parse(readFileSync(join(ROOT, 'docs/assets/data/menu.json'), 'utf8'));
@@ -215,12 +219,19 @@ test('换个菜系：饭堂与楼层不变（含「楼层未标注」的情况�
   }
   assert.ok(checkedNullFloor, '样本里没有覆盖到「楼层未标注」的情况');
 });
-test('daily 种子：同一天稳定，不同天不同', () => {
-  const day1 = resolveSeed({ daily: true }, Date.parse('2026-09-20T08:00:00Z'));
-  const day1b = resolveSeed({ daily: true }, Date.parse('2026-09-20T20:00:00Z'));
-  const day2 = resolveSeed({ daily: true }, Date.parse('2026-09-21T08:00:00Z'));
-  assert.equal(day1.seed, day1b.seed);
-  assert.notEqual(day1.seed, day2.seed);
+test('daily 种子：按本地日期，同一天稳定、跨天变化', () => {
+  // 用本地时间构造：早上 9 点与晚上 21 点必须是同一天
+  const morning = new Date(2026, 8, 20, 9, 0, 0).getTime();
+  const evening = new Date(2026, 8, 20, 21, 0, 0).getTime();
+  const nextDay = new Date(2026, 8, 21, 9, 0, 0).getTime();
+
+  const day1 = resolveSeed({ daily: true }, morning);
+  const day1b = resolveSeed({ daily: true }, evening);
+  const day2 = resolveSeed({ daily: true }, nextDay);
+
+  assert.equal(day1.seed, day1b.seed, '本地同一天应得到同一个签');
+  assert.notEqual(day1.seed, day2.seed, '跨天应换签');
+  assert.equal(day1.dateKey, dateKey(morning), 'dateKey 应为本地日期');
 });
 test('plan 不消费随机数（预览可重复计算）', () => {
   const a = plan(menu, { seed: 1, avoidRecent: false });
@@ -260,6 +271,138 @@ test('分享文案包含关键信息', () => {
   assert.ok(text.includes(r.canteen.name));
   assert.ok(text.includes(r.ticket));
   assert.ok(text.includes('https://example.com'));
+});
+
+/* --------------------------------------------- 自选窗口 / 自选菜（按天） */
+section('自选窗口与自选菜');
+
+const TODAY = dateKey();
+const YESTERDAY = shiftDate(TODAY, -1);
+
+function dailyContribution(id, { name, date = TODAY, stallName = '自选窗口', canteenId = 'lan_yuan', floor = '1F', image = null } = {}) {
+  return {
+    id,
+    kind: 'dish',
+    createdAt: `${date}T04:00:00.000Z`,
+    author: '测试',
+    payload: {
+      canteenId, floor, stallName, name, priceText: '¥12',
+      cuisines: ['homestyle'], spicyLevel: 0, tags: [], reviewLabel: '好评',
+      reviewText: '今天刚出锅', image, date,
+    },
+  };
+}
+
+const todayMenu = buildMenu(base, [
+  { id: 'w-1', kind: 'stall', author: '测试', createdAt: `${TODAY}T03:00:00.000Z`,
+    payload: { canteenId: 'lan_yuan', floor: '1F', name: '自选窗口', windowType: '自选', note: '天天换菜', image: 'assets/uploads/win.jpg' } },
+  dailyContribution('d-1', { name: '红烧肉' }),
+  dailyContribution('d-2', { name: '清炒时蔬' }),
+  dailyContribution('d-3', { name: '昨天的土豆丝', date: YESTERDAY }),
+]);
+
+test('窗口成为一等实体（可从菜品派生 + 贡献内容补充）', () => {
+  const stall = todayMenu.stalls.find((s) => s.name === '自选窗口');
+  assert.ok(stall, '没有派生出「自选窗口」');
+  assert.equal(stall.windowType, '自选');
+  assert.equal(stall.floor, '1F');
+  assert.equal(stall.note, '天天换菜');
+  assert.equal(stall.image, 'assets/uploads/win.jpg');
+  assert.equal(stall.todayDishCount, 2, `今日菜数不对：${stall.todayDishCount}`);
+  assert.equal(stall.dailyDishCount, 3);
+  // 截图数据里的窗口也应被派生出来
+  assert.ok(todayMenu.stalls.some((s) => s.name === '蜜雪冰城'), '截图数据里的窗口没有派生');
+});
+
+test('stallsOf 支持按饭堂/楼层筛选', () => {
+  // 澜园 1F 既有截图数据里的窗口（椒麻鸡的「一楼米饭自选」），也有新上传的自选窗口
+  const list = stallsOf(todayMenu, { canteenId: 'lan_yuan', floor: '1F' });
+  assert.deepEqual(list.map((s) => s.name).sort(), ['一楼米饭自选', '自选窗口']);
+  assert.ok(list.every((s) => s.canteenId === 'lan_yuan' && s.floor === '1F'));
+
+  const onlyStall = stallsOf(todayMenu, { canteenId: 'lan_yuan', floor: '1F' })
+    .find((s) => s.windowType === '自选');
+  assert.equal(onlyStall.todayDishCount, 2);
+
+  // 不传楼层则列出该饭堂全部窗口
+  assert.ok(stallsOf(todayMenu, { canteenId: 'lan_yuan' }).length > list.length);
+});
+
+test('自选菜只在当天进池，第二天自动退场', () => {
+  const todayPool = filterDishes(todayMenu, { canteenId: 'lan_yuan', today: TODAY });
+  assert.equal(todayPool.filter((d) => d.daily).length, 2, '今天应包含 2 道自选菜');
+
+  const tomorrowPool = filterDishes(todayMenu, { canteenId: 'lan_yuan', today: shiftDate(TODAY, 1) });
+  assert.equal(tomorrowPool.filter((d) => d.daily).length, 0, '第二天自选菜应全部退场');
+
+  const withPast = filterDishes(todayMenu, { canteenId: 'lan_yuan', today: shiftDate(TODAY, 1), includePastDaily: true });
+  assert.equal(withPast.filter((d) => d.daily).length, 3, '显式要求时才包含往日自选');
+});
+
+test('抽签池默认只用今天的自选菜', () => {
+  const result = draw(todayMenu, { canteenId: 'lan_yuan', floor: '1F', seed: 1, avoidRecent: false });
+  assert.ok(result.ok);
+  assert.ok(result.dishes.every((d) => !d.date || d.date === TODAY), '抽签不应抽到往日的自选菜');
+});
+
+test('同日同窗口同名自选菜自动去重（重拍不会放大权重）', () => {
+  const menu = buildMenu(base, [
+    dailyContribution('dup-1', { name: '红烧肉', image: 'a.jpg' }),
+    dailyContribution('dup-2', { name: '清炒时蔬' }),
+    dailyContribution('dup-3', { name: '红烧肉', image: 'b.jpg' }),
+  ]);
+  const names = menu.dishes.filter((d) => d.date === TODAY).map((d) => d.name);
+  assert.deepEqual(names.sort(), ['清炒时蔬', '红烧肉'], `去重结果不对：${names.join(', ')}`);
+  const kept = menu.dishes.find((d) => d.date === TODAY && d.name === '红烧肉');
+  assert.equal(kept.image, 'b.jpg', '应保留最后上传的那条');
+  assert.equal(menu.meta.stats.dedupedDailyCount, 1);
+});
+
+test('不同窗口/不同日期同名菜不会被误删', () => {
+  const menu = buildMenu(base, [
+    dailyContribution('k-1', { name: '红烧肉', stallName: '自选窗口' }),
+    dailyContribution('k-2', { name: '红烧肉', stallName: '另一个窗口' }),
+    dailyContribution('k-3', { name: '红烧肉', date: YESTERDAY }),
+  ]);
+  assert.equal(menu.dishes.filter((d) => d.name === '红烧肉').length, 3);
+  assert.equal(menu.meta.stats.dedupedDailyCount, 0);
+});
+
+test('窗口贡献内容校验（类型/楼层/菜名）', () => {
+  const ok = validateContribution({
+    id: 'w-ok', kind: 'stall',
+    payload: { canteenId: 'lan_yuan', floor: '2F', name: '自选窗口', windowType: '自选' },
+  }, menu);
+  assert.ok(ok.ok, ok.errors.join('; '));
+
+  const bad = validateContribution({
+    id: 'w-bad', kind: 'stall',
+    payload: { canteenId: 'nope', floor: '9F', name: '', windowType: '随便' },
+  }, menu);
+  assert.equal(bad.ok, false);
+  assert.ok(bad.errors.length >= 4, bad.errors.join('; '));
+});
+
+test('自选菜的 date 格式校验', () => {
+  const ok = validateContribution(dailyContribution('dt-ok', { name: '青菜' }), menu);
+  assert.ok(ok.ok, ok.errors.join('; '));
+  assert.equal(ok.value.payload.date, TODAY);
+
+  const bad = validateContribution({
+    id: 'dt-bad', kind: 'dish',
+    payload: { canteenId: 'lan_yuan', name: '青菜', cuisines: ['homestyle'], date: '2026/09/20' },
+  }, menu);
+  assert.equal(bad.ok, false);
+  assert.ok(bad.errors.some((e) => e.includes('YYYY-MM-DD')));
+});
+
+test('dateKey / daysAgo 按本地日期计算', () => {
+  const morning = new Date(2026, 8, 20, 0, 30, 0).getTime();
+  const night = new Date(2026, 8, 20, 23, 30, 0).getTime();
+  assert.equal(dateKey(morning), '2026-09-20');
+  assert.equal(dateKey(night), '2026-09-20');
+  assert.equal(daysAgo('2026-09-19', '2026-09-20'), 1);
+  assert.equal(shiftDate('2026-09-01', -1), '2026-08-31');
 });
 
 /* --------------------------------------------------- 在线上传内容合并 */
@@ -325,6 +468,14 @@ test('以 _ 开头的文件被忽略', () => {
   const merged = buildMenu(base, [{ id: '_example', kind: 'dish', payload: { name: 'x' } }]);
   assert.equal(merged.rejected.length, 0);
   assert.equal(merged.contributions.length, 0);
+});
+
+/* --------------------------------------------------- 上传路径约定 */
+section('上传路径约定');
+test('uploadPathFor 生成稳定、URL 安全的路径', () => {
+  assert.equal(uploadPathFor({ name: '123-abc.jpg' }), 'assets/uploads/123-abc.jpg');
+  assert.equal(uploadPathFor({ name: '照片 1.JPG' }), 'assets/uploads/___1.JPG');
+  assert.equal(uploadPathFor({}), 'assets/uploads/photo.jpg');
 });
 
 /* ------------------------------------------------------------- 结果 */
