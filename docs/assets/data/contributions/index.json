@@ -1,16 +1,25 @@
 {
-  "generatedAt": "2026-09-20T12:54:55.764Z",
-  "count": 1,
+  "generatedAt": "2026-09-21T04:22:54.968Z",
+  "count": 2,
   "invalidCount": 0,
-  "validCount": 1,
+  "validCount": 2,
   "files": [
     {
       "file": "20260920-01.json",
-      "id": "raw-oag525",
+      "id": "raw-m1yr7a",
       "kind": "dish",
       "author": "匿名同学",
-      "createdAt": "2026-09-20T00:00:00.000Z",
+      "createdAt": "2026-09-21T00:00:00.000Z",
       "title": "炸鸡腿+鸡胗",
+      "valid": true
+    },
+    {
+      "file": "20260921-01.json",
+      "id": "raw-l8eo3z",
+      "kind": "dish",
+      "author": "匿名同学",
+      "createdAt": "2026-09-21T00:00:00.000Z",
+      "title": "烤鸭",
       "valid": true
     }
   ]
