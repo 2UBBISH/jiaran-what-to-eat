@@ -10,6 +10,16 @@
     "note": "二层为教师餐厅，价格略高，有鲜榨果汁。",
     "floors": [
       {
+        "id": "he_yuan-1f",
+        "canteenId": "he_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
         "id": "he_yuan-2f",
         "canteenId": "he_yuan",
         "floor": "2F",
@@ -22,6 +32,16 @@
         "dishCount": 5,
         "drawableDishCount": 5,
         "drawWeight": 15.0
+      },
+      {
+        "id": "he_yuan-3f",
+        "canteenId": "he_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       }
     ],
     "unassignedFloorDishCount": 1,
@@ -65,6 +85,26 @@
         "dishCount": 1,
         "drawableDishCount": 1,
         "drawWeight": 3.0
+      },
+      {
+        "id": "zi_jing_yuan-2f",
+        "canteenId": "zi_jing_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "zi_jing_yuan-3f",
+        "canteenId": "zi_jing_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       }
     ],
     "unassignedFloorDishCount": 5,
@@ -94,6 +134,16 @@
     ],
     "note": "分 1F（未标注）/2F（自选、主食区）/3F（北京烤鸭）多个楼层。",
     "floors": [
+      {
+        "id": "guan_chou_yuan-1f",
+        "canteenId": "guan_chou_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
       {
         "id": "guan_chou_yuan-2f",
         "canteenId": "guan_chou_yuan",
@@ -157,7 +207,38 @@
       "烤肉拌饭"
     ],
     "note": "广东窗口的肠粉、凤爪、排骨煲仔饭被点名推荐。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "ding_xiang_yuan-1f",
+        "canteenId": "ding_xiang_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "ding_xiang_yuan-2f",
+        "canteenId": "ding_xiang_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "ding_xiang_yuan-3f",
+        "canteenId": "ding_xiang_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 4,
     "dishCount": 4,
     "drawableDishCount": 4,
@@ -198,6 +279,26 @@
         "dishCount": 1,
         "drawableDishCount": 1,
         "drawWeight": 3.0
+      },
+      {
+        "id": "zhi_lan_yuan-2f",
+        "canteenId": "zhi_lan_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "zhi_lan_yuan-3f",
+        "canteenId": "zhi_lan_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       }
     ],
     "unassignedFloorDishCount": 0,
@@ -222,7 +323,38 @@
       "淮扬菜"
     ],
     "note": "杭帮/淮扬口味，价格偏高，属餐厅档。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "xi_chun_yuan-1f",
+        "canteenId": "xi_chun_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "xi_chun_yuan-2f",
+        "canteenId": "xi_chun_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "xi_chun_yuan-3f",
+        "canteenId": "xi_chun_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 3,
     "dishCount": 3,
     "drawableDishCount": 3,
@@ -243,7 +375,38 @@
       "已停业"
     ],
     "note": "跟帖表示独峰书院已经没了，仅保留记录。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "du_feng_shu_yuan-1f",
+        "canteenId": "du_feng_shu_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "du_feng_shu_yuan-2f",
+        "canteenId": "du_feng_shu_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "du_feng_shu_yuan-3f",
+        "canteenId": "du_feng_shu_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 1,
     "dishCount": 1,
     "drawableDishCount": 0,
@@ -264,7 +427,38 @@
       "沙拉"
     ],
     "note": "校名写作“清青”，注意不要误写成“清清”。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "qing_qing_coffee-1f",
+        "canteenId": "qing_qing_coffee",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "qing_qing_coffee-2f",
+        "canteenId": "qing_qing_coffee",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "qing_qing_coffee-3f",
+        "canteenId": "qing_qing_coffee",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 4,
     "dishCount": 4,
     "drawableDishCount": 4,
@@ -290,7 +484,38 @@
       "牛肉拉面"
     ],
     "note": "校名写作“清青”。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "qing_qing_niu_la-1f",
+        "canteenId": "qing_qing_niu_la",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "qing_qing_niu_la-2f",
+        "canteenId": "qing_qing_niu_la",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "qing_qing_niu_la-3f",
+        "canteenId": "qing_qing_niu_la",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 1,
     "dishCount": 1,
     "drawableDishCount": 1,
@@ -313,7 +538,38 @@
       "甜点"
     ],
     "note": "校名写作“清青”。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "qing_qing_kuai_can-1f",
+        "canteenId": "qing_qing_kuai_can",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "qing_qing_kuai_can-2f",
+        "canteenId": "qing_qing_kuai_can",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "qing_qing_kuai_can-3f",
+        "canteenId": "qing_qing_kuai_can",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 1,
     "dishCount": 1,
     "drawableDishCount": 1,
@@ -335,7 +591,38 @@
       "蜜雪冰城"
     ],
     "note": "跟帖提到 C 楼的蜜雪冰城已撤出，相关点位信息可能过时。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "c_lou-1f",
+        "canteenId": "c_lou",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "c_lou-2f",
+        "canteenId": "c_lou",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "c_lou-3f",
+        "canteenId": "c_lou",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 2,
     "dishCount": 2,
     "drawableDishCount": 2,
@@ -361,7 +648,38 @@
       "冰淇淋"
     ],
     "note": "位于澜园出口顺路位置。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "convenience_711-1f",
+        "canteenId": "convenience_711",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "convenience_711-2f",
+        "canteenId": "convenience_711",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "convenience_711-3f",
+        "canteenId": "convenience_711",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 1,
     "dishCount": 1,
     "drawableDishCount": 1,
@@ -385,6 +703,16 @@
     "note": "记录来自“清芬园 2F”。",
     "floors": [
       {
+        "id": "qing_fen_yuan-1f",
+        "canteenId": "qing_fen_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
         "id": "qing_fen_yuan-2f",
         "canteenId": "qing_fen_yuan",
         "floor": "2F",
@@ -396,6 +724,16 @@
         "dishCount": 2,
         "drawableDishCount": 2,
         "drawWeight": 4.0
+      },
+      {
+        "id": "qing_fen_yuan-3f",
+        "canteenId": "qing_fen_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       }
     ],
     "unassignedFloorDishCount": 0,
@@ -423,7 +761,38 @@
       "川香小吃"
     ],
     "note": "含川味小吃、桂林米粉/风味、现磨豆浆、川香小吃等窗口。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "ting_tao_yuan-1f",
+        "canteenId": "ting_tao_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "ting_tao_yuan-2f",
+        "canteenId": "ting_tao_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "ting_tao_yuan-3f",
+        "canteenId": "ting_tao_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 6,
     "dishCount": 6,
     "drawableDishCount": 6,
@@ -459,6 +828,16 @@
     "note": "二层以铁板/石锅饭为特色。",
     "floors": [
       {
+        "id": "yu_shu_yuan-1f",
+        "canteenId": "yu_shu_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
         "id": "yu_shu_yuan-2f",
         "canteenId": "yu_shu_yuan",
         "floor": "2F",
@@ -467,6 +846,16 @@
         "dishCount": 7,
         "drawableDishCount": 7,
         "drawWeight": 21.0
+      },
+      {
+        "id": "yu_shu_yuan-3f",
+        "canteenId": "yu_shu_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       }
     ],
     "unassignedFloorDishCount": 1,
@@ -494,7 +883,38 @@
       "瓦罐汤"
     ],
     "note": "铁板被称“寓园最能打的窗口”，香锅被称校内最好吃。",
-    "floors": [],
+    "floors": [
+      {
+        "id": "yu_yuan-1f",
+        "canteenId": "yu_yuan",
+        "floor": "1F",
+        "label": "一层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "yu_yuan-2f",
+        "canteenId": "yu_yuan",
+        "floor": "2F",
+        "label": "二层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      },
+      {
+        "id": "yu_yuan-3f",
+        "canteenId": "yu_yuan",
+        "floor": "3F",
+        "label": "三层",
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
+      }
+    ],
     "unassignedFloorDishCount": 5,
     "dishCount": 5,
     "drawableDishCount": 5,
