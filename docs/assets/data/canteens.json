@@ -24,14 +24,10 @@
         "canteenId": "he_yuan",
         "floor": "2F",
         "label": "二层",
-        "stallNames": [
-          "8元自选",
-          "面",
-          "面食窗口（二楼）"
-        ],
-        "dishCount": 5,
-        "drawableDishCount": 5,
-        "drawWeight": 15.0
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       },
       {
         "id": "he_yuan-3f",
@@ -44,26 +40,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 1,
-    "dishCount": 6,
-    "drawableDishCount": 6,
-    "drawWeight": 18.0,
-    "stallNames": [
-      "8元自选",
-      "卖面的档口？（忘记名字了）",
-      "面",
-      "面食窗口（二楼）"
-    ],
-    "cuisines": [
-      "halal",
-      "homestyle",
-      "japanese",
-      "light",
-      "noodles",
-      "northwest",
-      "rice",
-      "snacks"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "zi_jing_yuan",
@@ -82,9 +64,9 @@
         "floor": "1F",
         "label": "一层",
         "stallNames": [],
-        "dishCount": 1,
-        "drawableDishCount": 1,
-        "drawWeight": 3.0
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       },
       {
         "id": "zi_jing_yuan-2f",
@@ -107,20 +89,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 5,
-    "dishCount": 6,
-    "drawableDishCount": 6,
-    "drawWeight": 16.5,
-    "stallNames": [
-      "清青披萨"
-    ],
-    "cuisines": [
-      "cantonese",
-      "grill",
-      "light",
-      "rice",
-      "western"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "guan_chou_yuan",
@@ -149,14 +123,10 @@
         "canteenId": "guan_chou_yuan",
         "floor": "2F",
         "label": "二层",
-        "stallNames": [
-          "主食区",
-          "某个拐角",
-          "自选"
-        ],
-        "dishCount": 3,
-        "drawableDishCount": 3,
-        "drawWeight": 9.0
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       },
       {
         "id": "guan_chou_yuan-3f",
@@ -164,37 +134,17 @@
         "floor": "3F",
         "label": "三层",
         "stallNames": [],
-        "dishCount": 1,
-        "drawableDishCount": 1,
-        "drawWeight": 3.0
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 8,
-    "dishCount": 12,
-    "drawableDishCount": 11,
-    "drawWeight": 33.0,
-    "stallNames": [
-      "主食区",
-      "入口处",
-      "最最最左边的炸鸡窗口",
-      "某个拐角",
-      "清青永和大饼卷翻天窗口旁边",
-      "窗口整体推荐",
-      "自选"
-    ],
-    "cuisines": [
-      "beijing",
-      "breakfast",
-      "grill",
-      "homestyle",
-      "jiangzhe",
-      "light",
-      "noodles",
-      "northeast",
-      "sichuan",
-      "snacks",
-      "taiwanese"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "ding_xiang_yuan",
@@ -239,24 +189,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 4,
-    "dishCount": 4,
-    "drawableDishCount": 4,
-    "drawWeight": 10.0,
-    "stallNames": [
-      "名厨窗口",
-      "广东窗口",
-      "烤肉拌饭"
-    ],
-    "cuisines": [
-      "breakfast",
-      "cantonese",
-      "homestyle",
-      "korean",
-      "light",
-      "rice",
-      "snacks"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "zhi_lan_yuan",
@@ -273,12 +211,10 @@
         "canteenId": "zhi_lan_yuan",
         "floor": "1F",
         "label": "一层",
-        "stallNames": [
-          "一楼左数第二个口"
-        ],
-        "dishCount": 1,
-        "drawableDishCount": 1,
-        "drawWeight": 3.0
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       },
       {
         "id": "zhi_lan_yuan-2f",
@@ -302,16 +238,11 @@
       }
     ],
     "unassignedFloorDishCount": 0,
-    "dishCount": 1,
-    "drawableDishCount": 1,
-    "drawWeight": 3.0,
-    "stallNames": [
-      "一楼左数第二个口"
-    ],
-    "cuisines": [
-      "homestyle",
-      "light"
-    ]
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "xi_chun_yuan",
@@ -355,66 +286,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 3,
-    "dishCount": 3,
-    "drawableDishCount": 3,
-    "drawWeight": 7.5,
-    "stallNames": [],
-    "cuisines": [
-      "jiangzhe",
-      "sichuan",
-      "snacks"
-    ]
-  },
-  {
-    "id": "du_feng_shu_yuan",
-    "name": "独峰书院",
-    "category": "餐厅",
-    "status": "discontinued",
-    "tags": [
-      "已停业"
-    ],
-    "note": "跟帖表示独峰书院已经没了，仅保留记录。",
-    "floors": [
-      {
-        "id": "du_feng_shu_yuan-1f",
-        "canteenId": "du_feng_shu_yuan",
-        "floor": "1F",
-        "label": "一层",
-        "stallNames": [],
-        "dishCount": 0,
-        "drawableDishCount": 0,
-        "drawWeight": 0.0
-      },
-      {
-        "id": "du_feng_shu_yuan-2f",
-        "canteenId": "du_feng_shu_yuan",
-        "floor": "2F",
-        "label": "二层",
-        "stallNames": [],
-        "dishCount": 0,
-        "drawableDishCount": 0,
-        "drawWeight": 0.0
-      },
-      {
-        "id": "du_feng_shu_yuan-3f",
-        "canteenId": "du_feng_shu_yuan",
-        "floor": "3F",
-        "label": "三层",
-        "stallNames": [],
-        "dishCount": 0,
-        "drawableDishCount": 0,
-        "drawWeight": 0.0
-      }
-    ],
-    "unassignedFloorDishCount": 1,
-    "dishCount": 1,
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
     "drawableDishCount": 0,
-    "drawWeight": 0,
+    "drawWeight": 0.0,
     "stallNames": [],
-    "cuisines": [
-      "western"
-    ]
+    "cuisines": []
   },
   {
     "id": "qing_qing_coffee",
@@ -459,21 +336,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 4,
-    "dishCount": 4,
-    "drawableDishCount": 4,
-    "drawWeight": 12.0,
-    "stallNames": [
-      "主食",
-      "好像就一个"
-    ],
-    "cuisines": [
-      "burger",
-      "dessert",
-      "light",
-      "thai",
-      "western"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "qing_qing_niu_la",
@@ -516,18 +384,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 1,
-    "dishCount": 1,
-    "drawableDishCount": 1,
-    "drawWeight": 3.0,
-    "stallNames": [
-      "左数第二个"
-    ],
-    "cuisines": [
-      "halal",
-      "noodles",
-      "northwest"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "qing_qing_kuai_can",
@@ -570,73 +432,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 1,
-    "dishCount": 1,
-    "drawableDishCount": 1,
-    "drawWeight": 3.0,
-    "stallNames": [
-      "甜点类"
-    ],
-    "cuisines": [
-      "dessert"
-    ]
-  },
-  {
-    "id": "c_lou",
-    "name": "C楼",
-    "category": "小食·饮品",
-    "status": "open",
-    "tags": [
-      "小食屋",
-      "蜜雪冰城"
-    ],
-    "note": "跟帖提到 C 楼的蜜雪冰城已撤出，相关点位信息可能过时。",
-    "floors": [
-      {
-        "id": "c_lou-1f",
-        "canteenId": "c_lou",
-        "floor": "1F",
-        "label": "一层",
-        "stallNames": [],
-        "dishCount": 0,
-        "drawableDishCount": 0,
-        "drawWeight": 0.0
-      },
-      {
-        "id": "c_lou-2f",
-        "canteenId": "c_lou",
-        "floor": "2F",
-        "label": "二层",
-        "stallNames": [],
-        "dishCount": 0,
-        "drawableDishCount": 0,
-        "drawWeight": 0.0
-      },
-      {
-        "id": "c_lou-3f",
-        "canteenId": "c_lou",
-        "floor": "3F",
-        "label": "三层",
-        "stallNames": [],
-        "dishCount": 0,
-        "drawableDishCount": 0,
-        "drawWeight": 0.0
-      }
-    ],
-    "unassignedFloorDishCount": 2,
-    "dishCount": 2,
-    "drawableDishCount": 2,
-    "drawWeight": 6.0,
-    "stallNames": [
-      "小食屋",
-      "蜜雪冰城"
-    ],
-    "cuisines": [
-      "breakfast",
-      "dessert",
-      "northeast",
-      "snacks"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "convenience_711",
@@ -680,16 +481,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 1,
-    "dishCount": 1,
-    "drawableDishCount": 1,
-    "drawWeight": 1.0,
-    "stallNames": [
-      "澜园出来顺便买"
-    ],
-    "cuisines": [
-      "dessert"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "qing_fen_yuan",
@@ -717,13 +514,10 @@
         "canteenId": "qing_fen_yuan",
         "floor": "2F",
         "label": "二层",
-        "stallNames": [
-          "从右往左第二个窗口",
-          "瓦罐汤"
-        ],
-        "dishCount": 2,
-        "drawableDishCount": 2,
-        "drawWeight": 4.0
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       },
       {
         "id": "qing_fen_yuan-3f",
@@ -737,18 +531,11 @@
       }
     ],
     "unassignedFloorDishCount": 0,
-    "dishCount": 2,
-    "drawableDishCount": 2,
-    "drawWeight": 4.0,
-    "stallNames": [
-      "从右往左第二个窗口",
-      "瓦罐汤"
-    ],
-    "cuisines": [
-      "beijing",
-      "homestyle",
-      "light"
-    ]
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "ting_tao_yuan",
@@ -793,26 +580,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 6,
-    "dishCount": 6,
-    "drawableDishCount": 6,
-    "drawWeight": 18.0,
-    "stallNames": [
-      "川味小吃",
-      "川香小吃",
-      "桂林米粉",
-      "桂林风味",
-      "现磨豆浆"
-    ],
-    "cuisines": [
-      "breakfast",
-      "drinks",
-      "homestyle",
-      "minnan",
-      "noodles",
-      "sichuan",
-      "snacks"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "yu_shu_yuan",
@@ -843,9 +616,9 @@
         "floor": "2F",
         "label": "二层",
         "stallNames": [],
-        "dishCount": 7,
-        "drawableDishCount": 7,
-        "drawWeight": 21.0
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       },
       {
         "id": "yu_shu_yuan-3f",
@@ -858,18 +631,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 1,
-    "dishCount": 8,
-    "drawableDishCount": 8,
-    "drawWeight": 24.0,
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
     "stallNames": [],
-    "cuisines": [
-      "drinks",
-      "grill",
-      "japanese",
-      "korean",
-      "rice"
-    ]
+    "cuisines": []
   },
   {
     "id": "yu_yuan",
@@ -915,24 +682,12 @@
         "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 5,
-    "dishCount": 5,
-    "drawableDishCount": 5,
-    "drawWeight": 15.0,
-    "stallNames": [
-      "铁板旁边的瓦罐汤",
-      "陕西风味",
-      "香锅"
-    ],
-    "cuisines": [
-      "grill",
-      "homestyle",
-      "hotpot",
-      "light",
-      "northwest",
-      "sichuan",
-      "snacks"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   },
   {
     "id": "lan_yuan",
@@ -952,61 +707,37 @@
         "canteenId": "lan_yuan",
         "floor": "1F",
         "label": "一层",
-        "stallNames": [
-          "一楼米饭自选"
-        ],
-        "dishCount": 1,
-        "drawableDishCount": 1,
-        "drawWeight": 3.0
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       },
       {
         "id": "lan_yuan-2f",
         "canteenId": "lan_yuan",
         "floor": "2F",
         "label": "二层",
-        "stallNames": [
-          "二楼面类"
-        ],
-        "dishCount": 1,
-        "drawableDishCount": 1,
-        "drawWeight": 3.0
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       },
       {
         "id": "lan_yuan-3f",
         "canteenId": "lan_yuan",
         "floor": "3F",
         "label": "三层",
-        "stallNames": [
-          "广东窗口",
-          "锅仔"
-        ],
-        "dishCount": 2,
-        "drawableDishCount": 1,
-        "drawWeight": 3.0
+        "stallNames": [],
+        "dishCount": 0,
+        "drawableDishCount": 0,
+        "drawWeight": 0.0
       }
     ],
-    "unassignedFloorDishCount": 5,
-    "dishCount": 9,
-    "drawableDishCount": 7,
-    "drawWeight": 23.0,
-    "stallNames": [
-      "一楼米饭自选",
-      "二楼面类",
-      "左数第二个，陕西窗口",
-      "广东窗口",
-      "进门右手第一家麻辣拌，一定要麻辣拌，因为其他还没尝试",
-      "进门后麻辣烫旁边",
-      "锅仔",
-      "面？"
-    ],
-    "cuisines": [
-      "cantonese",
-      "halal",
-      "hotpot",
-      "noodles",
-      "northeast",
-      "northwest",
-      "sichuan"
-    ]
+    "unassignedFloorDishCount": 0,
+    "dishCount": 0,
+    "drawableDishCount": 0,
+    "drawWeight": 0.0,
+    "stallNames": [],
+    "cuisines": []
   }
 ]
