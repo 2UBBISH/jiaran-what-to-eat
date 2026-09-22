@@ -1,25 +1,34 @@
 {
-  "generatedAt": "2026-09-21T04:22:54.968Z",
-  "count": 2,
+  "generatedAt": "2026-09-22T04:40:07.323Z",
+  "count": 3,
   "invalidCount": 0,
-  "validCount": 2,
+  "validCount": 3,
   "files": [
     {
       "file": "20260920-01.json",
-      "id": "raw-m1yr7a",
+      "id": "raw-6nizer",
       "kind": "dish",
       "author": "匿名同学",
-      "createdAt": "2026-09-21T00:00:00.000Z",
+      "createdAt": "2026-09-22T00:00:00.000Z",
       "title": "炸鸡腿+鸡胗",
       "valid": true
     },
     {
       "file": "20260921-01.json",
-      "id": "raw-l8eo3z",
+      "id": "raw-49m0na",
       "kind": "dish",
       "author": "匿名同学",
-      "createdAt": "2026-09-21T00:00:00.000Z",
+      "createdAt": "2026-09-22T00:00:00.000Z",
       "title": "烤鸭",
+      "valid": true
+    },
+    {
+      "file": "20260922-01.json",
+      "id": "raw-1r476jy",
+      "kind": "dish",
+      "author": "匿名同学",
+      "createdAt": "2026-09-22T00:00:00.000Z",
+      "title": "辣子拌面+炸鸡",
       "valid": true
     }
   ]
